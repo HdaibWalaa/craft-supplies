@@ -1,0 +1,200 @@
+"use client";
+
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Minus, Plus, ShoppingBag, Zap, Loader2 } from "lucide-react";
+import { addToCart } from "@/app/actions/cart";
+import { Button } from "@/components/ui/Button";
+import { formatPrice, cn } from "@/lib/utils";
+
+export type VariantOption = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  attributes: Record<string, string>;
+};
+
+function labelize(key: string) {
+  return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1");
+}
+
+export function VariantPurchasePanel({
+  productName,
+  variants,
+}: {
+  productName: string;
+  variants: VariantOption[];
+}) {
+  const attributeKeys = useMemo(() => {
+    const keys: string[] = [];
+    for (const v of variants) {
+      for (const k of Object.keys(v.attributes)) {
+        if (!keys.includes(k)) keys.push(k);
+      }
+    }
+    return keys;
+  }, [variants]);
+
+  const [selected, setSelected] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    for (const k of attributeKeys) {
+      initial[k] = variants[0]?.attributes[k] ?? "";
+    }
+    return initial;
+  });
+  const [qty, setQty] = useState(1);
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
+
+  const matchedVariant =
+    variants.find((v) => attributeKeys.every((k) => v.attributes[k] === selected[k])) ?? variants[0];
+
+  const valuesForKey = (key: string) => {
+    const seen: string[] = [];
+    for (const v of variants) {
+      const val = v.attributes[key];
+      if (val && !seen.includes(val)) seen.push(val);
+    }
+    return seen;
+  };
+
+  function isValueAvailable(key: string, value: string) {
+    return variants.some(
+      (v) =>
+        v.attributes[key] === value &&
+        v.stock > 0 &&
+        attributeKeys
+          .filter((k) => k !== key)
+          .every((k) => v.attributes[k] === selected[k])
+    );
+  }
+
+  function handlePurchase(buyNow: boolean) {
+    if (!matchedVariant) return;
+    setMessage(null);
+    startTransition(async () => {
+      const res = await addToCart(matchedVariant.id, qty);
+      if (res.error) {
+        setMessage(res.error);
+        return;
+      }
+      if (buyNow) {
+        router.push("/checkout");
+      } else {
+        setMessage("Added to cart!");
+        router.refresh();
+      }
+    });
+  }
+
+  const outOfStock = !matchedVariant || matchedVariant.stock <= 0;
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex items-baseline gap-2">
+        <span className="font-display text-3xl font-semibold text-ink-900">
+          {formatPrice(matchedVariant?.price ?? variants[0]?.price ?? 0)}
+        </span>
+      </div>
+
+      {attributeKeys.map((key) => (
+        <div key={key}>
+          <p className="mb-2 text-sm font-medium text-ink-800">{labelize(key)}</p>
+          <div className="flex flex-wrap gap-2">
+            {valuesForKey(key).map((value) => {
+              const isSelected = selected[key] === value;
+              const available = isValueAvailable(key, value);
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  disabled={!available}
+                  onClick={() => setSelected((s) => ({ ...s, [key]: value }))}
+                  className={cn(
+                    "cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                    isSelected
+                      ? "border-terracotta-600 bg-terracotta-600 text-cream-50"
+                      : "border-ink-300 text-ink-700 hover:border-terracotta-400",
+                    !available && "cursor-not-allowed opacity-40 line-through"
+                  )}
+                >
+                  {value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      <div>
+        <p className="mb-1 text-sm font-medium text-ink-800">
+          {outOfStock ? (
+            <span className="text-red-600">Out of stock</span>
+          ) : matchedVariant.stock <= (5 as number) ? (
+            <span className="text-terracotta-700">Only {matchedVariant.stock} left in stock</span>
+          ) : (
+            <span className="text-sage-700">In stock</span>
+          )}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="flex items-center rounded-full border border-ink-300">
+          <button
+            type="button"
+            aria-label="Decrease quantity"
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+            className="cursor-pointer p-2.5 text-ink-600 hover:text-terracotta-700"
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+          <span className="w-8 text-center text-sm font-medium">{qty}</span>
+          <button
+            type="button"
+            aria-label="Increase quantity"
+            onClick={() => setQty((q) => Math.min(matchedVariant?.stock ?? 1, q + 1))}
+            className="cursor-pointer p-2.5 text-ink-600 hover:text-terracotta-700"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="flex-1"
+          disabled={outOfStock || pending}
+          onClick={() => handlePurchase(false)}
+        >
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />}
+          Add to Cart
+        </Button>
+        <Button
+          type="button"
+          size="lg"
+          className="flex-1"
+          disabled={outOfStock || pending}
+          onClick={() => handlePurchase(true)}
+        >
+          <Zap className="h-4 w-4" />
+          Buy Now
+        </Button>
+      </div>
+      {message ? <p className="text-sm text-ink-600">{message}</p> : null}
+
+      {/* Sticky mobile bar */}
+      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-[0_-4px_12px_rgba(26,22,19,0.08)] md:hidden">
+        <div className="flex-1">
+          <p className="truncate text-xs text-ink-500">{productName}</p>
+          <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0)}</p>
+        </div>
+        <Button size="md" disabled={outOfStock || pending} onClick={() => handlePurchase(false)}>
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add to Cart"}
+        </Button>
+      </div>
+    </div>
+  );
+}

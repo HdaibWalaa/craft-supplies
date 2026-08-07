@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  /* Terracotta — primary / CTAs */
+  --color-terracotta-50: #fdf4ec;
+  --color-terracotta-100: #fbe6d2;
+  --color-terracotta-200: #f6cca3;
+  --color-terracotta-300: #eeac74;
+  --color-terracotta-400: #e58f52;
+  --color-terracotta-500: #dd7a3d;
+  --color-terracotta-600: #c15f28;
+  --color-terracotta-700: #9c4c20;
+  --color-terracotta-800: #7c3e1c;
+  --color-terracotta-900: #66331a;
+  --color-terracotta-950: #38190c;
+
+  /* Sage — dominant environmental green (section panels, not just accents) */
+  --color-sage-50: #eef2e6;
+  --color-sage-100: #dfe8d0;
+  --color-sage-200: #c5d5ac;
+  --color-sage-300: #a7bf87;
+  --color-sage-400: #8aa96a;
+  --color-sage-500: #708f52;
+  --color-sage-600: #587140;
+  --color-sage-700: #465a34;
+  --color-sage-800: #39482b;
+  --color-sage-900: #303c26;
+  --color-sage-950: #182013;
+
+  /* Walnut — dark warm neutral, headers/footer */
+  --color-walnut-50: #f7f3ef;
+  --color-walnut-100: #ece2d8;
+  --color-walnut-200: #d6c2ac;
+  --color-walnut-300: #bd9c7c;
+  --color-walnut-400: #a97c58;
+  --color-walnut-500: #8f6437;
+  --color-walnut-600: #74502c;
+  --color-walnut-700: #5c4025;
+  --color-walnut-800: #4a341f;
+  --color-walnut-900: #3d2b1b;
+  --color-walnut-950: #211609;
+
+  /* Cream — warm, visible beige background (not near-white) */
+  --color-cream-50: #faf3e6;
+  --color-cream-100: #f5ead6;
+  --color-cream-200: #ecdcc0;
+  --color-cream-300: #e0c89e;
+  --color-cream-400: #d1ac78;
+  --color-cream-500: #bd905a;
+  --color-cream-600: #a3763f;
+  --color-cream-700: #855f34;
+  --color-cream-800: #6b4c2c;
+  --color-cream-900: #573f26;
+  --color-cream-950: #302214;
+
+  /* Ink — warm neutral text */
+  --color-ink-50: #f6f5f3;
+  --color-ink-100: #e8e5e1;
+  --color-ink-200: #d1cbc2;
+  --color-ink-300: #aea497;
+  --color-ink-400: #85786a;
+  --color-ink-500: #665a4d;
+  --color-ink-600: #52483d;
+  --color-ink-700: #423a31;
+  --color-ink-800: #372f29;
+  --color-ink-900: #2f2924;
+  --color-ink-950: #1a1613;
+
+  --font-display: var(--font-fredoka);
+  --font-sans: var(--font-nunito);
+  --font-serif: var(--font-fraunces);
+
+  --shadow-card: 0 1px 2px rgba(26, 22, 19, 0.06), 0 4px 12px rgba(26, 22, 19, 0.05);
+  --shadow-card-hover: 0 2px 4px rgba(26, 22, 19, 0.08), 0 12px 24px rgba(26, 22, 19, 0.09);
+}
+
+:root {
+  --background: var(--color-cream-50);
+  --foreground: var(--color-ink-900);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-rounded, ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
+}
+
+* {
+  scrollbar-color: var(--color-ink-300) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-terracotta-500);
+  outline-offset: 2px;
+}

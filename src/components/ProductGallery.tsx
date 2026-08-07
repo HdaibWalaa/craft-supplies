@@ -1,0 +1,47 @@
+"use client";
+
+import { useState } from "react";
+import { ProductImage } from "@/components/ProductImage";
+import { cn } from "@/lib/utils";
+
+export function ProductGallery({
+  images,
+}: {
+  images: { url: string; alt: string }[];
+}) {
+  const [active, setActive] = useState(0);
+  const current = images[active] ?? images[0];
+
+  return (
+    <div>
+      <div className="overflow-hidden rounded-3xl">
+        <ProductImage
+          src={current?.url ?? ""}
+          alt={current?.alt ?? ""}
+          className="aspect-square w-full transition-transform duration-300 hover:scale-105"
+          iconClassName="h-1/4 w-1/4"
+          priority
+          sizes="(max-width: 1024px) 100vw, 50vw"
+        />
+      </div>
+      {images.length > 1 ? (
+        <div className="mt-3 flex gap-2">
+          {images.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              aria-label={`View image ${i + 1}`}
+              aria-current={i === active}
+              className={cn(
+                "h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-2 ring-transparent",
+                i === active && "ring-terracotta-500"
+              )}
+            >
+              <ProductImage src={img.url} alt={img.alt} className="h-full w-full" iconClassName="h-1/2 w-1/2" />
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}

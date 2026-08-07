@@ -1,0 +1,286 @@
+// Handmade & Home-Based Crafts Supply E-Commerce
+// SQLite for local dev; schema is provider-agnostic, switch to
+// provider = "postgresql" + a Postgres DATABASE_URL for production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  addresses     Address[]
+  orders        Order[]
+  reviews       Review[]
+  wishlist      Wishlist[]
+  cart          Cart?
+  resetTokens   PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName   String
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String
+  country    String   @default("US")
+  phone      String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  orders     Order[]
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  colorTheme  String     @default("terracotta") // drives placeholder tile + accent color
+  parentId    String?
+  parent      Category?  @relation("Subcategories", fields: [parentId], references: [id])
+  children    Category[] @relation("Subcategories")
+  products    Product[]
+  sortOrder   Int        @default(0)
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  shortDescription String
+  description     String
+  categoryId      String
+  category        Category  @relation(fields: [categoryId], references: [id])
+  basePrice       Float
+  compareAtPrice  Float?
+  images          String    // JSON array of {url, alt}
+  attributes      String    // JSON object, category-specific attrs (wax type, mold shape, scent family, wood type...)
+  specifications  String    // JSON object: weight, dimensions, materials/ingredients
+  safetyWarnings  String?
+  usageNotes      String?
+  isBundle        Boolean   @default(false)
+  bundleItemIds   String?   // JSON array of Product ids included in the bundle
+  isFeatured      Boolean   @default(false)
+  isNewArrival    Boolean   @default(false)
+  status          String    @default("active") // active | draft | archived
+  rating          Float     @default(0)
+  reviewCount     Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  variants        ProductVariant[]
+  reviews         Review[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  wishlistedBy    Wishlist[]
+  blogLinks       BlogPostProduct[]
+  siteSettings    SiteSettings[]
+
+  @@index([categoryId])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String   // e.g. "Lavender / 8oz"
+  sku        String   @unique
+  price      Float
+  stock      Int      @default(0)
+  lowStockAt Int      @default(5)
+  attributes String   // JSON object e.g. { "scent": "Lavender", "size": "8oz" }
+  imageUrl   String?
+  createdAt  DateTime @default(now())
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  authorName String
+  rating    Int
+  title     String?
+  comment   String
+  photoUrl  String?
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  token     String     @unique // cookie-based token for guest carts
+  userId    String?    @unique
+  user      User?      @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@unique([cartId, variantId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  guestEmail      String?
+  status          OrderStatus @default(PENDING)
+  subtotal        Float
+  shippingCost    Float
+  taxTotal        Float
+  discountTotal   Float       @default(0)
+  discountCode    String?
+  total           Float
+  shippingAddress String      // JSON snapshot
+  addressId       String?
+  address         Address?    @relation(fields: [addressId], references: [id])
+  shippingMethod  String      @default("standard")
+  stripeSessionId String?
+  paymentMethod   String      @default("simulated") // "stripe" | "simulated"
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  items           OrderItem[]
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  variantId    String
+  variant      ProductVariant @relation(fields: [variantId], references: [id])
+  productName  String
+  variantName  String
+  price        Float
+  quantity     Int
+}
+
+model DiscountCode {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  type         DiscountType
+  value        Float
+  active       Boolean      @default(true)
+  minSubtotal  Float        @default(0)
+  usageLimit   Int?
+  usageCount   Int          @default(0)
+  expiresAt    DateTime?
+  createdAt    DateTime     @default(now())
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  excerpt        String
+  content        String
+  coverImageTheme String  @default("terracotta")
+  published      Boolean  @default(true)
+  publishedAt    DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  relatedProducts BlogPostProduct[]
+}
+
+model BlogPostProduct {
+  id         String   @id @default(cuid())
+  blogPostId String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([blogPostId, productId])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id            String   @id @default("singleton")
+  heroProductId String?
+  heroProduct   Product? @relation(fields: [heroProductId], references: [id])
+  updatedAt     DateTime @updatedAt
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}

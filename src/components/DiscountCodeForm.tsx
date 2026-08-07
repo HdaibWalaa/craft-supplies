@@ -1,0 +1,61 @@
+"use client";
+
+import { useActionState, useEffect, useRef, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Tag, X } from "lucide-react";
+import { applyDiscountCode, removeDiscountCode } from "@/app/actions/discount";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+
+type State = { error?: string; success?: boolean; code?: string; amount?: number };
+const initialState: State = {};
+
+export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }) {
+  const [state, formAction, pending] = useActionState<State, FormData>(applyDiscountCode, initialState);
+  const [removing, startRemove] = useTransition();
+  const router = useRouter();
+  const refreshedFor = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (state?.success && refreshedFor.current !== state.code) {
+      refreshedFor.current = state.code;
+      router.refresh();
+    }
+  }, [state, router]);
+
+  const active = state?.success ? state.code : appliedCode;
+
+  if (active) {
+    return (
+      <div className="flex items-center justify-between rounded-lg bg-sage-50 px-3.5 py-2.5 text-sm">
+        <span className="flex items-center gap-1.5 text-sage-800">
+          <Tag className="h-4 w-4" /> Code <strong>{active}</strong> applied
+        </span>
+        <button
+          type="button"
+          disabled={removing}
+          onClick={() =>
+            startRemove(async () => {
+              await removeDiscountCode();
+              router.refresh();
+            })
+          }
+          className="cursor-pointer text-sage-700 hover:text-sage-900"
+          aria-label="Remove discount code"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form action={formAction} className="flex gap-2">
+      <Input name="code" placeholder="Promo code" className="flex-1" />
+      <Button type="submit" variant="outline" size="md" disabled={pending}>
+        {pending ? "Applying..." : "Apply"}
+      </Button>
+      {state?.error ? <p className="mt-1 w-full text-xs text-red-600">{state.error}</p> : null}
+    </form>
+  );
+}
