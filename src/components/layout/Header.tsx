@@ -3,18 +3,19 @@ import { auth } from "@/auth";
 import { getCategories } from "@/lib/data";
 import { getCart, getCartTotals } from "@/lib/cart";
 import { HeaderClient } from "./HeaderClient";
+import { getTranslations } from "@/lib/i18n/server";
 
 export async function Header() {
-  const [session, categories, cart] = await Promise.all([auth(), getCategories(), getCart()]);
+  const [session, categories, cart, { t }] = await Promise.all([auth(), getCategories(), getCart(), getTranslations()]);
   const { itemCount } = getCartTotals(cart);
 
   return (
     <header className="sticky top-0 z-40 border-b border-ink-200/70 bg-cream-50/95 backdrop-blur supports-backdrop-blur:bg-cream-50/80">
       <div className="bg-sage-900 text-cream-100">
         <p className="mx-auto max-w-7xl px-4 py-2 text-center text-xs tracking-wide sm:px-6 lg:px-8">
-          Free shipping on orders over $75 &middot;{" "}
+          {t("freeShippingBanner")} &middot;{" "}
           <Link href="/shop" className="underline underline-offset-2 hover:text-terracotta-300">
-            Shop new arrivals
+            {t("shopNewArrivals")}
           </Link>
         </p>
       </div>

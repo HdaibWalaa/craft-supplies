@@ -7,6 +7,7 @@ import Fuse from "fuse.js";
 import { Search, X } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
 import { formatPrice, cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 type IndexEntry = {
   id: string;
@@ -20,9 +21,11 @@ type IndexEntry = {
 };
 
 let cachedIndex: IndexEntry[] | null = null;
+let cachedIndexLocale: string | null = null;
 
 export function SearchBar({ className, autoFocus }: { className?: string; autoFocus?: boolean }) {
   const router = useRouter();
+  const { locale, t } = useI18n();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<IndexEntry[]>([]);
   const [open, setOpen] = useState(false);
@@ -31,9 +34,10 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
 
   useEffect(() => {
     async function loadIndex() {
-      if (!cachedIndex) {
-        const res = await fetch("/api/search-index");
+      if (!cachedIndex || cachedIndexLocale !== locale) {
+        const res = await fetch(`/api/search-index?locale=${locale}`, { cache: "no-store" });
         cachedIndex = await res.json();
+        cachedIndexLocale = locale;
       }
       fuseRef.current = new Fuse(cachedIndex ?? [], {
         keys: ["name", "shortDescription", "categoryName"],
@@ -42,7 +46,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
       });
     }
     loadIndex();
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -76,24 +80,24 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+        <Search className="pointer-events-none absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
         <input
           type="search"
           value={query}
           autoFocus={autoFocus}
-          placeholder="Search wax, resin, molds, fragrances..."
+          placeholder={t("searchPlaceholder")}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={() => query.trim().length >= 2 && setOpen(true)}
           onKeyDown={(e) => e.key === "Enter" && goToResults()}
-          className="h-11 w-full rounded-full border border-ink-300 bg-cream-50 pl-10 pr-9 text-sm text-ink-900 placeholder:text-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500"
-          aria-label="Search products"
+          className="h-11 w-full rounded-full border border-ink-300 bg-cream-50 ps-10 pe-9 text-sm text-ink-900 placeholder:text-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500"
+          aria-label={t("searchProducts")}
         />
         {query ? (
           <button
             type="button"
             onClick={() => handleChange("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700 cursor-pointer"
-            aria-label="Clear search"
+            className="absolute end-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700 cursor-pointer"
+            aria-label={t("clearSearch")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -131,7 +135,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
             onClick={goToResults}
             className="block w-full border-t border-ink-200 px-3 py-2.5 text-center text-sm font-medium text-terracotta-700 hover:bg-terracotta-50 cursor-pointer"
           >
-            See all results for &ldquo;{query}&rdquo;
+            {t("searchAllResults", { query })}
           </button>
         </div>
       ) : null}

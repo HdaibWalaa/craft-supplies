@@ -7,6 +7,7 @@ import { Minus, Plus, Trash2, Loader2 } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
 import { updateCartItemQuantity, removeCartItem } from "@/app/actions/cart";
 import { formatPrice } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export type CartItemData = {
   id: string;
@@ -18,6 +19,7 @@ export type CartItemData = {
 export function CartItemRow({ item }: { item: CartItemData }) {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
+  const { t } = useI18n();
 
   let image = "";
   try {
@@ -59,7 +61,7 @@ export function CartItemRow({ item }: { item: CartItemData }) {
             <button
               onClick={() => updateQty(item.quantity - 1)}
               disabled={pending}
-              aria-label="Decrease quantity"
+              aria-label={t("decreaseQuantity")}
               className="cursor-pointer p-2 text-ink-600 hover:text-terracotta-700 disabled:opacity-50"
             >
               <Minus className="h-3.5 w-3.5" />
@@ -68,7 +70,7 @@ export function CartItemRow({ item }: { item: CartItemData }) {
             <button
               onClick={() => updateQty(Math.min(item.variant.stock, item.quantity + 1))}
               disabled={pending}
-              aria-label="Increase quantity"
+              aria-label={t("increaseQuantity")}
               className="cursor-pointer p-2 text-ink-600 hover:text-terracotta-700 disabled:opacity-50"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -79,7 +81,7 @@ export function CartItemRow({ item }: { item: CartItemData }) {
             disabled={pending}
             className="flex cursor-pointer items-center gap-1 text-sm text-ink-500 hover:text-red-600"
           >
-            <Trash2 className="h-4 w-4" /> Remove
+            <Trash2 className="h-4 w-4" /> {t("remove")}
           </button>
         </div>
       </div>

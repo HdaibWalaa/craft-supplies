@@ -4,13 +4,14 @@ import { getCart, getCartTotals } from "@/lib/cart";
 import { getAppliedDiscountCode } from "@/app/actions/discount";
 import { validateDiscountCode } from "@/lib/discount";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { fetchAddresses } from "@/lib/api/addresses";
 import { CheckoutForm } from "@/components/CheckoutForm";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "Checkout" };
 
 export default async function CheckoutPage() {
-  const [cart, session] = await Promise.all([getCart(), auth()]);
+  const [cart, session, { t }] = await Promise.all([getCart(), auth(), getTranslations()]);
 
   if (!cart || cart.items.length === 0) {
     redirect("/cart");
@@ -27,15 +28,13 @@ export default async function CheckoutPage() {
 
   let defaultAddress = null;
   if (session?.user) {
-    defaultAddress = await prisma.address.findFirst({
-      where: { userId: session.user.id },
-      orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
-    });
+    const address = (await fetchAddresses()).sort((a, b) => Number(b.is_default_shipping) - Number(a.is_default_shipping))[0];
+    defaultAddress = address ? { fullName: `${address.first_name} ${address.last_name}`, line1: address.line_1, line2: address.line_2, city: address.city, state: address.region ?? "", postalCode: address.postal_code ?? "", country: address.country_code, phone: address.phone } : null;
   }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="mb-8 font-display text-3xl font-semibold text-ink-900">Checkout</h1>
+      <h1 className="mb-8 font-display text-3xl font-semibold text-ink-900">{t("checkout")}</h1>
       <CheckoutForm
         defaultEmail={session?.user?.email ?? undefined}
         defaultAddress={defaultAddress}

@@ -1,35 +1,11 @@
 "use server";
-
-import { z } from "zod";
-import { sendEmail } from "@/lib/email";
-
-const schema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  message: z.string().min(10),
-});
+import { apiHeaders } from "@/lib/api/headers";
 
 export type ContactFormState = { error?: string; success?: boolean };
 
-export async function submitContactForm(
-  _prev: ContactFormState,
-  formData: FormData
-): Promise<ContactFormState> {
-  const parsed = schema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    message: formData.get("message"),
-  });
-
-  if (!parsed.success) {
-    return { error: "Please fill in all fields with a valid email address." };
-  }
-
-  await sendEmail({
-    to: "support@craftsupply.test",
-    subject: `New contact form message from ${parsed.data.name}`,
-    text: `From: ${parsed.data.name} <${parsed.data.email}>\n\n${parsed.data.message}`,
-  });
-
+export async function submitContactForm(_previous: ContactFormState, formData: FormData): Promise<ContactFormState> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  const response = await fetch(`${apiUrl}/contact`, { method: "POST", headers: await apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ name: formData.get("name"), email: formData.get("email"), message: formData.get("message") }), cache: "no-store" });
+  if (!response.ok) return { error: "Please fill in all fields with a valid email address." };
   return { success: true };
 }

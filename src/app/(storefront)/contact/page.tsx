@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with the Kiln & Wick team.",
+  description: "Get in touch with the Craft Supplies team.",
 };
 
 export default function ContactPage() {

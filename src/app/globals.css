@@ -93,6 +93,12 @@ body {
   font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
 }
 
+html[dir="rtl"] body,
+html[dir="rtl"] .font-display,
+html[dir="rtl"] .font-serif {
+  font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
+}
+
 * {
   scrollbar-color: var(--color-ink-300) transparent;
 }

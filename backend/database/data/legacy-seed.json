@@ -1,0 +1,866 @@
+{
+  "CATEGORY_SEED": [
+    {
+      "slug": "candle-making",
+      "name": "Candle-Making",
+      "description": "Waxes, wicks, containers, and tins for pouring beautiful candles.",
+      "colorTheme": "candle-making",
+      "sortOrder": 1
+    },
+    {
+      "slug": "resin-epoxy",
+      "name": "Resin & Epoxy",
+      "description": "Crystal-clear casting and coating resins for art, jewelry, and tables.",
+      "colorTheme": "resin-epoxy",
+      "sortOrder": 2
+    },
+    {
+      "slug": "soap-making",
+      "name": "Soap-Making",
+      "description": "Melt-and-pour bases, lye, oils, and additives for handcrafted soap.",
+      "colorTheme": "soap-making",
+      "sortOrder": 3
+    },
+    {
+      "slug": "molds",
+      "name": "Molds",
+      "description": "Silicone and plastic molds for candles, soap, resin, and concrete.",
+      "colorTheme": "molds",
+      "sortOrder": 4
+    },
+    {
+      "slug": "fragrances-pigments",
+      "name": "Fragrances & Pigments",
+      "description": "Fragrance oils, essential oils, dyes, and mica powders.",
+      "colorTheme": "fragrances-pigments",
+      "sortOrder": 5
+    },
+    {
+      "slug": "concrete-supplies",
+      "name": "Concrete Supplies",
+      "description": "Cement mixes, sealers, and tools for concrete and cement crafting.",
+      "colorTheme": "concrete-supplies",
+      "sortOrder": 6
+    },
+    {
+      "slug": "wooden-products",
+      "name": "Wooden Products",
+      "description": "Bases, boxes, and décor blanks ready to finish and personalize.",
+      "colorTheme": "wooden-products",
+      "sortOrder": 7
+    },
+    {
+      "slug": "kits-bundles",
+      "name": "Kits & Bundles",
+      "description": "Curated supply bundles that pair everything you need for a project.",
+      "colorTheme": "kits-bundles",
+      "sortOrder": 8
+    }
+  ],
+  "PRODUCTS": [
+    {
+      "name": "Natural Soy Wax Flakes",
+      "categorySlug": "candle-making",
+      "shortDescription": "Clean-burning 464 soy wax blend, perfect for container candles.",
+      "description": "Our 464 soy wax blend flakes are pre-additized for an excellent scent throw and smooth, creamy finish. Low soot, natural, and easy to work with for beginners and pros alike. Melts at a low temperature so it's gentle on fragrance oils.",
+      "basePrice": 18.99,
+      "attributes": {
+        "waxType": "Soy",
+        "meltPoint": "125°F"
+      },
+      "specifications": {
+        "material": "100% Soybean Wax",
+        "weight": "Varies by size"
+      },
+      "usageNotes": "Melt to 185°F, add fragrance at 175°F, pour at 135°F for best results.",
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "1 kg Bag",
+          "sku": "CM-WAX-SOY-1KG",
+          "price": 18.99,
+          "stock": 120,
+          "attributes": {
+            "size": "1kg"
+          }
+        },
+        {
+          "name": "5 kg Bag",
+          "sku": "CM-WAX-SOY-5KG",
+          "price": 79.99,
+          "stock": 60,
+          "attributes": {
+            "size": "5kg"
+          }
+        },
+        {
+          "name": "10 kg Bag",
+          "sku": "CM-WAX-SOY-10KG",
+          "price": 149.99,
+          "stock": 25,
+          "attributes": {
+            "size": "10kg"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cotton Candle Wicks (Pre-Tabbed)",
+      "categorySlug": "candle-making",
+      "shortDescription": "Braided cotton wicks with metal sustainer tabs, ready to use.",
+      "description": "A pack of pre-tabbed, braided cotton wicks sized for a range of container diameters. Coated for consistent, steady burning with minimal mushrooming.",
+      "basePrice": 6.49,
+      "attributes": {
+        "material": "Cotton"
+      },
+      "specifications": {
+        "material": "Cotton, coated",
+        "packSize": "10 wicks"
+      },
+      "variants": [
+        {
+          "name": "Thin (CD6) — Pack of 10",
+          "sku": "CM-WICK-CD6",
+          "price": 6.49,
+          "stock": 200,
+          "attributes": {
+            "size": "CD6"
+          }
+        },
+        {
+          "name": "Medium (CD10) — Pack of 10",
+          "sku": "CM-WICK-CD10",
+          "price": 6.49,
+          "stock": 200,
+          "attributes": {
+            "size": "CD10"
+          }
+        },
+        {
+          "name": "Thick (CD18) — Pack of 10",
+          "sku": "CM-WICK-CD18",
+          "price": 6.99,
+          "stock": 150,
+          "attributes": {
+            "size": "CD18"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Amber Glass Candle Jars",
+      "categorySlug": "candle-making",
+      "shortDescription": "Reusable amber glass jars for a warm, apothecary-style candle.",
+      "description": "Thick-walled amber glass jars that shield fragrance oils from UV light and give finished candles a premium, boutique look. Heat-safe and reusable.",
+      "basePrice": 3.25,
+      "attributes": {
+        "material": "Glass",
+        "color": "Amber"
+      },
+      "specifications": {
+        "material": "Glass",
+        "heatSafe": "Yes"
+      },
+      "isNewArrival": true,
+      "variants": [
+        {
+          "name": "8 oz",
+          "sku": "CM-JAR-AMB-8OZ",
+          "price": 3.25,
+          "stock": 300,
+          "attributes": {
+            "size": "8oz"
+          }
+        },
+        {
+          "name": "12 oz",
+          "sku": "CM-JAR-AMB-12OZ",
+          "price": 3.95,
+          "stock": 300,
+          "attributes": {
+            "size": "12oz"
+          }
+        },
+        {
+          "name": "16 oz",
+          "sku": "CM-JAR-AMB-16OZ",
+          "price": 4.75,
+          "stock": 250,
+          "attributes": {
+            "size": "16oz"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crystal Clear Casting Resin Kit",
+      "categorySlug": "resin-epoxy",
+      "shortDescription": "Deep-pour, bubble-free epoxy resin for art, tables, and jewelry.",
+      "description": "A 1:1 mix ratio casting resin engineered for crystal clarity and minimal bubbling on deep pours. UV-resistant formula resists yellowing over time. Includes resin and hardener.",
+      "basePrice": 34.99,
+      "attributes": {
+        "resinType": "Casting",
+        "mixRatio": "1:1"
+      },
+      "specifications": {
+        "pourDepth": "Up to 2 in per layer",
+        "cureTime": "24-72 hrs"
+      },
+      "safetyWarnings": "Use in a well-ventilated area. Wear gloves and safety glasses. Avoid skin contact.",
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "16 oz Kit",
+          "sku": "RE-RESIN-CAST-16OZ",
+          "price": 34.99,
+          "stock": 90,
+          "attributes": {
+            "size": "16oz"
+          }
+        },
+        {
+          "name": "32 oz Kit",
+          "sku": "RE-RESIN-CAST-32OZ",
+          "price": 59.99,
+          "stock": 70,
+          "attributes": {
+            "size": "32oz"
+          }
+        },
+        {
+          "name": "1 Gallon Kit",
+          "sku": "RE-RESIN-CAST-1GAL",
+          "price": 189.99,
+          "stock": 20,
+          "attributes": {
+            "size": "1gal"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fast-Cure UV Resin",
+      "categorySlug": "resin-epoxy",
+      "shortDescription": "Cures in minutes under UV light — ideal for jewelry and small pieces.",
+      "description": "A thick, self-leveling UV resin that cures hard and glossy in as little as 2-3 minutes under a UV lamp or direct sunlight. No mixing required.",
+      "basePrice": 14.99,
+      "attributes": {
+        "resinType": "UV Cure"
+      },
+      "specifications": {
+        "cureTime": "2-5 minutes under UV"
+      },
+      "safetyWarnings": "Avoid prolonged skin contact. Use UV-protective eyewear when curing.",
+      "variants": [
+        {
+          "name": "50 g",
+          "sku": "RE-RESIN-UV-50G",
+          "price": 14.99,
+          "stock": 150,
+          "attributes": {
+            "size": "50g"
+          }
+        },
+        {
+          "name": "100 g",
+          "sku": "RE-RESIN-UV-100G",
+          "price": 24.99,
+          "stock": 120,
+          "attributes": {
+            "size": "100g"
+          }
+        },
+        {
+          "name": "200 g",
+          "sku": "RE-RESIN-UV-200G",
+          "price": 42.99,
+          "stock": 60,
+          "attributes": {
+            "size": "200g"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resin Mixing Cups & Sticks Set",
+      "categorySlug": "resin-epoxy",
+      "shortDescription": "Graduated silicone mixing cups and wooden stir sticks bundle.",
+      "description": "Flexible silicone cups with clear measurement markings for accurate resin ratios, plus wooden stir sticks. Peel dried resin out and reuse the cups.",
+      "basePrice": 11.5,
+      "attributes": {},
+      "specifications": {
+        "packSize": "10 cups + 20 sticks"
+      },
+      "isNewArrival": true,
+      "variants": [
+        {
+          "name": "Standard Set",
+          "sku": "RE-CUPS-SET-STD",
+          "price": 11.5,
+          "stock": 200,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Shea Butter Melt & Pour Soap Base",
+      "categorySlug": "soap-making",
+      "shortDescription": "Moisturizing, easy-melt soap base — no lye handling required.",
+      "description": "A creamy, shea-butter-enriched melt-and-pour base that's beginner-friendly since there's no need to handle raw lye. Melts smoothly and takes fragrance and color beautifully.",
+      "basePrice": 12.99,
+      "attributes": {
+        "baseType": "Shea Butter"
+      },
+      "specifications": {
+        "material": "Glycerin/Shea Butter Blend"
+      },
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "2 lb Block",
+          "sku": "SM-BASE-SHEA-2LB",
+          "price": 12.99,
+          "stock": 150,
+          "attributes": {
+            "size": "2lb"
+          }
+        },
+        {
+          "name": "5 lb Block",
+          "sku": "SM-BASE-SHEA-5LB",
+          "price": 27.99,
+          "stock": 100,
+          "attributes": {
+            "size": "5lb"
+          }
+        },
+        {
+          "name": "10 lb Block",
+          "sku": "SM-BASE-SHEA-10LB",
+          "price": 49.99,
+          "stock": 40,
+          "attributes": {
+            "size": "10lb"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sodium Hydroxide (Lye) Beads",
+      "categorySlug": "soap-making",
+      "shortDescription": "Pharmaceutical-grade lye for cold process soap-making.",
+      "description": "99% pure sodium hydroxide beads for cold process soap-making. Dissolves cleanly for accurate, predictable saponification.",
+      "basePrice": 15.99,
+      "attributes": {},
+      "specifications": {
+        "purity": "99%",
+        "form": "Beads"
+      },
+      "safetyWarnings": "Caustic. Always add lye to water, never water to lye. Wear gloves, goggles, and a mask. Keep away from children and pets.",
+      "usageNotes": "Use a digital scale and lye calculator for accurate recipe ratios.",
+      "variants": [
+        {
+          "name": "1 lb",
+          "sku": "SM-LYE-1LB",
+          "price": 15.99,
+          "stock": 80,
+          "attributes": {
+            "size": "1lb"
+          }
+        },
+        {
+          "name": "2 lb",
+          "sku": "SM-LYE-2LB",
+          "price": 26.99,
+          "stock": 60,
+          "attributes": {
+            "size": "2lb"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cold Process Soap Oil Blend",
+      "categorySlug": "soap-making",
+      "shortDescription": "Pre-balanced olive, coconut, and sunflower oil blend for cold process soap.",
+      "description": "A pre-measured, balanced oil blend formulated for a hard, long-lasting bar with a stable lather. Palm-oil free.",
+      "basePrice": 21.5,
+      "attributes": {},
+      "specifications": {
+        "material": "Olive, Coconut & Sunflower Oils"
+      },
+      "variants": [
+        {
+          "name": "32 oz",
+          "sku": "SM-OIL-BLEND-32OZ",
+          "price": 21.5,
+          "stock": 90,
+          "attributes": {
+            "size": "32oz"
+          }
+        },
+        {
+          "name": "64 oz",
+          "sku": "SM-OIL-BLEND-64OZ",
+          "price": 38.5,
+          "stock": 50,
+          "attributes": {
+            "size": "64oz"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Silicone Candle Pillar Mold",
+      "categorySlug": "molds",
+      "shortDescription": "Flexible, food-grade silicone molds for clean pillar candle release.",
+      "description": "Durable silicone molds that release finished pillar candles cleanly without damaging fine details. Reusable for hundreds of pours.",
+      "basePrice": 16.99,
+      "attributes": {
+        "moldShape": "Pillar"
+      },
+      "specifications": {
+        "material": "Food-Grade Silicone"
+      },
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "Round",
+          "sku": "MO-CANDLE-ROUND",
+          "price": 16.99,
+          "stock": 60,
+          "attributes": {
+            "shape": "Round"
+          }
+        },
+        {
+          "name": "Hexagon",
+          "sku": "MO-CANDLE-HEX",
+          "price": 18.99,
+          "stock": 50,
+          "attributes": {
+            "shape": "Hexagon"
+          }
+        },
+        {
+          "name": "Spiral",
+          "sku": "MO-CANDLE-SPIRAL",
+          "price": 21.99,
+          "stock": 40,
+          "attributes": {
+            "shape": "Spiral"
+          }
+        }
+      ]
+    },
+    {
+      "name": "12-Cavity Silicone Soap Loaf Mold",
+      "categorySlug": "molds",
+      "shortDescription": "Slice-ready loaf mold that produces 12 uniform soap bars.",
+      "description": "A flexible silicone loaf mold with built-in slice dividers for perfectly uniform bars every time. Easy to unmold and clean.",
+      "basePrice": 19.99,
+      "attributes": {
+        "moldShape": "Loaf"
+      },
+      "specifications": {
+        "material": "Silicone",
+        "cavities": "12"
+      },
+      "variants": [
+        {
+          "name": "Standard Loaf",
+          "sku": "MO-SOAP-LOAF12",
+          "price": 19.99,
+          "stock": 45,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Resin Coaster Mold Set",
+      "categorySlug": "molds",
+      "shortDescription": "Round, square, and geode-shaped coaster molds bundled together.",
+      "description": "A three-piece silicone mold set for casting resin coasters in round, square, and organic geode shapes. Polished-glass finish straight out of the mold.",
+      "basePrice": 24.99,
+      "attributes": {
+        "moldShape": "Coaster"
+      },
+      "specifications": {
+        "material": "Silicone",
+        "pieces": "3"
+      },
+      "isNewArrival": true,
+      "variants": [
+        {
+          "name": "3-Piece Set",
+          "sku": "MO-RESIN-COASTER3",
+          "price": 24.99,
+          "stock": 55,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Candle-Safe Fragrance Oil Sampler",
+      "categorySlug": "fragrances-pigments",
+      "shortDescription": "Four best-selling scent families in convenient 1oz bottles.",
+      "description": "Try four of our best-selling candle-safe fragrance oils before committing to a full bottle. Phthalate-free, strong hot and cold throw.",
+      "basePrice": 22,
+      "attributes": {},
+      "specifications": {
+        "bottleCount": "4 x 1oz"
+      },
+      "safetyWarnings": "For external/candle use only. Perform a patch test before skin-adjacent use.",
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "Floral Sampler",
+          "sku": "FP-FRAG-SAMPLER-FLORAL",
+          "price": 22,
+          "stock": 100,
+          "attributes": {
+            "scentFamily": "Floral"
+          }
+        },
+        {
+          "name": "Woodsy Sampler",
+          "sku": "FP-FRAG-SAMPLER-WOOD",
+          "price": 22,
+          "stock": 100,
+          "attributes": {
+            "scentFamily": "Woodsy"
+          }
+        },
+        {
+          "name": "Fresh & Clean Sampler",
+          "sku": "FP-FRAG-SAMPLER-FRESH",
+          "price": 22,
+          "stock": 100,
+          "attributes": {
+            "scentFamily": "Fresh & Clean"
+          }
+        },
+        {
+          "name": "Gourmand Sampler",
+          "sku": "FP-FRAG-SAMPLER-GOURM",
+          "price": 22,
+          "stock": 100,
+          "attributes": {
+            "scentFamily": "Gourmand"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pure Essential Oil Starter Kit",
+      "categorySlug": "fragrances-pigments",
+      "shortDescription": "Lavender, eucalyptus, and peppermint — three everyday essentials.",
+      "description": "100% pure, undiluted essential oils great for soap, diffusers, and aromatherapy blends. Steam-distilled for purity.",
+      "basePrice": 26.99,
+      "attributes": {},
+      "specifications": {
+        "bottleCount": "3 x 10ml"
+      },
+      "variants": [
+        {
+          "name": "Starter Trio",
+          "sku": "FP-EO-STARTER3",
+          "price": 26.99,
+          "stock": 90,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Cosmetic Mica Powder Pigment Set",
+      "categorySlug": "fragrances-pigments",
+      "shortDescription": "12 vivid, shimmering mica colors for resin and soap.",
+      "description": "A 12-color set of finely milled mica powders that disperse smoothly in resin and soap for shimmering, vibrant color. Skin-safe and cosmetic grade.",
+      "basePrice": 19.99,
+      "attributes": {
+        "pigmentType": "Mica"
+      },
+      "specifications": {
+        "colorCount": "12",
+        "jarSize": "10g each"
+      },
+      "isNewArrival": true,
+      "variants": [
+        {
+          "name": "12-Color Set",
+          "sku": "FP-MICA-12SET",
+          "price": 19.99,
+          "stock": 110,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Rapid-Set Craft Concrete Mix",
+      "categorySlug": "concrete-supplies",
+      "shortDescription": "Fine-grain concrete mix designed for small craft and décor pours.",
+      "description": "A finer-grain concrete blend than standard construction mix, giving smoother surfaces for planters, coasters, and décor. Sets in about an hour.",
+      "basePrice": 13.99,
+      "attributes": {},
+      "specifications": {
+        "setTime": "~60 minutes",
+        "cureTime": "24-48 hrs"
+      },
+      "safetyWarnings": "Wear a dust mask when mixing dry powder and gloves when handling wet mix.",
+      "isFeatured": true,
+      "variants": [
+        {
+          "name": "5 lb Bag",
+          "sku": "CS-MIX-5LB",
+          "price": 13.99,
+          "stock": 100,
+          "attributes": {
+            "size": "5lb"
+          }
+        },
+        {
+          "name": "10 lb Bag",
+          "sku": "CS-MIX-10LB",
+          "price": 22.99,
+          "stock": 70,
+          "attributes": {
+            "size": "10lb"
+          }
+        },
+        {
+          "name": "25 lb Bag",
+          "sku": "CS-MIX-25LB",
+          "price": 44.99,
+          "stock": 30,
+          "attributes": {
+            "size": "25lb"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Concrete Sealer Spray",
+      "categorySlug": "concrete-supplies",
+      "shortDescription": "Matte-finish sealer that protects finished concrete crafts.",
+      "description": "An easy-to-apply spray sealer that protects concrete planters and décor from moisture and staining while preserving a natural matte look.",
+      "basePrice": 17.5,
+      "attributes": {},
+      "specifications": {
+        "volume": "12 oz can"
+      },
+      "safetyWarnings": "Use in a ventilated area. Flammable aerosol.",
+      "variants": [
+        {
+          "name": "12 oz Can",
+          "sku": "CS-SEALER-12OZ",
+          "price": 17.5,
+          "stock": 65,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Concrete Color Pigment Powder Set",
+      "categorySlug": "concrete-supplies",
+      "shortDescription": "Six earthy pigment powders for tinting concrete pours.",
+      "description": "Highly concentrated iron-oxide pigment powders in six earthy tones, colorfast and UV-stable for outdoor concrete pieces.",
+      "basePrice": 23.99,
+      "attributes": {},
+      "specifications": {
+        "colorCount": "6"
+      },
+      "variants": [
+        {
+          "name": "6-Color Set",
+          "sku": "CS-PIGMENT-6SET",
+          "price": 23.99,
+          "stock": 40,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Unfinished Wood Slice Coasters",
+      "categorySlug": "wooden-products",
+      "shortDescription": "Set of 6 raw-cut wood coasters, ready to seal or decorate.",
+      "description": "Naturally edged wood slice coasters, sanded smooth and ready for stain, resin coating, or wood-burning designs.",
+      "basePrice": 14.99,
+      "attributes": {
+        "woodType": "Pine"
+      },
+      "specifications": {
+        "setSize": "6 pieces",
+        "diameter": "~4 in"
+      },
+      "variants": [
+        {
+          "name": "Set of 6",
+          "sku": "WP-COASTER-SET6",
+          "price": 14.99,
+          "stock": 80,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Unfinished Wooden Jewelry Box Blank",
+      "categorySlug": "wooden-products",
+      "shortDescription": "A blank hinged box ready for paint, resin inlay, or wood-burning.",
+      "description": "A smooth, unfinished hinged wooden box perfect as a base for resin-inlay lids, decoupage, or hand-painted designs.",
+      "basePrice": 12.5,
+      "attributes": {
+        "woodType": "Basswood"
+      },
+      "specifications": {
+        "dimensions": "6in x 4in x 2in"
+      },
+      "isNewArrival": true,
+      "variants": [
+        {
+          "name": "Standard Box",
+          "sku": "WP-BOX-BLANK-STD",
+          "price": 12.5,
+          "stock": 70,
+          "attributes": {}
+        }
+      ]
+    },
+    {
+      "name": "Wood Base Rounds",
+      "categorySlug": "wooden-products",
+      "shortDescription": "Live-edge wood rounds for candle, resin, or plant displays.",
+      "description": "Sanded solid wood rounds with a natural live edge — a popular base for pillar candles, resin art, and small plant displays.",
+      "basePrice": 9.99,
+      "attributes": {
+        "woodType": "Acacia"
+      },
+      "specifications": {
+        "material": "Solid Acacia Wood"
+      },
+      "variants": [
+        {
+          "name": "4 in",
+          "sku": "WP-ROUND-4IN",
+          "price": 9.99,
+          "stock": 90,
+          "attributes": {
+            "size": "4in"
+          }
+        },
+        {
+          "name": "6 in",
+          "sku": "WP-ROUND-6IN",
+          "price": 14.99,
+          "stock": 70,
+          "attributes": {
+            "size": "6in"
+          }
+        },
+        {
+          "name": "8 in",
+          "sku": "WP-ROUND-8IN",
+          "price": 21.99,
+          "stock": 40,
+          "attributes": {
+            "size": "8in"
+          }
+        }
+      ]
+    }
+  ],
+  "BUNDLES": [
+    {
+      "name": "Beginner Candle-Making Kit",
+      "shortDescription": "Everything you need for your first batch of soy candles.",
+      "description": "Soy wax flakes, pre-tabbed wicks, an amber glass jar, and a fragrance sampler — bundled at a discount so you can start pouring right away.",
+      "basePrice": 39.99,
+      "compareAtPrice": 49.72,
+      "componentNames": [
+        "Natural Soy Wax Flakes",
+        "Cotton Candle Wicks (Pre-Tabbed)",
+        "Amber Glass Candle Jars",
+        "Candle-Safe Fragrance Oil Sampler"
+      ]
+    },
+    {
+      "name": "Resin Coaster Starter Kit",
+      "shortDescription": "Casting resin, a coaster mold set, mixing cups, and mica pigments.",
+      "description": "A complete starter kit for casting your first set of resin coasters — resin, mold, mixing cups, and shimmering mica pigments included.",
+      "basePrice": 74.99,
+      "compareAtPrice": 91.47,
+      "componentNames": [
+        "Crystal Clear Casting Resin Kit",
+        "Resin Coaster Mold Set",
+        "Resin Mixing Cups & Sticks Set",
+        "Cosmetic Mica Powder Pigment Set"
+      ]
+    },
+    {
+      "name": "Cold Process Soap Kit",
+      "shortDescription": "Oil blend, lye, a loaf mold, and mica pigments for your first cold process batch.",
+      "description": "A guided-batch kit with everything measured to pair together: oil blend, lye, a 12-cavity loaf mold, and mica pigments for swirling.",
+      "basePrice": 64.99,
+      "compareAtPrice": 78.46,
+      "componentNames": [
+        "Cold Process Soap Oil Blend",
+        "Sodium Hydroxide (Lye) Beads",
+        "12-Cavity Silicone Soap Loaf Mold",
+        "Cosmetic Mica Powder Pigment Set"
+      ]
+    },
+    {
+      "name": "Concrete Planter DIY Kit",
+      "shortDescription": "Craft concrete mix, pigment powders, and sealer for a finished planter.",
+      "description": "Mix, tint, cast, and seal your own concrete planter with this all-in-one kit — great as a gift or first project.",
+      "basePrice": 44.99,
+      "compareAtPrice": 55.48,
+      "componentNames": [
+        "Rapid-Set Craft Concrete Mix",
+        "Concrete Color Pigment Powder Set",
+        "Concrete Sealer Spray"
+      ]
+    }
+  ],
+  "BLOG_POSTS": [
+    {
+      "title": "How to Make Layered Resin Coasters",
+      "excerpt": "Get that trendy ocean-wave look with simple pouring and tilting techniques.",
+      "content": "Layered resin coasters are one of the most popular beginner resin projects, and the technique is simpler than it looks...\n\nStart by mixing your casting resin in small batches, tinting each with a drop of mica pigment. Pour your first layer into the mold and let it set to a tacky stage before adding the next. Tilt the mold gently between layers to create natural, wave-like blending at the color boundaries. Once fully cured, sand the edges and buff with a polishing compound for a glass-like shine.",
+      "products": [
+        "Crystal Clear Casting Resin Kit",
+        "Resin Coaster Mold Set",
+        "Cosmetic Mica Powder Pigment Set"
+      ]
+    },
+    {
+      "title": "Beginner's Guide to Soy Candle Making",
+      "excerpt": "The exact temperatures, ratios, and wick sizes for your first pour.",
+      "content": "Soy wax is the most forgiving wax for first-time candle makers. In this guide we'll walk through choosing the right wick size for your container diameter, melting temperatures, and how to add fragrance oil at the right stage for maximum scent throw...\n\nAs a general rule, use about 1oz of fragrance oil per pound of wax, added once the melted wax cools to around 175°F. Pour at 135°F and let cure for at least 48 hours before burning for the best scent throw.",
+      "products": [
+        "Natural Soy Wax Flakes",
+        "Cotton Candle Wicks (Pre-Tabbed)",
+        "Amber Glass Candle Jars"
+      ]
+    },
+    {
+      "title": "Cold Process Soap 101: Working Safely with Lye",
+      "excerpt": "Everything a first-timer needs to know before mixing their first batch.",
+      "content": "Lye (sodium hydroxide) is what turns oils into soap through saponification, and while it sounds intimidating, it's completely safe when handled correctly...\n\nAlways add lye to water — never water to lye — to avoid a volcanic reaction. Wear gloves and eye protection, work in a ventilated space, and use a dedicated digital scale for accuracy. Once mixed into soap and fully cured, no free lye remains in the finished bars.",
+      "products": [
+        "Sodium Hydroxide (Lye) Beads",
+        "Cold Process Soap Oil Blend",
+        "12-Cavity Silicone Soap Loaf Mold"
+      ]
+    },
+    {
+      "title": "5 Concrete Planter Ideas for Your Patio",
+      "excerpt": "Simple pours that look like a designer store bought them.",
+      "content": "Concrete planters have a modern, textural look that's surprisingly easy to achieve at home with a craft-grade mix...\n\nTry nesting two molds of different sizes to create a raised-edge planter, or mix in iron-oxide pigment for a warm terracotta tone. A light sanding after curing gives a smooth, matte-store-bought finish.",
+      "products": [
+        "Rapid-Set Craft Concrete Mix",
+        "Concrete Color Pigment Powder Set",
+        "Concrete Sealer Spray"
+      ]
+    }
+  ]
+}

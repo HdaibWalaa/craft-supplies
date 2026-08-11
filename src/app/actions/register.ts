@@ -1,56 +1,19 @@
 "use server";
 
-import { z } from "zod";
-import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { signIn } from "@/auth";
-
-const schema = z.object({
-  name: z.string().min(2, "Enter your name."),
-  email: z.string().email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-});
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { apiHeaders } from "@/lib/api/headers";
 
 export type RegisterState = { error?: string };
 
-export async function registerAccount(_prev: RegisterState, formData: FormData): Promise<RegisterState> {
-  const parsed = schema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-  });
-
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Please check your details." };
-  }
-
-  const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
-  if (existing) {
-    return { error: "An account with that email already exists." };
-  }
-
-  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
-  await prisma.user.create({
-    data: {
-      name: parsed.data.name,
-      email: parsed.data.email,
-      passwordHash,
-      role: "CUSTOMER",
-    },
-  });
-
-  try {
-    await signIn("credentials", {
-      email: parsed.data.email,
-      password: parsed.data.password,
-      redirectTo: "/account",
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: "Account created — please log in." };
-    }
-    throw error;
-  }
-  return {};
+export async function registerAccount(_previous: RegisterState, formData: FormData): Promise<RegisterState> {
+  const password = String(formData.get("password") ?? "");
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  const response = await fetch(`${baseUrl}/auth/register`, { method: "POST", headers: await apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({
+    name: formData.get("name"), email: formData.get("email"), password, password_confirmation: password,
+  }), cache: "no-store" });
+  const payload = await response.json().catch(() => null) as { data?: { token: string }; message?: string; errors?: Record<string, string[]> } | null;
+  if (!response.ok || !payload?.data) return { error: payload?.errors ? Object.values(payload.errors)[0]?.[0] : payload?.message ?? "Registration failed." };
+  (await cookies()).set("kw_api_token", payload.data.token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 60 * 60 * 24 * 30, path: "/" });
+  redirect("/account");
 }

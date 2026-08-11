@@ -6,6 +6,7 @@ import { Tag, X } from "lucide-react";
 import { applyDiscountCode, removeDiscountCode } from "@/app/actions/discount";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 type State = { error?: string; success?: boolean; code?: string; amount?: number };
 const initialState: State = {};
@@ -15,6 +16,7 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
   const [removing, startRemove] = useTransition();
   const router = useRouter();
   const refreshedFor = useRef<string | undefined>(undefined);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (state?.success && refreshedFor.current !== state.code) {
@@ -29,7 +31,7 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
     return (
       <div className="flex items-center justify-between rounded-lg bg-sage-50 px-3.5 py-2.5 text-sm">
         <span className="flex items-center gap-1.5 text-sage-800">
-          <Tag className="h-4 w-4" /> Code <strong>{active}</strong> applied
+          <Tag className="h-4 w-4" /> {t("codeApplied", { code: active })}
         </span>
         <button
           type="button"
@@ -41,7 +43,7 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
             })
           }
           className="cursor-pointer text-sage-700 hover:text-sage-900"
-          aria-label="Remove discount code"
+          aria-label={t("removeDiscount")}
         >
           <X className="h-4 w-4" />
         </button>
@@ -51,9 +53,9 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
 
   return (
     <form action={formAction} className="flex gap-2">
-      <Input name="code" placeholder="Promo code" className="flex-1" />
+      <Input name="code" placeholder={t("promoCode")} className="flex-1" dir="ltr" />
       <Button type="submit" variant="outline" size="md" disabled={pending}>
-        {pending ? "Applying..." : "Apply"}
+        {pending ? t("applying") : t("apply")}
       </Button>
       {state?.error ? <p className="mt-1 w-full text-xs text-red-600">{state.error}</p> : null}
     </form>

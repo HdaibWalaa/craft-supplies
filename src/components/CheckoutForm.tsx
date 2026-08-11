@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { SHIPPING_METHODS, computeOrderTotals } from "@/lib/pricing";
 import { cn, formatPrice } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 const initialState: CheckoutState = {};
 
@@ -38,6 +39,7 @@ export function CheckoutForm({
 }) {
   const [state, formAction, pending] = useActionState(createOrder, initialState);
   const [shippingMethod, setShippingMethod] = useState<"standard" | "express">("standard");
+  const { t } = useI18n();
 
   const { shippingCost, taxTotal, total } = computeOrderTotals({ subtotal, discountAmount, shippingMethod });
 
@@ -45,59 +47,59 @@ export function CheckoutForm({
     <div className="grid gap-10 lg:grid-cols-3">
     <form action={formAction} className="flex flex-col gap-8 lg:col-span-2">
       <section>
-        <h2 className="font-display text-lg font-semibold text-ink-900">Contact</h2>
+        <h2 className="font-display text-lg font-semibold text-ink-900">{t("contactHeading")}</h2>
         <div className="mt-3 flex flex-col gap-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required defaultValue={defaultEmail} />
+          <Label htmlFor="email">{t("email")}</Label>
+          <Input id="email" name="email" type="email" required defaultValue={defaultEmail} dir="ltr" />
         </div>
       </section>
 
       <section>
-        <h2 className="font-display text-lg font-semibold text-ink-900">Shipping Address</h2>
+        <h2 className="font-display text-lg font-semibold text-ink-900">{t("shippingAddress")}</h2>
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">{t("fullName")}</Label>
             <Input id="fullName" name="fullName" required defaultValue={defaultAddress?.fullName} />
           </div>
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="line1">Address Line 1</Label>
+            <Label htmlFor="line1">{t("addressLine1")}</Label>
             <Input id="line1" name="line1" required defaultValue={defaultAddress?.line1} />
           </div>
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="line2">Address Line 2 (optional)</Label>
+            <Label htmlFor="line2">{t("addressLine2")}</Label>
             <Input id="line2" name="line2" defaultValue={defaultAddress?.line2 ?? ""} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city">{t("city")}</Label>
             <Input id="city" name="city" required defaultValue={defaultAddress?.city} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">{t("state")}</Label>
             <Input id="state" name="state" required defaultValue={defaultAddress?.state} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="postalCode">Postal Code</Label>
+            <Label htmlFor="postalCode">{t("postalCode")}</Label>
             <Input id="postalCode" name="postalCode" required defaultValue={defaultAddress?.postalCode} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="country">Country</Label>
+            <Label htmlFor="country">{t("country")}</Label>
             <Input id="country" name="country" required defaultValue={defaultAddress?.country ?? "US"} />
           </div>
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="phone">Phone (optional)</Label>
-            <Input id="phone" name="phone" type="tel" defaultValue={defaultAddress?.phone ?? ""} />
+            <Label htmlFor="phone">{t("phoneOptional")}</Label>
+            <Input id="phone" name="phone" type="tel" defaultValue={defaultAddress?.phone ?? ""} dir="ltr" />
           </div>
         </div>
         {isLoggedIn ? (
           <label className="mt-3 flex items-center gap-2 text-sm text-ink-600">
             <input type="checkbox" name="saveAddress" value="true" className="h-4 w-4 rounded border-ink-300 text-terracotta-600" />
-            Save this address to my account
+            {t("saveAddress")}
           </label>
         ) : null}
       </section>
 
       <section>
-        <h2 className="font-display text-lg font-semibold text-ink-900">Shipping Method</h2>
+        <h2 className="font-display text-lg font-semibold text-ink-900">{t("shippingMethod")}</h2>
         <div className="mt-3 flex flex-col gap-2">
           {(Object.entries(SHIPPING_METHODS) as [keyof typeof SHIPPING_METHODS, { label: string; price: number }][]).map(
             ([key, method]) => (
@@ -117,10 +119,10 @@ export function CheckoutForm({
                     onChange={() => setShippingMethod(key)}
                     className="h-4 w-4 text-terracotta-600"
                   />
-                  {method.label}
+                  {key === "standard" ? t("standardShipping") : t("expressShipping")}
                 </span>
                 <span className="font-medium text-ink-800">
-                  {key === "standard" ? "From " : ""}
+                  {key === "standard" ? `${t("from")} ` : ""}
                   {formatPrice(method.price)}
                 </span>
               </label>
@@ -134,37 +136,36 @@ export function CheckoutForm({
       ) : null}
 
       <Button type="submit" size="lg" disabled={pending}>
-        {pending ? "Placing Order..." : "Place Order"}
+        {pending ? t("placingOrder") : t("placeOrder")}
       </Button>
       <p className="text-center text-xs text-ink-400">
-        This demo checkout uses Stripe test mode when configured, or a simulated payment
-        otherwise — no real charge will occur.
+        {t("demoCheckoutNotice")}
       </p>
     </form>
 
       <div className="h-fit rounded-3xl border border-ink-200/70 bg-cream-50 p-6 shadow-[var(--shadow-card)]">
-        <h2 className="font-display text-lg font-semibold text-ink-900">Order Summary ({itemCount})</h2>
+        <h2 className="font-display text-lg font-semibold text-ink-900">{t("orderSummary")} ({itemCount})</h2>
         <dl className="mt-4 flex flex-col gap-2.5 text-sm">
           <div className="flex justify-between">
-            <dt className="text-ink-500">Subtotal</dt>
+            <dt className="text-ink-500">{t("subtotal")}</dt>
             <dd className="font-medium text-ink-800">{formatPrice(subtotal)}</dd>
           </div>
           {discountAmount > 0 ? (
             <div className="flex justify-between text-sage-700">
-              <dt>Discount {discountCode ? `(${discountCode})` : ""}</dt>
+              <dt>{t("discount")} {discountCode ? `(${discountCode})` : ""}</dt>
               <dd>-{formatPrice(discountAmount)}</dd>
             </div>
           ) : null}
           <div className="flex justify-between">
-            <dt className="text-ink-500">Shipping</dt>
-            <dd className="font-medium text-ink-800">{shippingCost === 0 ? "Free" : formatPrice(shippingCost)}</dd>
+            <dt className="text-ink-500">{t("shipping")}</dt>
+            <dd className="font-medium text-ink-800">{shippingCost === 0 ? t("free") : formatPrice(shippingCost)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-ink-500">Estimated Tax</dt>
+            <dt className="text-ink-500">{t("estimatedTax")}</dt>
             <dd className="font-medium text-ink-800">{formatPrice(taxTotal)}</dd>
           </div>
           <div className="mt-2 flex justify-between border-t border-ink-200 pt-3 text-base">
-            <dt className="font-semibold text-ink-900">Total</dt>
+            <dt className="font-semibold text-ink-900">{t("total")}</dt>
             <dd className="font-semibold text-ink-900">{formatPrice(total)}</dd>
           </div>
         </dl>

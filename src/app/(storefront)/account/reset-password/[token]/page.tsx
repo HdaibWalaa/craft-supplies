@@ -11,10 +11,13 @@ const initialState: ResetState = {};
 
 export default function ResetPasswordPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ token: string }>;
+  searchParams: Promise<{ email?: string }>;
 }) {
   const { token } = use(params);
+  const { email = "" } = use(searchParams);
   const [state, formAction, pending] = useActionState(resetPassword, initialState);
 
   if (state?.success) {
@@ -34,6 +37,7 @@ export default function ResetPasswordPage({
       <h1 className="font-display text-3xl font-semibold text-ink-900">Set a New Password</h1>
       <form action={formAction} className="mt-6 flex flex-col gap-4">
         <input type="hidden" name="token" value={token} />
+        <input type="hidden" name="email" value={email} />
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="password">New Password</Label>
           <Input id="password" name="password" type="password" required minLength={8} />

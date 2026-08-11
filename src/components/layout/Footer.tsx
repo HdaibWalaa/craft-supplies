@@ -3,22 +3,12 @@ import { ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { getCategories } from "@/lib/data";
 import { NewsletterForm } from "./NewsletterForm";
 import { SocialIcon } from "@/components/SocialIcon";
-
-const COMPANY_LINKS = [
-  { href: "/about", label: "About Us" },
-  { href: "/blog", label: "Tutorials & Inspiration" },
-  { href: "/contact", label: "Contact" },
-];
-
-const SUPPORT_LINKS = [
-  { href: "/faq", label: "FAQ" },
-  { href: "/shipping-returns", label: "Shipping & Returns" },
-  { href: "/terms", label: "Terms of Service" },
-  { href: "/privacy", label: "Privacy Policy" },
-];
+import { getTranslations } from "@/lib/i18n/server";
 
 export async function Footer() {
-  const categories = await getCategories();
+  const [categories, { t }] = await Promise.all([getCategories(), getTranslations()]);
+  const companyLinks = [{ href: "/about", label: t("aboutUs") }, { href: "/blog", label: t("tutorialsInspiration") }, { href: "/contact", label: t("contact") }];
+  const supportLinks = [{ href: "/faq", label: t("faq") }, { href: "/shipping-returns", label: t("shippingReturns") }, { href: "/terms", label: t("terms") }, { href: "/privacy", label: t("privacy") }];
 
   return (
     <footer className="mt-24 bg-walnut-900 text-cream-200">
@@ -27,17 +17,16 @@ export async function Footer() {
           <div className="col-span-2">
             <span className="font-display text-2xl font-semibold text-cream-50">Kiln &amp; Wick</span>
             <p className="mt-3 max-w-xs text-sm text-cream-300">
-              Supplies for candle-making, resin, soap, molds, fragrances, concrete, and wood crafts —
-              everything a maker needs, in one warm little shop.
+              {t("footerDescription")}
             </p>
-            <p className="mt-5 text-sm font-medium text-cream-100">Get 10% off your first order</p>
+            <p className="mt-5 text-sm font-medium text-cream-100">{t("newsletterOffer")}</p>
             <div className="mt-2">
               <NewsletterForm />
             </div>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-cream-50">Shop</h3>
+            <h3 className="text-sm font-semibold text-cream-50">{t("shopAll")}</h3>
             <ul className="mt-3 space-y-2">
               {categories.map((c) => (
                 <li key={c.slug}>
@@ -50,9 +39,9 @@ export async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-cream-50">Company</h3>
+            <h3 className="text-sm font-semibold text-cream-50">{t("company")}</h3>
             <ul className="mt-3 space-y-2">
-              {COMPANY_LINKS.map((l) => (
+              {companyLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm text-cream-300 hover:text-terracotta-300">
                     {l.label}
@@ -63,9 +52,9 @@ export async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-cream-50">Support</h3>
+            <h3 className="text-sm font-semibold text-cream-50">{t("support")}</h3>
             <ul className="mt-3 space-y-2">
-              {SUPPORT_LINKS.map((l) => (
+              {supportLinks.map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm text-cream-300 hover:text-terracotta-300">
                     {l.label}
@@ -78,19 +67,19 @@ export async function Footer() {
 
         <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-cream-100/10 py-6 text-sm text-cream-300">
           <span className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-sage-400" /> Secure checkout
+            <ShieldCheck className="h-4 w-4 text-sage-400" /> {t("secureCheckout")}
           </span>
           <span className="flex items-center gap-2">
-            <Truck className="h-4 w-4 text-sage-400" /> Fast, careful shipping
+            <Truck className="h-4 w-4 text-sage-400" /> {t("carefulShipping")}
           </span>
           <span className="flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-sage-400" /> Easy 30-day returns
+            <RotateCcw className="h-4 w-4 text-sage-400" /> {t("easyReturns")}
           </span>
         </div>
 
         <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-cream-400">
-            &copy; {new Date().getFullYear()} Kiln &amp; Wick Craft Supply. All rights reserved.
+            &copy; {new Date().getFullYear()} Kiln &amp; Wick Craft Supply. {t("rightsReserved")}
           </p>
           <div className="flex items-center gap-3">
             <a href="#" aria-label="Instagram" className="text-cream-300 hover:text-terracotta-300">

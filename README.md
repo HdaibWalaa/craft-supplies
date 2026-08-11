@@ -1,126 +1,143 @@
-# Kiln & Wick Craft Supply
+#  Craft Supplies
 
-A full-stack e-commerce site for a handmade/home-based crafts supply business
-(candle-making, resin, soap-making, molds, fragrances & pigments, concrete,
-and wooden products), plus a built-in admin dashboard for managing the store.
+Craft Supplies is a separated e-commerce application:
 
-Built with Next.js (App Router, TypeScript), Tailwind CSS, Prisma + SQLite,
-Auth.js, and Stripe.
+- The repository root is the existing Next.js 16 storefront. Its visual components and URLs are preserved.
+- [`backend`](backend/) is the Laravel 13 REST API and Filament 5 admin panel. Laravel owns business data, authentication, carts, pricing, checkout, orders, media, translations, and Stripe.
 
-## Quick Start
+Prisma, Auth.js, the Next.js Stripe webhook, direct uploads, and the custom Next.js admin have been removed. `/admin` on the frontend redirects to Filament.
+
+## Requirements
+
+- PHP 8.3+, Composer 2
+- Node.js 20+ and npm
+- MySQL 8+
+- GD or Imagick for media conversions
+
+## Backend setup
+
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure `DB_CONNECTION` and the matching database variables. For MySQL, for example:
+
+```env
+APP_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:3000
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=craft_supplies
+DB_USERNAME=root
+DB_PASSWORD=
+FILESYSTEM_DISK=public
+MEDIA_DISK=public
+```
+
+Then initialize and start Laravel:
+
+```bash
+php artisan migrate --seed
+php artisan storage:link
+php artisan serve
+php artisan queue:work
+```
+
+Laravel uses MySQL as its application database. Create `craft_supplies` with
+the `utf8mb4` character set before running migrations. Do not reuse or erase an
+existing database without auditing it first:
+
+```sql
+CREATE DATABASE craft_supplies
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+```
+
+For an existing installation that still has Laravel data in
+`backend/database/database.sqlite`, migrate the empty MySQL schema first and
+then run the guarded importer. It preserves primary keys and relationships and
+refuses to write to non-empty target tables unless `--force` is explicitly
+provided:
+
+```bash
+php artisan migrate
+php artisan db:import-sqlite database/database.sqlite
+```
+
+The API is at `http://localhost:8000/api/v1`; Filament is at `http://localhost:8000/admin`.
+
+Seeded logins:
+
+- Admin: `admin@craftsupply.test` / `Admin123!`
+- Customer: `customer@example.test` / `Customer123!`
+
+Passwords are passed through Laravel's hashed cast and are never stored as plaintext.
+
+## Frontend setup
+
+From the repository root:
 
 ```bash
 npm install
-npx prisma migrate dev   # creates the local SQLite database
-npm run db:seed          # loads 8 categories, 25 sample products, blog posts, discount codes
+cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000.
+Required frontend configuration:
 
-**Demo accounts** (from the seed script):
-- Customer: `customer@example.test` / `Customer123!`
-- Admin: `admin@craftsupply.test` / `Admin123!` — sign in at `/admin/login`
-
-## What's Real vs. Stubbed
-
-This was built without live third-party accounts (Stripe, Cloudinary, Algolia,
-an email provider, a hosted Postgres). Everything is fully functional against
-local/simulated equivalents, with a clear swap-in point for the real service
-later. See the table below — nothing here needs a code rewrite, just config.
-
-| Feature | Current implementation | To go live |
-|---|---|---|
-| Database | SQLite (`prisma/dev.db`) | Set `DATABASE_URL` to a Postgres connection string and change `provider = "sqlite"` to `"postgresql"` in `prisma/schema.prisma`, then `npx prisma migrate deploy` |
-| Payments | Stripe Checkout in test mode **if keys are set**, otherwise an instant "simulated" payment so checkout is fully testable today | Add `STRIPE_SECRET_KEY` / `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` to `.env`, and register `/api/webhooks/stripe` in the Stripe dashboard with `STRIPE_WEBHOOK_SECRET` |
-| Product photography | Generated gradient placeholder tiles per category | Upload real photos via the admin product editor (drag-and-drop → saved to `/public/uploads`) — product images are business-owner-supplied content, not something to invent |
-| Search | Server-side substring match, with client-side Fuse.js typo-tolerant fallback when there are no exact matches | Swap `lib/data.ts#getShopProducts` search + `SearchBar.tsx` for an Algolia/Meilisearch client if the catalog grows large |
-| Email (order confirmations, password resets, contact form) | Logged to the server console (`lib/email.ts`) | Add a real provider call (Resend/Postmark/SendGrid) inside `sendEmail()` — every call site stays the same |
-| Newsletter signups | Stored in the local `NewsletterSubscriber` table | Wire `app/actions/newsletter.ts` to Mailchimp/Klaviyo's API |
-| Shipping rates | Flat-rate Standard/Express, configured in `lib/pricing.ts` | Replace with a carrier-rate API call in the checkout action if real-time rates are needed |
-| Instagram feed | Not built (needs an Instagram Graph API token from the business owner) | — |
-| Hosting | Not deployed — see Deploying below | — |
-
-## Managing the Store (Admin Dashboard)
-
-Go to `/admin/login` and sign in with an admin account (see demo credentials
-above, or promote a user by setting `role = "ADMIN"` on their `User` row).
-
-- **Products** (`/admin/products`) — add/edit/delete products, variants
-  (size/scent/color with independent price & stock), attributes, safety
-  warnings, and images (upload or leave blank for an auto-generated
-  placeholder tile).
-- **Categories** (`/admin/categories`) — add/edit/delete the shop's
-  categories.
-- **Orders** (`/admin/orders`) — view orders, filter by status, open an
-  order to update its status (customer gets an email/console notification)
-  or review its items and shipping address.
-- **Discount Codes** (`/admin/discounts`) — create percent/fixed codes with
-  a minimum spend and optional usage limit, activate/deactivate, delete.
-- **Blog** (`/admin/blog`) — write tutorial posts and tag which products
-  they cross-sell.
-- **Overview** (`/admin`) — revenue chart, order count, low-stock alerts.
-
-Low stock is flagged per-variant using each variant's "low stock at"
-threshold (default 5), editable in the product editor.
-
-## Project Structure
-
-```
-prisma/schema.prisma        Data model (see below)
-prisma/seed.ts               Sample data loader
-src/app/(storefront)/        Public site: shop, product, cart, checkout, account, blog...
-src/app/admin/               Admin dashboard (route-protected)
-src/app/actions/             Server Actions (cart, checkout, auth, reviews, admin CRUD...)
-src/app/api/                 Route handlers (search index, uploads, NextAuth, Stripe webhook)
-src/components/              UI components (storefront + admin + shared ui/ primitives)
-src/lib/                     Server-side helpers (prisma client, cart, pricing, discount, email, stripe)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### Data model
+Open `http://localhost:3000`. Sanctum tokens and guest cart identifiers are held in secure HTTP-only cookies by Next.js server actions. Browser bundles receive no Laravel, Stripe, database, or mail secrets.
 
-`User`, `Address`, `Category`, `Product`, `ProductVariant`, `Review`, `Cart` /
-`CartItem` (guest-cookie based, merges into the account cart on login),
-`Order` / `OrderItem`, `DiscountCode`, `BlogPost`, `NewsletterSubscriber`,
-`Wishlist`. Product `images`/`attributes`/`specifications` are stored as JSON
-strings (SQLite has no native JSON column) — see `lib/data.ts`'s
-`parseImages`/`parseJsonObject` helpers.
+## Translations and RTL
 
-## Environment Variables
+Laravel stores translatable JSON through `spatie/laravel-translatable`; no duplicated `_en`/`_ar` columns exist. The API locale middleware reads `Accept-Language: en` or `ar`, with English fallback. Filament forms expose English and Arabic tabs. The centralized API client forwards the request locale; the existing UI can set document direction to RTL when its locale selector is enabled.
 
-Copy `.env.example` to `.env` (already done for local dev) and fill in real
-values as they become available:
+## Media and storage
 
-- `DATABASE_URL` — SQLite file path locally; a Postgres URL in production
-- `AUTH_SECRET` — replace the placeholder with `npx auth secret` before deploying
-- `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` — optional, enables real Stripe Checkout
-- `NEXT_PUBLIC_GA_ID` — optional, enables Google Analytics
-- `NEXT_PUBLIC_WHATSAPP_NUMBER` — the store's WhatsApp contact number (digits only, with country code)
-- `NEXT_PUBLIC_SITE_URL` — the canonical site URL, used in metadata, the sitemap, and Stripe redirect URLs
+Spatie Media Library owns catalog/blog/review images and their ordering. Local files use `storage/app/public` via `php artisan storage:link`. Set `FILESYSTEM_DISK=s3` and `MEDIA_DISK=s3` for S3-compatible production storage. Product conversions are `thumb`, `medium`, and queued `large`.
 
-## Known Limitations / Fast Follows
+## Stripe and simulated checkout
 
-- Category pages filter by price/stock/sort but not yet by the
-  category-specific attributes (scent family, wood type, etc.) shown on
-  product pages — the data is there (`Product.attributes`), the filter UI
-  for it isn't wired up yet.
-- Review photo attachments take a URL rather than a direct file upload
-  (product images do support real upload, via `/api/admin/upload`).
-- `middleware.ts` uses Auth.js's documented `auth()`-wrapped middleware
-  pattern; Next.js has since introduced a `proxy.ts` convention that
-  deprecates this (build-time warning only, not an error).
+Local checkout is simulated by default:
 
-## Deploying
+```env
+CHECKOUT_SIMULATED=true
+```
 
-This app hasn't been deployed anywhere — no hosting/Stripe/database
-accounts were available in the environment it was built in. To take it live:
+For Stripe test mode:
 
-1. Provision a Postgres database (e.g. Neon, Supabase, Railway) and update
-   `DATABASE_URL` + the Prisma provider (see table above).
-2. Run `npx prisma migrate deploy` against it, then `npm run db:seed` if you
-   want the sample catalog (or skip it and add real products via the admin).
-3. Deploy the Next.js app to Vercel (`vercel deploy`) or any Node host —
-   set all the environment variables above in the platform's dashboard.
-4. Add real Stripe keys and register the webhook endpoint (see table above)
-   once you're ready to accept real payments.
-# craft-supplies
+```env
+CHECKOUT_SIMULATED=false
+STRIPE_KEY=pk_test_...
+STRIPE_SECRET=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Register `POST http://localhost:8000/api/v1/webhooks/stripe`. Laravel calculates the amount and validates the signature; webhook event IDs are recorded for idempotency. Stripe secrets exist only in `backend/.env`.
+
+## Mail
+
+Development uses `MAIL_MAILER=log`. Configure SMTP, Postmark, Resend, or another Laravel mail transport through backend environment variables. Password resets point back to the Next.js reset page; contact notifications run after the response. Run a queue worker in production for queued media/email work.
+
+## Verification
+
+```bash
+cd backend
+vendor/bin/pint --test
+php artisan test
+
+cd ..
+npm run lint
+npx tsc --noEmit
+npm run build
+```
+
+API details and payloads are documented in [`backend/docs/API.md`](backend/docs/API.md).

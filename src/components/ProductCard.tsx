@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import { Badge } from "@/components/ui/Badge";
-import { parseImages } from "@/lib/data";
+import { parseImages } from "@/lib/parse";
 import { formatPrice, cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export type ProductCardData = {
   id: string;
@@ -13,7 +16,7 @@ export type ProductCardData = {
   shortDescription: string;
   basePrice: number;
   compareAtPrice: number | null;
-  images: string;
+  images: string | { url: string; alt?: string }[];
   rating: number;
   reviewCount: number;
   isNewArrival: boolean;
@@ -28,6 +31,7 @@ export function ProductCard({
   product: ProductCardData;
   className?: string;
 }) {
+  const { t } = useI18n();
   const images = parseImages(product.images);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
@@ -42,10 +46,10 @@ export function ProductCard({
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
         <div className="absolute left-2 top-2 flex flex-col gap-1.5">
-          {product.isNewArrival ? <Badge variant="sage">New</Badge> : null}
+          {product.isNewArrival ? <Badge variant="sage">{t("new")}</Badge> : null}
           {product.isBundle ? <Badge variant="terracotta">Kit</Badge> : null}
-          {product.compareAtPrice ? <Badge variant="red">Sale</Badge> : null}
-          {!inStock ? <Badge variant="ink">Out of Stock</Badge> : null}
+          {product.compareAtPrice ? <Badge variant="red">{t("sale")}</Badge> : null}
+          {!inStock ? <Badge variant="ink">{t("outOfStock")}</Badge> : null}
         </div>
       </Link>
 
@@ -70,7 +74,7 @@ export function ProductCard({
           ) : null}
         </div>
         {defaultVariant ? (
-          <QuickAddButton variantId={defaultVariant.id} disabled={!inStock} />
+          <QuickAddButton variantId={String(defaultVariant.id)} disabled={!inStock} />
         ) : null}
       </div>
     </div>

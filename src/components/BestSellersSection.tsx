@@ -7,12 +7,13 @@ import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { parseImages } from "@/lib/parse";
 import { formatPrice, cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export type BestSellerProduct = {
   id: string;
   slug: string;
   name: string;
-  images: string;
+  images: string | { url: string; alt?: string }[];
   basePrice: number;
   rating: number;
   reviewCount: number;
@@ -21,6 +22,7 @@ export type BestSellerProduct = {
 };
 
 export function BestSellersSection({ products }: { products: BestSellerProduct[] }) {
+  const { t } = useI18n();
   const categories = useMemo(() => {
     const seen = new Map<string, string>();
     for (const p of products) {
@@ -37,11 +39,11 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
       <div className="flex items-center gap-3">
         <span className="h-px w-8 bg-terracotta-500" />
         <span className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-700">
-          Most Loved
+          {t("mostLoved")}
         </span>
       </div>
       <h2 className="mt-3 font-serif text-3xl font-semibold text-walnut-950 sm:text-4xl">
-        Best Sellers
+        {t("bestSellers")}
       </h2>
 
       <div className="mt-6 flex flex-wrap gap-2">
@@ -55,7 +57,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
               : "border border-ink-200 bg-cream-50 text-ink-700 hover:border-ink-300"
           )}
         >
-          All
+          {t("all")}
         </button>
         {categories.map((c) => (
           <button
@@ -77,7 +79,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
       <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-6">
         {visible.map((p) => {
           const image = parseImages(p.images)[0];
-          const badge = p.isNewArrival ? "New" : "Best Seller";
+          const badge = p.isNewArrival ? t("new") : t("bestSeller");
           return (
             <Link key={p.id} href={`/product/${p.slug}`} className="group flex flex-col">
               <div className="relative aspect-square w-full overflow-hidden">
@@ -89,7 +91,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
                 />
                 <span
                   className={cn(
-                    "absolute left-2 top-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-cream-50",
+                    "absolute start-2 top-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-cream-50",
                     p.isNewArrival ? "bg-terracotta-600" : "bg-sage-900"
                   )}
                 >
@@ -120,7 +122,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
         })}
         {visible.length === 0 ? (
           <p className="col-span-full py-10 text-center text-sm text-ink-400">
-            No products in this category yet.
+            {t("noProductsCategory")}
           </p>
         ) : null}
       </div>
@@ -130,7 +132,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
           href="/shop?sort=popularity"
           className="inline-flex items-center gap-2 border border-ink-900 px-6 py-3 text-sm font-semibold text-ink-900 transition-colors hover:bg-ink-900 hover:text-cream-50"
         >
-          View All Products <ArrowRight className="h-4 w-4" />
+          {t("viewAllProducts")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
         </Link>
       </div>
     </div>

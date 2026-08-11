@@ -1,51 +1,36 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
-import { getOrCreateCart } from "@/lib/cart";
+import { addCartItem, ApiError, deleteCartItem, updateCartItem } from "@/lib/api/cart";
 
-export async function addToCart(variantId: string, quantity: number = 1) {
-  const variant = await prisma.productVariant.findUnique({ where: { id: variantId } });
-  if (!variant) return { error: "This item is no longer available." };
-  if (variant.stock <= 0) return { error: "This item is out of stock." };
+async function persistToken(token: string) {
+  (await cookies()).set("cart_token", token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 60 * 60 * 24 * 90, path: "/" });
+}
 
-  const cart = await getOrCreateCart();
-  const existing = cart.items.find((i) => i.variantId === variantId);
-  const nextQuantity = (existing?.quantity ?? 0) + quantity;
-  if (nextQuantity > variant.stock) {
-    return { error: `Only ${variant.stock} left in stock.` };
+export async function addToCart(variantId: string, quantity = 1) {
+  try {
+    const cart = await addCartItem(variantId, quantity);
+    await persistToken(cart.token);
+    revalidatePath("/cart");
+    return { success: true };
+  } catch (error) {
+    return { error: error instanceof ApiError ? error.message : "This item could not be added." };
   }
-
-  await prisma.cartItem.upsert({
-    where: { cartId_variantId: { cartId: cart.id, variantId } },
-    update: { quantity: nextQuantity },
-    create: {
-      cartId: cart.id,
-      productId: variant.productId,
-      variantId,
-      quantity,
-    },
-  });
-
-  revalidatePath("/cart");
-  return { success: true };
 }
 
 export async function updateCartItemQuantity(itemId: string, quantity: number) {
-  if (quantity <= 0) {
-    await prisma.cartItem.delete({ where: { id: itemId } }).catch(() => {});
-  } else {
-    const item = await prisma.cartItem.findUnique({ include: { variant: true }, where: { id: itemId } });
-    if (!item) return { error: "Item not found." };
-    const capped = Math.min(quantity, item.variant.stock);
-    await prisma.cartItem.update({ where: { id: itemId }, data: { quantity: capped } });
+  try {
+    const cart = await updateCartItem(itemId, Math.max(0, quantity));
+    await persistToken(cart.token);
+    revalidatePath("/cart");
+    return { success: true };
+  } catch (error) {
+    return { error: error instanceof ApiError ? error.message : "The cart could not be updated." };
   }
-  revalidatePath("/cart");
-  return { success: true };
 }
 
 export async function removeCartItem(itemId: string) {
-  await prisma.cartItem.delete({ where: { id: itemId } }).catch(() => {});
-  revalidatePath("/cart");
-  return { success: true };
+  try { await deleteCartItem(itemId); revalidatePath("/cart"); return { success: true }; }
+  catch (error) { return { error: error instanceof ApiError ? error.message : "The item could not be removed." }; }
 }

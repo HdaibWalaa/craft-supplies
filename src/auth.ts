@@ -1,55 +1,17 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import "server-only";
+import { cookies } from "next/headers";
+import { apiHeaders } from "@/lib/api/headers";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.AUTH_SECRET,
-  session: { strategy: "jwt" },
-  pages: {
-    signIn: "/account/login",
-  },
-  providers: [
-    Credentials({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: async (credentials) => {
-        const email = credentials?.email as string | undefined;
-        const password = credentials?.password as string | undefined;
-        if (!email || !password) return null;
+export type AppSession = {
+  user: { id: string; name: string; email: string; role: "ADMIN" | "CUSTOMER" };
+};
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
-
-        const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
-      },
-    }),
-  ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id as string;
-        token.role = user.role;
-      }
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-      }
-      return session;
-    },
-  },
-});
+export async function auth(): Promise<AppSession | null> {
+  const token = (await cookies()).get("kw_api_token")?.value;
+  if (!token) return null;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  const response = await fetch(`${baseUrl}/auth/me`, { headers: await apiHeaders({ Authorization: `Bearer ${token}` }), cache: "no-store" });
+  if (!response.ok) return null;
+  const { data } = await response.json() as { data: { id: string; name: string; email: string; role: "admin" | "customer" } };
+  return { user: { ...data, role: data.role === "admin" ? "ADMIN" : "CUSTOMER" } };
+}

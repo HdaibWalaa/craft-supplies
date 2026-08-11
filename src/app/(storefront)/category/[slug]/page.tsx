@@ -7,6 +7,7 @@ import { ShopFilters } from "@/components/ShopFilters";
 import { ProductGrid } from "@/components/ProductRail";
 import { ProductListItem } from "@/components/ProductListItem";
 import { Pagination } from "@/components/Pagination";
+import { getTranslations } from "@/lib/i18n/server";
 
 type SearchParams = {
   min?: string;
@@ -41,7 +42,7 @@ export default async function CategoryPage({
   const { slug } = await params;
   const sp = await searchParams;
 
-  const category = await getCategoryBySlug(slug);
+  const [category, { t }] = await Promise.all([getCategoryBySlug(slug), getTranslations()]);
   if (!category) notFound();
 
   const page = Math.max(1, Number(sp.page) || 1);
@@ -70,7 +71,7 @@ export default async function CategoryPage({
         className="relative overflow-hidden py-14"
         style={{ background: `linear-gradient(135deg, ${theme.from}, ${theme.to})` }}
       >
-        <Icon className="absolute -right-6 -top-6 h-40 w-40 text-white/15" strokeWidth={1} />
+        <Icon className="absolute -end-6 -top-6 h-40 w-40 text-white/15" strokeWidth={1} />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h1 className="font-display text-3xl font-semibold text-white sm:text-4xl">{category.name}</h1>
           {category.description ? (
@@ -80,12 +81,12 @@ export default async function CategoryPage({
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <p className="mb-4 text-sm text-ink-500">{total} products</p>
+        <p className="mb-4 text-sm text-ink-500">{t("productsCount", { count: total })}</p>
         <ShopFilters showCategoryFilter={false} />
 
         {products.length === 0 ? (
           <p className="py-16 text-center text-ink-500">
-            No products match those filters yet. Try widening your price range.
+            {t("noProductsFilters")}
           </p>
         ) : view === "list" ? (
           <div className="flex flex-col gap-4">

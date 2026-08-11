@@ -9,7 +9,7 @@ export type GiftKitProduct = {
   slug: string;
   name: string;
   shortDescription: string;
-  images: string;
+  images: string | { url: string; alt?: string }[];
   basePrice: number;
   compareAtPrice: number | null;
   variants: { id: string; price: number; stock: number }[];

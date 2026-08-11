@@ -3,7 +3,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import type { ProductCardData } from "@/components/ProductCard";
-import { parseImages } from "@/lib/data";
+import { parseImages } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
 
 export function ProductListItem({ product }: { product: ProductCardData }) {

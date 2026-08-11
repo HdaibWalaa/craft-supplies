@@ -1,57 +1,22 @@
 "use server";
-
-import { z } from "zod";
-import { randomUUID } from "crypto";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { apiHeaders } from "@/lib/api/headers";
 
 export type ResetState = { error?: string; success?: boolean };
 
-export async function requestPasswordReset(_prev: ResetState, formData: FormData): Promise<ResetState> {
-  const email = z.string().email().safeParse(formData.get("email"));
-  if (!email.success) return { error: "Enter a valid email address." };
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
-  const user = await prisma.user.findUnique({ where: { email: email.data } });
-  if (user) {
-    const token = randomUUID();
-    await prisma.passwordResetToken.create({
-      data: { token, userId: user.id, expiresAt: new Date(Date.now() + 60 * 60 * 1000) },
-    });
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    await sendEmail({
-      to: user.email,
-      subject: "Reset your password",
-      text: `Reset your password here (valid for 1 hour): ${siteUrl}/account/reset-password/${token}`,
-    });
-  }
-
-  // Always report success so we don't leak which emails have accounts.
+export async function requestPasswordReset(_previous: ResetState, formData: FormData): Promise<ResetState> {
+  const response = await fetch(`${apiUrl}/auth/forgot-password`, { method: "POST", headers: await apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ email: formData.get("email") }), cache: "no-store" });
+  if (!response.ok) return { error: "Enter a valid email address." };
   return { success: true };
 }
 
-const resetSchema = z.object({
-  token: z.string().min(1),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-});
-
-export async function resetPassword(_prev: ResetState, formData: FormData): Promise<ResetState> {
-  const parsed = resetSchema.safeParse({
-    token: formData.get("token"),
-    password: formData.get("password"),
-  });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid request." };
-  }
-
-  const resetToken = await prisma.passwordResetToken.findUnique({ where: { token: parsed.data.token } });
-  if (!resetToken || resetToken.expiresAt < new Date()) {
-    return { error: "This reset link is invalid or has expired." };
-  }
-
-  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
-  await prisma.user.update({ where: { id: resetToken.userId }, data: { passwordHash } });
-  await prisma.passwordResetToken.delete({ where: { id: resetToken.id } });
-
+export async function resetPassword(_previous: ResetState, formData: FormData): Promise<ResetState> {
+  const password = String(formData.get("password") ?? "");
+  const response = await fetch(`${apiUrl}/auth/reset-password`, { method: "POST", headers: await apiHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({
+    token: formData.get("token"), email: formData.get("email"), password, password_confirmation: password,
+  }), cache: "no-store" });
+  const payload = await response.json().catch(() => null) as { message?: string; errors?: Record<string, string[]> } | null;
+  if (!response.ok) return { error: payload?.errors ? Object.values(payload.errors)[0]?.[0] : payload?.message ?? "This reset link is invalid or expired." };
   return { success: true };
 }

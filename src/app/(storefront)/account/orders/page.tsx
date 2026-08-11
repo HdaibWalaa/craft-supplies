@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Package } from "lucide-react";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { fetchOrders } from "@/lib/api/orders";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/utils";
@@ -10,22 +10,12 @@ import { formatPrice } from "@/lib/utils";
 export const metadata: Metadata = { title: "My Orders" };
 
 const STATUS_VARIANT = {
-  PENDING: "ink",
-  PAID: "sage",
-  PROCESSING: "terracotta",
-  SHIPPED: "terracotta",
-  DELIVERED: "sage",
-  CANCELLED: "red",
-  REFUNDED: "red",
+  pending: "ink", paid: "sage", processing: "terracotta", shipped: "terracotta", delivered: "sage", cancelled: "red", refunded: "red",
 } as const;
 
 export default async function OrdersPage() {
   const session = await auth();
-  const orders = await prisma.order.findMany({
-    where: { userId: session!.user.id },
-    include: { items: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const orders = session ? await fetchOrders() : [];
 
   if (orders.length === 0) {
     return (
@@ -62,7 +52,7 @@ export default async function OrdersPage() {
                     {item.productName} <span className="text-ink-400">&times; {item.quantity}</span>
                     <span className="block text-xs text-ink-400">{item.variantName}</span>
                   </span>
-                  <span className="text-ink-800">{formatPrice(item.price * item.quantity)}</span>
+                  <span className="text-ink-800">{formatPrice(item.unitPrice * item.quantity)}</span>
                 </li>
               ))}
             </ul>

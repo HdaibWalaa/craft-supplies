@@ -6,13 +6,14 @@ import { ShoppingBag, Check, Loader2 } from "lucide-react";
 import { addToCart } from "@/app/actions/cart";
 import { Button, type ButtonProps } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function QuickAddButton({
   variantId,
   disabled,
   className,
   size = "sm",
-  label = "Add to Cart",
+  label,
 }: {
   variantId: string;
   disabled?: boolean;
@@ -23,6 +24,7 @@ export function QuickAddButton({
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState<"idle" | "added" | "error">("idle");
   const router = useRouter();
+  const { t } = useI18n();
 
   function handleClick() {
     startTransition(async () => {
@@ -53,7 +55,7 @@ export function QuickAddButton({
       ) : (
         <ShoppingBag className="h-4 w-4" />
       )}
-      {state === "added" ? "Added" : state === "error" ? "Unavailable" : label}
+      {state === "added" ? t("added") : state === "error" ? t("unavailable") : (label ?? t("addToCart"))}
     </Button>
   );
 }

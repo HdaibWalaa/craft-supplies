@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import { fetchCategories } from "@/lib/api/categories";
+import { fetchProducts } from "@/lib/api/products";
+import { fetchBlogPosts } from "@/lib/api/blog";
 
 const STATIC_ROUTES = [
   "",
@@ -17,11 +19,14 @@ const STATIC_ROUTES = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  const [categories, products, posts] = await Promise.all([
-    prisma.category.findMany({ select: { slug: true } }),
-    prisma.product.findMany({ where: { status: "active" }, select: { slug: true, updatedAt: true } }),
-    prisma.blogPost.findMany({ where: { published: true }, select: { slug: true, publishedAt: true } }),
+  const [categoryResponse, productResponse, blogResponse] = await Promise.all([
+    fetchCategories(),
+    fetchProducts({ per_page: 48 }),
+    fetchBlogPosts(),
   ]);
+  const categories = categoryResponse.data;
+  const products = productResponse.data;
+  const posts = blogResponse.data;
 
   return [
     ...STATIC_ROUTES.map((route) => ({
@@ -34,11 +39,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...products.map((p) => ({
       url: `${siteUrl}/product/${p.slug}`,
-      lastModified: p.updatedAt,
+      lastModified: new Date(p.updatedAt),
     })),
     ...posts.map((p) => ({
       url: `${siteUrl}/blog/${p.slug}`,
-      lastModified: p.publishedAt,
+      lastModified: new Date(p.publishedAt),
     })),
   ];
 }

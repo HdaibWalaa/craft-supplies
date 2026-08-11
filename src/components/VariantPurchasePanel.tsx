@@ -6,6 +6,7 @@ import { Minus, Plus, ShoppingBag, Zap, Loader2 } from "lucide-react";
 import { addToCart } from "@/app/actions/cart";
 import { Button } from "@/components/ui/Button";
 import { formatPrice, cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export type VariantOption = {
   id: string;
@@ -47,6 +48,7 @@ export function VariantPurchasePanel({
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
+  const { t } = useI18n();
 
   const matchedVariant =
     variants.find((v) => attributeKeys.every((k) => v.attributes[k] === selected[k])) ?? variants[0];
@@ -83,7 +85,7 @@ export function VariantPurchasePanel({
       if (buyNow) {
         router.push("/checkout");
       } else {
-        setMessage("Added to cart!");
+        setMessage(t("addedToCart"));
         router.refresh();
       }
     });
@@ -131,11 +133,11 @@ export function VariantPurchasePanel({
       <div>
         <p className="mb-1 text-sm font-medium text-ink-800">
           {outOfStock ? (
-            <span className="text-red-600">Out of stock</span>
+            <span className="text-red-600">{t("outOfStock")}</span>
           ) : matchedVariant.stock <= (5 as number) ? (
-            <span className="text-terracotta-700">Only {matchedVariant.stock} left in stock</span>
+            <span className="text-terracotta-700">{t("onlyLeft", { count: matchedVariant.stock })}</span>
           ) : (
-            <span className="text-sage-700">In stock</span>
+            <span className="text-sage-700">{t("inStock")}</span>
           )}
         </p>
       </div>
@@ -144,7 +146,7 @@ export function VariantPurchasePanel({
         <div className="flex items-center rounded-full border border-ink-300">
           <button
             type="button"
-            aria-label="Decrease quantity"
+            aria-label={t("decreaseQuantity")}
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             className="cursor-pointer p-2.5 text-ink-600 hover:text-terracotta-700"
           >
@@ -153,7 +155,7 @@ export function VariantPurchasePanel({
           <span className="w-8 text-center text-sm font-medium">{qty}</span>
           <button
             type="button"
-            aria-label="Increase quantity"
+            aria-label={t("increaseQuantity")}
             onClick={() => setQty((q) => Math.min(matchedVariant?.stock ?? 1, q + 1))}
             className="cursor-pointer p-2.5 text-ink-600 hover:text-terracotta-700"
           >
@@ -170,7 +172,7 @@ export function VariantPurchasePanel({
           onClick={() => handlePurchase(false)}
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShoppingBag className="h-4 w-4" />}
-          Add to Cart
+          {t("addToCart")}
         </Button>
         <Button
           type="button"
@@ -180,7 +182,7 @@ export function VariantPurchasePanel({
           onClick={() => handlePurchase(true)}
         >
           <Zap className="h-4 w-4" />
-          Buy Now
+          {t("buyNow")}
         </Button>
       </div>
       {message ? <p className="text-sm text-ink-600">{message}</p> : null}
@@ -192,7 +194,7 @@ export function VariantPurchasePanel({
           <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0)}</p>
         </div>
         <Button size="md" disabled={outOfStock || pending} onClick={() => handlePurchase(false)}>
-          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add to Cart"}
+          {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : t("addToCart")}
         </Button>
       </div>
     </div>

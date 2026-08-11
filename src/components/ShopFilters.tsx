@@ -8,16 +8,9 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 type CategoryOption = { slug: string; name: string };
-
-const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "rating", label: "Top Rated" },
-  { value: "popularity", label: "Most Popular" },
-];
 
 export function ShopFilters({
   categories,
@@ -30,6 +23,14 @@ export function ShopFilters({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
+  const { t } = useI18n();
+  const sortOptions = [
+    { value: "newest", label: t("newest") },
+    { value: "price-asc", label: t("priceLowHigh") },
+    { value: "price-desc", label: t("priceHighLow") },
+    { value: "rating", label: t("topRated") },
+    { value: "popularity", label: t("mostPopular") },
+  ];
 
   function submitForm() {
     if (!formRef.current) return;
@@ -57,7 +58,7 @@ export function ShopFilters({
 
       {showCategoryFilter && categories ? (
         <div className="flex min-w-40 flex-col gap-1">
-          <Label htmlFor="category">Category</Label>
+          <Label htmlFor="category">{t("category")}</Label>
           <Select
             name="category"
             defaultValue={searchParams.get("category") ?? "all"}
@@ -67,7 +68,7 @@ export function ShopFilters({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">{t("allCategories")}</SelectItem>
               {categories.map((c) => (
                 <SelectItem key={c.slug} value={c.slug}>
                   {c.name}
@@ -79,7 +80,7 @@ export function ShopFilters({
       ) : null}
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor="min">Min Price</Label>
+        <Label htmlFor="min">{t("minPrice")}</Label>
         <Input
           id="min"
           name="min"
@@ -93,7 +94,7 @@ export function ShopFilters({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor="max">Max Price</Label>
+        <Label htmlFor="max">{t("maxPrice")}</Label>
         <Input
           id="max"
           name="max"
@@ -115,17 +116,17 @@ export function ShopFilters({
           onChange={submitForm}
           className="h-4 w-4 rounded border-ink-300 text-terracotta-600 focus-visible:ring-terracotta-500"
         />
-        In stock only
+        {t("inStockOnly")}
       </label>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor="sort">Sort by</Label>
+        <Label htmlFor="sort">{t("sortBy")}</Label>
         <Select name="sort" defaultValue={searchParams.get("sort") ?? "newest"} onValueChange={submitForm}>
           <SelectTrigger id="sort" className="w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SORT_OPTIONS.map((o) => (
+            {sortOptions.map((o) => (
               <SelectItem key={o.value} value={o.value}>
                 {o.label}
               </SelectItem>
@@ -136,11 +137,11 @@ export function ShopFilters({
 
       <input type="hidden" name="view" value={view} />
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ms-auto flex items-center gap-2">
         <div className="flex rounded-lg border border-ink-300 p-0.5">
           <button
             type="button"
-            aria-label="Grid view"
+            aria-label={t("gridView")}
             aria-pressed={view === "grid"}
             onClick={() => {
               const params = new URLSearchParams(searchParams.toString());
@@ -153,7 +154,7 @@ export function ShopFilters({
           </button>
           <button
             type="button"
-            aria-label="List view"
+            aria-label={t("listView")}
             aria-pressed={view === "list"}
             onClick={() => {
               const params = new URLSearchParams(searchParams.toString());
@@ -166,7 +167,7 @@ export function ShopFilters({
           </button>
         </div>
         <Button type="submit" size="sm" variant="outline">
-          Apply
+          {t("apply")}
         </Button>
       </div>
     </form>

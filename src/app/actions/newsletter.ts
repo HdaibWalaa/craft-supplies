@@ -1,27 +1,14 @@
 "use server";
 
-import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-
-const schema = z.string().email();
+import { getLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/dictionaries";
 
 export type NewsletterState = { error?: string; success?: boolean };
 
-export async function subscribeToNewsletter(
-  _prevState: NewsletterState,
-  formData: FormData
-): Promise<NewsletterState> {
-  const email = formData.get("email");
-  const parsed = schema.safeParse(email);
-  if (!parsed.success) {
-    return { error: "Please enter a valid email address." };
-  }
-
-  await prisma.newsletterSubscriber.upsert({
-    where: { email: parsed.data },
-    update: {},
-    create: { email: parsed.data },
-  });
-
+export async function subscribeToNewsletter(_previous: NewsletterState, formData: FormData): Promise<NewsletterState> {
+  const locale = await getLocale();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  const response = await fetch(`${apiUrl}/newsletter/subscribe`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json", "Accept-Language": locale }, body: JSON.stringify({ email: formData.get("email") }), cache: "no-store" });
+  if (!response.ok) return { error: translate(locale, "invalidEmail") };
   return { success: true };
 }

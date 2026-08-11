@@ -10,7 +10,7 @@ import {
   parseJsonObject,
 } from "@/lib/data";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { fetchWishlist } from "@/lib/api/wishlist";
 import { ProductGallery } from "@/components/ProductGallery";
 import { VariantPurchasePanel } from "@/components/VariantPurchasePanel";
 import { WishlistButton } from "@/components/WishlistButton";
@@ -53,10 +53,7 @@ export default async function ProductPage({
 
   let wishlisted = false;
   if (session?.user) {
-    const w = await prisma.wishlist.findUnique({
-      where: { userId_productId: { userId: session.user.id, productId: product.id } },
-    });
-    wishlisted = !!w;
+    wishlisted = (await fetchWishlist()).some((item) => item.id === product.id);
   }
 
   const images = parseImages(product.images);
@@ -91,7 +88,6 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 pb-24 sm:px-6 lg:px-8 md:pb-10">
-      {/* eslint-disable-next-line @next/next/no-sync-scripts */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <nav className="mb-6 flex items-center gap-1.5 text-sm text-ink-500">

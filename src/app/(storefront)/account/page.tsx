@@ -2,20 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Package, MapPin, Heart } from "lucide-react";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import { fetchOrders } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "My Account" };
 
 export default async function AccountPage() {
   const session = await auth();
-  const recentOrders = session?.user
-    ? await prisma.order.findMany({
-        where: { userId: session.user.id },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-      })
-    : [];
+  const recentOrders = session?.user ? (await fetchOrders()).slice(0, 3) : [];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8">

@@ -4,6 +4,7 @@ import { ShopFilters } from "@/components/ShopFilters";
 import { ProductGrid } from "@/components/ProductRail";
 import { ProductListItem } from "@/components/ProductListItem";
 import { Pagination } from "@/components/Pagination";
+import { getTranslations } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Shop All Craft Supplies",
@@ -27,7 +28,7 @@ export default async function ShopPage({
   searchParams: Promise<SearchParams>;
 }) {
   const sp = await searchParams;
-  const categories = await getCategories();
+  const [categories, { t }] = await Promise.all([getCategories(), getTranslations()]);
 
   const page = Math.max(1, Number(sp.page) || 1);
   const view = sp.view === "list" ? "list" : "grid";
@@ -50,15 +51,15 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-3xl font-semibold text-ink-900 sm:text-4xl">Shop All Supplies</h1>
-        <p className="mt-1 text-sm text-ink-500">{total} products</p>
+        <h1 className="font-display text-3xl font-semibold text-ink-900 sm:text-4xl">{t("shopAllSupplies")}</h1>
+        <p className="mt-1 text-sm text-ink-500">{t("productsCount", { count: total })}</p>
       </div>
 
       <ShopFilters categories={categories.map((c) => ({ slug: c.slug, name: c.name }))} />
 
       {products.length === 0 ? (
         <p className="py-16 text-center text-ink-500">
-          No products match those filters. Try widening your price range or clearing filters.
+          {t("noProductsFilters")}
         </p>
       ) : view === "list" ? (
         <div className="flex flex-col gap-4">

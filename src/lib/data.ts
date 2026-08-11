@@ -1,87 +1,57 @@
-import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
+import { ApiError } from "@/lib/api/client";
+import { fetchCategories, fetchCategory } from "@/lib/api/categories";
+import { fetchProduct, fetchProducts } from "@/lib/api/products";
+import { fetchBlogPost, fetchBlogPosts } from "@/lib/api/blog";
+import type { ApiProduct } from "@/types/api";
 
 export { parseImages, parseJsonObject } from "@/lib/parse";
 
-const PRODUCT_CARD_INCLUDE = {
-  variants: { select: { id: true, price: true, stock: true }, orderBy: { price: "asc" as const } },
-} satisfies Prisma.ProductInclude;
+export type ShopSort = "newest" | "price-asc" | "price-desc" | "rating" | "popularity";
 
-export function getCategories() {
-  return prisma.category.findMany({
-    where: { parentId: null },
-    orderBy: { sortOrder: "asc" },
-    include: { _count: { select: { products: true } } },
-  });
+const SORT_MAP: Record<ShopSort, string> = {
+  newest: "newest",
+  "price-asc": "price_asc",
+  "price-desc": "price_desc",
+  rating: "rating",
+  popularity: "popularity",
+};
+
+export async function getCategories() {
+  return (await fetchCategories()).data;
 }
 
-export function getCategoryBySlug(slug: string) {
-  return prisma.category.findUnique({ where: { slug } });
+export async function getCategoryBySlug(slug: string) {
+  try {
+    return (await fetchCategory(slug)).data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
+}
+
+async function getProductCollection(query: Parameters<typeof fetchProducts>[0]) {
+  return (await fetchProducts(query)).data;
 }
 
 export function getFeaturedProducts(limit = 8) {
-  return prisma.product.findMany({
-    where: { status: "active", isFeatured: true },
-    include: PRODUCT_CARD_INCLUDE,
-    take: limit,
-    orderBy: { createdAt: "desc" },
-  });
+  return getProductCollection({ featured: true, per_page: limit });
 }
 
 export function getNewArrivals(limit = 8) {
-  return prisma.product.findMany({
-    where: { status: "active", isNewArrival: true },
-    include: PRODUCT_CARD_INCLUDE,
-    take: limit,
-    orderBy: { createdAt: "desc" },
-  });
+  return getProductCollection({ new_arrival: true, per_page: limit });
 }
 
 export function getBestSellers(limit = 8) {
-  return prisma.product.findMany({
-    where: { status: "active" },
-    include: {
-      ...PRODUCT_CARD_INCLUDE,
-      category: { select: { name: true, slug: true } },
-    },
-    take: limit,
-    orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
-  });
+  return getProductCollection({ sort: "popularity", per_page: limit });
 }
 
 export async function getHeroProduct() {
-  const settings = await prisma.siteSettings.findUnique({
-    where: { id: "singleton" },
-    include: { heroProduct: { include: PRODUCT_CARD_INCLUDE } },
-  });
-  if (settings?.heroProduct && settings.heroProduct.status === "active") {
-    return settings.heroProduct;
-  }
-  return prisma.product.findFirst({
-    where: { status: "active" },
-    include: PRODUCT_CARD_INCLUDE,
-    orderBy: [{ reviewCount: "desc" }, { rating: "desc" }],
-  });
+  return (await getBestSellers(1))[0] ?? null;
 }
 
 export function getBundles(limit = 4) {
-  return prisma.product.findMany({
-    where: { status: "active", isBundle: true },
-    include: PRODUCT_CARD_INCLUDE,
-    take: limit,
-    orderBy: { createdAt: "desc" },
-  });
+  return getProductCollection({ bundle: true, per_page: limit });
 }
-
-export type ShopSort = "newest" | "price-asc" | "price-desc" | "rating" | "popularity";
-
-const SORT_MAP: Record<ShopSort, Prisma.ProductOrderByWithRelationInput[]> = {
-  newest: [{ createdAt: "desc" }],
-  "price-asc": [{ basePrice: "asc" }],
-  "price-desc": [{ basePrice: "desc" }],
-  rating: [{ rating: "desc" }],
-  popularity: [{ reviewCount: "desc" }],
-};
 
 export async function getShopProducts(opts: {
   categorySlug?: string;
@@ -93,90 +63,65 @@ export async function getShopProducts(opts: {
   pageSize?: number;
   query?: string;
 }) {
-  const { categorySlug, minPrice, maxPrice, inStockOnly, sort = "newest", page = 1, pageSize = 12, query } = opts;
-
-  const where: Prisma.ProductWhereInput = {
-    status: "active",
-    ...(categorySlug ? { category: { slug: categorySlug } } : {}),
-    ...(minPrice !== undefined ? { basePrice: { gte: minPrice } } : {}),
-    ...(maxPrice !== undefined ? { basePrice: { ...(minPrice !== undefined ? { gte: minPrice } : {}), lte: maxPrice } } : {}),
-    ...(inStockOnly ? { variants: { some: { stock: { gt: 0 } } } } : {}),
-    ...(query
-      ? {
-          OR: [
-            { name: { contains: query } },
-            { shortDescription: { contains: query } },
-            { description: { contains: query } },
-          ],
-        }
-      : {}),
+  const result = await fetchProducts({
+    category: opts.categorySlug,
+    min_price: opts.minPrice,
+    max_price: opts.maxPrice,
+    in_stock: opts.inStockOnly || undefined,
+    sort: SORT_MAP[opts.sort ?? "newest"],
+    page: opts.page ?? 1,
+    per_page: opts.pageSize ?? 12,
+    q: opts.query,
+  });
+  return {
+    products: result.data,
+    total: result.meta.total,
+    page: result.meta.current_page,
+    pageSize: result.meta.per_page,
+    pageCount: Math.max(1, result.meta.last_page),
   };
-
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: PRODUCT_CARD_INCLUDE,
-      orderBy: SORT_MAP[sort],
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    }),
-    prisma.product.count({ where }),
-  ]);
-
-  return { products, total, page, pageSize, pageCount: Math.max(1, Math.ceil(total / pageSize)) };
 }
 
 export async function getProductBySlug(slug: string) {
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      category: true,
-      variants: { orderBy: { price: "asc" } },
-      reviews: { where: { approved: true }, orderBy: { createdAt: "desc" } },
-    },
-  });
-  return product;
+  try {
+    return (await fetchProduct(slug)).data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
 }
 
-export function getRelatedProducts(categoryId: string, excludeId: string, limit = 4) {
-  return prisma.product.findMany({
-    where: { status: "active", categoryId, id: { not: excludeId } },
-    include: PRODUCT_CARD_INCLUDE,
-    take: limit,
-    orderBy: { rating: "desc" },
-  });
+export async function getRelatedProducts(categoryId: string, excludeId: string, limit = 4) {
+  const products = await getProductCollection({ per_page: limit + 1 });
+  return products.filter((product) => product.categoryId === categoryId && product.id !== excludeId).slice(0, limit);
 }
 
-export async function getBundleComponents(bundleItemIds: string | null) {
+export async function getBundleComponents(bundleItemIds: string | null | undefined) {
   if (!bundleItemIds) return [];
   let ids: string[] = [];
   try {
-    ids = JSON.parse(bundleItemIds);
+    ids = JSON.parse(bundleItemIds) as string[];
   } catch {
     return [];
   }
   if (ids.length === 0) return [];
-  return prisma.product.findMany({
-    where: { id: { in: ids } },
-    include: PRODUCT_CARD_INCLUDE,
-  });
+  const products = await getProductCollection({ per_page: 48 });
+  return products.filter((product) => ids.includes(product.id));
 }
 
-export function getBlogPosts() {
-  return prisma.blogPost.findMany({
-    where: { published: true },
-    orderBy: { publishedAt: "desc" },
-  });
+// Blog endpoints are migrated in the content phase. Keeping their existing
+// Prisma-backed functions separate prevents catalog calls from regressing.
+export async function getBlogPosts() {
+  return (await fetchBlogPosts()).data;
 }
 
 export async function getBlogPostBySlug(slug: string) {
-  const post = await prisma.blogPost.findUnique({
-    where: { slug },
-    include: {
-      relatedProducts: {
-        include: { product: { include: PRODUCT_CARD_INCLUDE } },
-      },
-    },
-  });
-  return post;
+  try {
+    return (await fetchBlogPost(slug)).data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
 }
+
+export type StorefrontProduct = ApiProduct;

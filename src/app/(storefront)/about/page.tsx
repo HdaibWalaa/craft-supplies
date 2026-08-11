@@ -3,7 +3,7 @@ import { Flame, Heart, Users } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "The story behind Kiln & Wick Craft Supply.",
+  description: "The story behind Craft Supplies.",
 };
 
 export default function AboutPage() {
