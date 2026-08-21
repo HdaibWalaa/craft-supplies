@@ -1,0 +1,102 @@
+name: Deploy Backend to Bluehost
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, ctype, fileinfo, tokenizer, openssl, pdo, pdo_mysql, bcmath, gd, zip, intl
+          coverage: none
+          tools: composer:v2
+
+      - name: Setup Node (for Filament/Vite assets)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install PHP dependencies
+        working-directory: backend
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Install Node dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build frontend assets (Filament/Vite)
+        working-directory: backend
+        run: npm run build
+
+      - name: Verify build output
+        working-directory: backend
+        run: |
+          test -d public/build
+          ls -la public/build
+
+      - name: Deploy to Bluehost
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+          sshpass -e rsync -avz --delete \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            --exclude=".env" \
+            --exclude=".env.backup" \
+            --exclude=".env.production" \
+            --exclude="storage/app/public/" \
+            --exclude="storage/logs/" \
+            --exclude="node_modules/" \
+            --exclude="tests/" \
+            --exclude=".git/" \
+            backend/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.BACKEND_PATH }}/"
+
+      - name: Run post-deploy Laravel commands
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -e ssh -p "${{ secrets.SSH_PORT }}" -o StrictHostKeyChecking=no \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" bash -s <<'REMOTE_SCRIPT'
+          set -e
+          PHP="/opt/cpanel/ea-php83/root/usr/bin/php"
+          cd "${{ secrets.BACKEND_PATH }}"
+
+          if [ ! -f .env ]; then
+            echo "ERROR: backend/.env does not exist on the server. Create it before enabling automated deploys."
+            exit 1
+          fi
+
+          $PHP artisan optimize:clear
+          $PHP artisan migrate --force
+          $PHP artisan config:cache
+          $PHP artisan route:cache || echo "route:cache skipped (likely a closure-based route; this is non-fatal)"
+          $PHP artisan view:cache
+
+          if [ ! -L public/storage ]; then
+            $PHP artisan storage:link
+          fi
+
+          chmod -R 775 storage bootstrap/cache
+          REMOTE_SCRIPT
