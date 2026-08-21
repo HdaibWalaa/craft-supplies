@@ -1,9 +1,6 @@
-"use client";
-
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Star, Trash2 } from "lucide-react";
-import { deleteAddress, setDefaultAddress } from "@/app/actions/addresses";
+import { deleteAddress, setDefaultAddress } from "@/actions/addresses";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +15,6 @@ export type AddressData = {
 
 export function AddressRow({ address }: { address: AddressData }) {
   const [pending, startTransition] = useTransition();
-  const router = useRouter();
 
   return (
     <div className="flex items-start justify-between gap-4 rounded-3xl border border-ink-200/70 bg-cream-50 p-5">
@@ -39,7 +35,7 @@ export function AddressRow({ address }: { address: AddressData }) {
             onClick={() =>
               startTransition(async () => {
                 await setDefaultAddress(address.id);
-                router.refresh();
+                window.dispatchEvent(new Event("storefront:refresh"));
               })
             }
             className={cn("flex cursor-pointer items-center gap-1 text-xs text-ink-500 hover:text-terracotta-700")}
@@ -52,7 +48,7 @@ export function AddressRow({ address }: { address: AddressData }) {
           onClick={() =>
             startTransition(async () => {
               await deleteAddress(address.id);
-              router.refresh();
+              window.dispatchEvent(new Event("storefront:refresh"));
             })
           }
           className="flex cursor-pointer items-center gap-1 text-xs text-ink-500 hover:text-red-600"

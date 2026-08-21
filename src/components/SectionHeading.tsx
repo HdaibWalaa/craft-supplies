@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ArrowRight } from "lucide-react";
 
 export function SectionHeading({

@@ -1,0 +1,4 @@
+import { apiRequest, ApiError } from "@/lib/api/client";
+import { clientStorage } from "@/lib/storage";
+export type RegisterState = { error?: string };
+export async function registerAccount(_previous: RegisterState, formData: FormData): Promise<RegisterState> { const password = String(formData.get("password") ?? ""); try { const payload = await apiRequest<{ data: { token: string } }>("auth/register", { method: "POST", body: JSON.stringify({ name: formData.get("name"), email: formData.get("email"), password, password_confirmation: password }) }); clientStorage.setAuthToken(payload.data.token); window.location.assign("/account"); return {}; } catch (error) { return { error: error instanceof ApiError ? (error.errors ? Object.values(error.errors).flat()[0] : error.message) : "Registration failed." }; } }

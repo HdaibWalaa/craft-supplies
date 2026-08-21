@@ -1,7 +1,5 @@
-"use client";
-
 import { useActionState, useState } from "react";
-import { addAddress, type AddressFormState } from "@/app/actions/addresses";
+import { addAddress, type AddressFormState } from "@/actions/addresses";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";

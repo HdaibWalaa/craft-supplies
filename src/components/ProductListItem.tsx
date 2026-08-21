@@ -1,14 +1,14 @@
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import type { ProductCardData } from "@/components/ProductCard";
 import { parseImages } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
-import { getLocale } from "@/lib/i18n/server";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
-export async function ProductListItem({ product }: { product: ProductCardData }) {
-  const locale = await getLocale();
+export function ProductListItem({ product }: { product: ProductCardData }) {
+  const { locale } = useI18n();
   const images = parseImages(product.images);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);

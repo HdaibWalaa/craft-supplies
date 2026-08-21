@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ProductImage } from "@/components/ProductImage";
 import { getCategoryTheme } from "@/lib/categories";
 import { getCategoryIcon } from "@/lib/category-icons";

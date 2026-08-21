@@ -1,7 +1,5 @@
-import "server-only";
-import { cookies } from "next/headers";
-import { getLocale } from "@/lib/i18n/server";
 import { normalizeLocale, type Locale } from "@/lib/i18n/config";
+import { clientStorage } from "@/lib/storage";
 
 export class ApiError extends Error {
   constructor(
@@ -51,16 +49,15 @@ export function serializeApiQuery(query: ApiQuery = {}): string {
 }
 
 export async function apiRequest<T>(path: string, options: ApiOptions = {}): Promise<T> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+  const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8000/api/v1";
   const { locale, query, revalidate, ...requestOptions } = options;
-  const activeLocale = locale ? normalizeLocale(locale) : await getLocale();
+  const activeLocale = normalizeLocale(locale ?? localStorage.getItem("kw_locale") ?? undefined);
   const requestHeaders = new Headers(options.headers);
   requestHeaders.set("Accept", "application/json");
-  const cookieStore = await cookies();
   requestHeaders.set("Accept-Language", activeLocale);
 
   if (options.body && !(options.body instanceof FormData)) requestHeaders.set("Content-Type", "application/json");
-  const token = cookieStore.get("kw_api_token")?.value;
+  const token = clientStorage.getAuthToken();
   if (token) requestHeaders.set("Authorization", `Bearer ${token}`);
 
   const queryString = serializeApiQuery(query);
@@ -70,7 +67,7 @@ export async function apiRequest<T>(path: string, options: ApiOptions = {}): Pro
   const response = await fetch(`${baseUrl}/${requestPath.replace(/^\//, "")}`, {
     ...requestOptions,
     headers: requestHeaders,
-    next: revalidate === undefined ? undefined : { revalidate, tags: [`locale:${activeLocale}`] },
+    cache: requestOptions.cache ?? (revalidate === undefined ? undefined : "default"),
   });
   const payload = await response.json().catch(() => ({ message: "The server returned an invalid response." }));
   if (!response.ok) throw new ApiError(payload.message ?? "Request failed.", response.status, payload.errors);

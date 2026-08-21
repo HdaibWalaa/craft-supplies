@@ -1,11 +1,9 @@
-"use client";
-
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { Menu, X, ShoppingBag, Heart, User, ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { getCategoryIcon } from "@/lib/category-icons";
-import { signOutAction } from "@/app/actions/auth";
+import { signOutAction } from "@/actions/auth";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useI18n } from "@/components/i18n/LocaleProvider";
@@ -110,7 +108,7 @@ export function HeaderClient({
         <div className="ms-auto flex items-center gap-1 sm:gap-2">
           <LanguageSwitcher />
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""}`}
+            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER ?? ""}`}
             target="_blank"
             rel="noreferrer"
             className="hidden rounded-full p-2 text-ink-700 hover:text-sage-700 sm:inline-flex"

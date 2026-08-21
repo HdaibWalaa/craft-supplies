@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { auth } from "@/auth";
 import { getCategories } from "@/lib/data";
 import { getCart, getCartTotals } from "@/lib/cart";

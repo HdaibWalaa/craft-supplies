@@ -1,7 +1,5 @@
-"use client";
-
 import { useRef } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
@@ -19,9 +17,9 @@ export function ShopFilters({
   categories?: CategoryOption[];
   showCategoryFilter?: boolean;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const navigate = useNavigate();
+  const pathname = useLocation().pathname;
+  const [searchParams] = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
   const { locale, t } = useI18n();
   const sortOptions = [
@@ -40,7 +38,7 @@ export function ShopFilters({
       if (typeof value === "string" && value.trim() !== "") params.set(key, value);
     }
     params.delete("page");
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    navigate(`${pathname}?${params.toString()}`, { preventScrollReset: true });
   }
 
   const view = searchParams.get("view") ?? "grid";
@@ -146,7 +144,7 @@ export function ShopFilters({
             onClick={() => {
               const params = new URLSearchParams(searchParams.toString());
               params.set("view", "grid");
-              router.push(`${pathname}?${params.toString()}`, { scroll: false });
+              navigate(`${pathname}?${params.toString()}`, { preventScrollReset: true });
             }}
             className={cn("rounded-md p-1.5 cursor-pointer", view === "grid" ? "bg-muted text-primary" : "text-ink-500")}
           >
@@ -159,7 +157,7 @@ export function ShopFilters({
             onClick={() => {
               const params = new URLSearchParams(searchParams.toString());
               params.set("view", "list");
-              router.push(`${pathname}?${params.toString()}`, { scroll: false });
+              navigate(`${pathname}?${params.toString()}`, { preventScrollReset: true });
             }}
             className={cn("rounded-md p-1.5 cursor-pointer", view === "list" ? "bg-muted text-primary" : "text-ink-500")}
           >

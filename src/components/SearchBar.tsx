@@ -1,13 +1,12 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useNavigate } from "react-router-dom";
+import Link from "@/routing/Link";
 import Fuse from "fuse.js";
 import { Search, X } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
 import { formatPrice, cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
+import { fetchProducts } from "@/lib/api/products";
 
 type IndexEntry = {
   id: string;
@@ -24,7 +23,7 @@ let cachedIndex: IndexEntry[] | null = null;
 let cachedIndexLocale: string | null = null;
 
 export function SearchBar({ className, autoFocus }: { className?: string; autoFocus?: boolean }) {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { locale, t } = useI18n();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<IndexEntry[]>([]);
@@ -35,8 +34,8 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
   useEffect(() => {
     async function loadIndex() {
       if (!cachedIndex || cachedIndexLocale !== locale) {
-        const res = await fetch(`/api/search-index?locale=${locale}`, { cache: "no-store" });
-        cachedIndex = await res.json();
+        const products = (await fetchProducts({ per_page: 48 })).data;
+        cachedIndex = products.map((product) => ({ id: product.id, name: product.name, slug: product.slug, shortDescription: product.shortDescription, price: product.basePrice, image: product.images[0]?.url ?? "", categoryName: product.category.name, categorySlug: product.category.slug }));
         cachedIndexLocale = locale;
       }
       fuseRef.current = new Fuse(cachedIndex ?? [], {
@@ -72,7 +71,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
 
   function goToResults() {
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setOpen(false);
     }
   }

@@ -1,5 +1,3 @@
-"use client";
-
 import { createContext, useContext, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { translate, type TranslationKey } from "@/lib/i18n/dictionaries";

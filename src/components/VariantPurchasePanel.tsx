@@ -1,9 +1,7 @@
-"use client";
-
 import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Minus, Plus, ShoppingBag, Zap, Loader2 } from "lucide-react";
-import { addToCart } from "@/app/actions/cart";
+import { addToCart } from "@/actions/cart";
 import { Button } from "@/components/ui/Button";
 import { formatPrice, cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
@@ -46,7 +44,7 @@ export function VariantPurchasePanel({
   const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? "");
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
-  const router = useRouter();
+  const navigate = useNavigate();
   const { locale, t } = useI18n();
 
   const matchedVariant = attributeKeys.length > 0
@@ -83,10 +81,10 @@ export function VariantPurchasePanel({
         return;
       }
       if (buyNow) {
-        router.push("/checkout");
+        navigate("/checkout");
       } else {
         setMessage(t("addedToCart"));
-        router.refresh();
+        window.dispatchEvent(new Event("storefront:refresh"));
       }
     });
   }

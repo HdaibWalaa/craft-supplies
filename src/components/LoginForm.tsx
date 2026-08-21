@@ -1,11 +1,9 @@
-"use client";
-
 import { useActionState } from "react";
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
-import type { AuthFormState } from "@/app/actions/auth";
+import type { AuthFormState } from "@/actions/auth";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
 const initialState: AuthFormState = {};

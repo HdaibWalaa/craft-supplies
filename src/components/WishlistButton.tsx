@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useTransition } from "react";
 import { Heart } from "lucide-react";
-import { toggleWishlist } from "@/app/actions/wishlist";
+import { toggleWishlist } from "@/actions/wishlist";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 

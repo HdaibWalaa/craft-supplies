@@ -1,11 +1,8 @@
-"use client";
-
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { Minus, Plus, Trash2, Loader2 } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
-import { updateCartItemQuantity, removeCartItem } from "@/app/actions/cart";
+import { updateCartItemQuantity, removeCartItem } from "@/actions/cart";
 import { formatPrice } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
@@ -18,7 +15,6 @@ export type CartItemData = {
 
 export function CartItemRow({ item }: { item: CartItemData }) {
   const [pending, startTransition] = useTransition();
-  const router = useRouter();
   const { locale, t } = useI18n();
 
   let image = "";
@@ -29,14 +25,14 @@ export function CartItemRow({ item }: { item: CartItemData }) {
   function updateQty(qty: number) {
     startTransition(async () => {
       await updateCartItemQuantity(item.id, qty);
-      router.refresh();
+      window.dispatchEvent(new Event("storefront:refresh"));
     });
   }
 
   function remove() {
     startTransition(async () => {
       await removeCartItem(item.id);
-      router.refresh();
+      window.dispatchEvent(new Event("storefront:refresh"));
     });
   }
 

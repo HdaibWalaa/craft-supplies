@@ -1,0 +1,1 @@
+export type Metadata = { title?: string | { default?: string; template?: string }; description?: string; metadataBase?: URL; openGraph?: Record<string, unknown>; alternates?: Record<string, unknown>; icons?: Record<string, unknown> };

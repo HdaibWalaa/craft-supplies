@@ -1,9 +1,6 @@
-"use client";
-
 import { useActionState, useEffect, useRef, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Tag, X } from "lucide-react";
-import { applyDiscountCode, removeDiscountCode } from "@/app/actions/discount";
+import { applyDiscountCode, removeDiscountCode } from "@/actions/discount";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/components/i18n/LocaleProvider";
@@ -14,16 +11,15 @@ const initialState: State = {};
 export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }) {
   const [state, formAction, pending] = useActionState<State, FormData>(applyDiscountCode, initialState);
   const [removing, startRemove] = useTransition();
-  const router = useRouter();
   const refreshedFor = useRef<string | undefined>(undefined);
   const { t } = useI18n();
 
   useEffect(() => {
     if (state?.success && refreshedFor.current !== state.code) {
       refreshedFor.current = state.code;
-      router.refresh();
+      window.dispatchEvent(new Event("storefront:refresh"));
     }
-  }, [state, router]);
+  }, [state]);
 
   const active = state?.success ? state.code : appliedCode;
 
@@ -39,7 +35,7 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
           onClick={() =>
             startRemove(async () => {
               await removeDiscountCode();
-              router.refresh();
+              window.dispatchEvent(new Event("storefront:refresh"));
             })
           }
           className="cursor-pointer text-sage-700 hover:text-sage-900"

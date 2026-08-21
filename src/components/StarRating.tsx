@@ -1,5 +1,3 @@
-"use client";
-
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";

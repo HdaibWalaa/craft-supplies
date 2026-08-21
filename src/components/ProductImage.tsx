@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ResponsiveImage";
 import { getCategoryTheme } from "@/lib/categories";
 import { CATEGORY_ICONS } from "@/lib/category-icons";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ export type ProductImageProps = {
 };
 
 /**
- * Renders either a real uploaded/remote image (next/image) or, for the
+ * Renders either a real uploaded/remote image or, for the
  * "placeholder:<categorySlug>:<seed>" convention used by seeded/demo
  * products, a generated gradient tile in the category's theme color.
  * Real product photography is business-owner-supplied content — see

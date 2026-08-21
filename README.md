@@ -90,11 +90,11 @@ npm run dev
 Required frontend configuration:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+VITE_API_URL=http://localhost:8000/api/v1
+VITE_SITE_URL=http://localhost:3000
 ```
 
-Open `http://localhost:3000`. Sanctum tokens and guest cart identifiers are held in secure HTTP-only cookies by Next.js server actions. Browser bundles receive no Laravel, Stripe, database, or mail secrets.
+Open `http://localhost:3000`. The React client stores its Laravel API token and guest cart identifier in browser storage and sends them through the centralized API client. Browser bundles receive no Laravel, Stripe, database, or mail secrets. A production same-origin deployment may switch the auth provider to Laravel Sanctum cookies without changing the page UI.
 
 ## Translations and RTL
 

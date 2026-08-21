@@ -1,0 +1,5 @@
+import { addCartItem, ApiError, deleteCartItem, updateCartItem } from "@/lib/api/cart";
+const refresh = () => window.dispatchEvent(new Event("storefront:refresh"));
+export async function addToCart(variantId: string, quantity = 1) { try { await addCartItem(variantId, quantity); refresh(); return { success: true }; } catch (error) { return { error: error instanceof ApiError ? (error.errors ? Object.values(error.errors).flat()[0] : error.message) : "The item could not be added to your cart." }; } }
+export async function updateCartItemQuantity(itemId: string, quantity: number) { try { await updateCartItem(itemId, Math.max(0, quantity)); refresh(); return { success: true }; } catch (error) { return { error: error instanceof ApiError ? error.message : "The cart could not be updated." }; } }
+export async function removeCartItem(itemId: string) { try { await deleteCartItem(itemId); refresh(); return { success: true }; } catch (error) { return { error: error instanceof ApiError ? error.message : "The item could not be removed." }; } }

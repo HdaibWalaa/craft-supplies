@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";

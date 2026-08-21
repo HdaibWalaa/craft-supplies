@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { getCategories } from "@/lib/data";
 import { NewsletterForm } from "./NewsletterForm";

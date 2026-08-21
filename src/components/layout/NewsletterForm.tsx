@@ -1,7 +1,5 @@
-"use client";
-
 import { useActionState } from "react";
-import { subscribeToNewsletter, type NewsletterState } from "@/app/actions/newsletter";
+import { subscribeToNewsletter, type NewsletterState } from "@/actions/newsletter";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/components/i18n/LocaleProvider";

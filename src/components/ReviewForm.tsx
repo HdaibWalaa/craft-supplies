@@ -1,8 +1,6 @@
-"use client";
-
 import { useActionState, useState } from "react";
 import { Star } from "lucide-react";
-import { submitReview, type ReviewFormState } from "@/app/actions/reviews";
+import { submitReview, type ReviewFormState } from "@/actions/reviews";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";

@@ -1,7 +1,5 @@
-"use client";
-
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/routing/Link";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";

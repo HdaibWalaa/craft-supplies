@@ -1,5 +1,3 @@
-"use client";
-
 import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
 

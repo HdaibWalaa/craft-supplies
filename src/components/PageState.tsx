@@ -1,0 +1,2 @@
+export function PageLoading() { return <div className="mx-auto max-w-7xl px-4 py-16 text-center text-ink-500">Loading...</div>; }
+export function PageError({ error }: { error: Error }) { return <div className="mx-auto max-w-3xl px-4 py-16 text-center"><h1 className="font-display text-2xl font-semibold text-ink-900">Something went wrong</h1><p className="mt-2 text-sm text-red-600">{error.message}</p></div>; }

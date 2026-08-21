@@ -1,9 +1,6 @@
-"use client";
-
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { ShoppingBag, Check, Loader2 } from "lucide-react";
-import { addToCart } from "@/app/actions/cart";
+import { addToCart } from "@/actions/cart";
 import { Button, type ButtonProps } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
@@ -23,7 +20,6 @@ export function QuickAddButton({
 }) {
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState<"idle" | "added" | "error">("idle");
-  const router = useRouter();
   const { t } = useI18n();
 
   function handleClick() {
@@ -33,7 +29,7 @@ export function QuickAddButton({
         setState("error");
       } else {
         setState("added");
-        router.refresh();
+        window.dispatchEvent(new Event("storefront:refresh"));
       }
       setTimeout(() => setState("idle"), 1800);
     });

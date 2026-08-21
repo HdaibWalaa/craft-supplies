@@ -1,14 +1,12 @@
-"use client";
-
 import { useActionState, useEffect, useState } from "react";
-import { createOrder, type CheckoutState } from "@/app/actions/checkout";
+import { createOrder, type CheckoutState } from "@/actions/checkout";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { cn, formatPrice } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
-import type { ApiGovernorate, ApiShippingMethod } from "@/lib/api/shipping";
+import { fetchShippingMethods, type ApiGovernorate, type ApiShippingMethod } from "@/lib/api/shipping";
 
 const initialState: CheckoutState = {};
 
@@ -43,20 +41,17 @@ export function CheckoutForm({
 
   useEffect(() => {
     if (!governorate) return;
-    const controller = new AbortController();
-    fetch(`/api/shipping-methods?governorate=${encodeURIComponent(governorate)}`, { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Unable to load delivery options.");
-        return response.json() as Promise<{ data: ApiShippingMethod[] }>;
-      })
-      .then(({ data }) => {
+    let cancelled = false;
+    fetchShippingMethods(governorate)
+      .then((data) => {
+        if (cancelled) return;
         setShippingMethods(data);
         const selected = data.find((method) => method.is_default) ?? data[0];
         setShippingMethodId(selected ? String(selected.id) : "");
       })
-      .catch((error: unknown) => { if (!(error instanceof DOMException && error.name === "AbortError")) setShippingMethods([]); })
-      .finally(() => { if (!controller.signal.aborted) setShippingLoading(false); });
-    return () => controller.abort();
+      .catch(() => { if (!cancelled) setShippingMethods([]); })
+      .finally(() => { if (!cancelled) setShippingLoading(false); });
+    return () => { cancelled = true; };
   }, [governorate]);
 
   function changeGovernorate(value: string) {
