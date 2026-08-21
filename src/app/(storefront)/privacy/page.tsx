@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 
       <div className="mt-8 flex flex-col gap-6 text-ink-600">
         <p>
-          This Privacy Policy explains how Kiln &amp; Wick Craft Supply collects, uses, and
+          This Privacy Policy explains how Craft Supplies collects, uses, and
           protects your information when you use our website.
         </p>
         <section>

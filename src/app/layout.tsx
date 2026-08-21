@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${fredoka.variable} ${nunito.variable} ${fraunces.variable} ${notoSansArabic.variable} h-full antialiased`}
     >
       <body
-        className="min-h-full flex flex-col bg-cream-50 text-ink-900"
+        className="min-h-full flex flex-col bg-background text-foreground"
         suppressHydrationWarning
       >
         <script

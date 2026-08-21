@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 
 const VARIANTS = {
-  terracotta: "bg-terracotta-100 text-terracotta-800",
-  sage: "bg-sage-100 text-sage-800",
-  walnut: "bg-walnut-100 text-walnut-800",
+  terracotta: "bg-accent-soft text-accent-foreground",
+  sage: "bg-muted text-primary",
+  walnut: "bg-secondary text-secondary-foreground",
   ink: "bg-ink-100 text-ink-700",
   red: "bg-red-100 text-red-700",
 } as const;

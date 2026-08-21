@@ -1,82 +1,114 @@
 @import "tailwindcss";
 
 @theme {
+  /* Reference palette: sage #b8cec2, cream #f8e6ce, peach #ebc8b4, coral #fdb3a4, light sage #d1dbcd. */
   /* Terracotta — primary / CTAs */
-  --color-terracotta-50: #fdf4ec;
-  --color-terracotta-100: #fbe6d2;
-  --color-terracotta-200: #f6cca3;
-  --color-terracotta-300: #eeac74;
-  --color-terracotta-400: #e58f52;
-  --color-terracotta-500: #dd7a3d;
-  --color-terracotta-600: #c15f28;
-  --color-terracotta-700: #9c4c20;
-  --color-terracotta-800: #7c3e1c;
-  --color-terracotta-900: #66331a;
-  --color-terracotta-950: #38190c;
+  --color-terracotta-50: #fff7f4;
+  --color-terracotta-100: #fde9e3;
+  --color-terracotta-200: #ebc8b4;
+  --color-terracotta-300: #fdb3a4;
+  --color-terracotta-400: #f38f7e;
+  --color-terracotta-500: #d96f60;
+  --color-terracotta-600: #b94f43;
+  --color-terracotta-700: #913d35;
+  --color-terracotta-800: #74332d;
+  --color-terracotta-900: #5f2c28;
+  --color-terracotta-950: #341512;
 
   /* Sage — dominant environmental green (section panels, not just accents) */
-  --color-sage-50: #eef2e6;
-  --color-sage-100: #dfe8d0;
-  --color-sage-200: #c5d5ac;
-  --color-sage-300: #a7bf87;
-  --color-sage-400: #8aa96a;
-  --color-sage-500: #708f52;
-  --color-sage-600: #587140;
-  --color-sage-700: #465a34;
-  --color-sage-800: #39482b;
-  --color-sage-900: #303c26;
-  --color-sage-950: #182013;
+  --color-sage-50: #f6f8f6;
+  --color-sage-100: #edf2ef;
+  --color-sage-200: #d1dbcd;
+  --color-sage-300: #b8cec2;
+  --color-sage-400: #94b3a4;
+  --color-sage-500: #6f9382;
+  --color-sage-600: #526f63;
+  --color-sage-700: #3f514a;
+  --color-sage-800: #34443d;
+  --color-sage-900: #2a3832;
+  --color-sage-950: #17201c;
 
   /* Walnut — dark warm neutral, headers/footer */
-  --color-walnut-50: #f7f3ef;
-  --color-walnut-100: #ece2d8;
-  --color-walnut-200: #d6c2ac;
-  --color-walnut-300: #bd9c7c;
-  --color-walnut-400: #a97c58;
-  --color-walnut-500: #8f6437;
-  --color-walnut-600: #74502c;
-  --color-walnut-700: #5c4025;
-  --color-walnut-800: #4a341f;
-  --color-walnut-900: #3d2b1b;
-  --color-walnut-950: #211609;
+  --color-walnut-50: #fbf7f4;
+  --color-walnut-100: #f5e8df;
+  --color-walnut-200: #ebc8b4;
+  --color-walnut-300: #d6a891;
+  --color-walnut-400: #b98268;
+  --color-walnut-500: #94634f;
+  --color-walnut-600: #735044;
+  --color-walnut-700: #5c453e;
+  --color-walnut-800: #493f3b;
+  --color-walnut-900: #38302d;
+  --color-walnut-950: #251f1d;
 
   /* Cream — warm, visible beige background (not near-white) */
-  --color-cream-50: #faf3e6;
-  --color-cream-100: #f5ead6;
-  --color-cream-200: #ecdcc0;
-  --color-cream-300: #e0c89e;
-  --color-cream-400: #d1ac78;
-  --color-cream-500: #bd905a;
-  --color-cream-600: #a3763f;
-  --color-cream-700: #855f34;
-  --color-cream-800: #6b4c2c;
-  --color-cream-900: #573f26;
-  --color-cream-950: #302214;
+  --color-cream-50: #fffdf9;
+  --color-cream-100: #fdf5e9;
+  --color-cream-200: #f8e6ce;
+  --color-cream-300: #efd5b5;
+  --color-cream-400: #dfba8d;
+  --color-cream-500: #c69a68;
+  --color-cream-600: #a77950;
+  --color-cream-700: #835d41;
+  --color-cream-800: #684a37;
+  --color-cream-900: #513b2f;
+  --color-cream-950: #2d1f18;
 
   /* Ink — warm neutral text */
-  --color-ink-50: #f6f5f3;
-  --color-ink-100: #e8e5e1;
-  --color-ink-200: #d1cbc2;
-  --color-ink-300: #aea497;
-  --color-ink-400: #85786a;
-  --color-ink-500: #665a4d;
-  --color-ink-600: #52483d;
-  --color-ink-700: #423a31;
-  --color-ink-800: #372f29;
-  --color-ink-900: #2f2924;
-  --color-ink-950: #1a1613;
+  --color-ink-50: #f8f9f7;
+  --color-ink-100: #eef1ed;
+  --color-ink-200: #d1dbcd;
+  --color-ink-300: #aebbb3;
+  --color-ink-400: #7f8d85;
+  --color-ink-500: #65716b;
+  --color-ink-600: #515b56;
+  --color-ink-700: #493f3b;
+  --color-ink-800: #3d3633;
+  --color-ink-900: #302b29;
+  --color-ink-950: #1c1918;
+
+  /* Semantic storefront roles */
+  --color-background: #fffdf9;
+  --color-foreground: #302b29;
+  --color-primary: #3f514a;
+  --color-primary-hover: #34443d;
+  --color-primary-foreground: #fffdf9;
+  --color-secondary: #f8e6ce;
+  --color-secondary-hover: #efd5b5;
+  --color-secondary-foreground: #493f3b;
+  --color-accent: #fdb3a4;
+  --color-accent-soft: #fde9e3;
+  --color-accent-foreground: #5f2c28;
+  --color-muted: #d1dbcd;
+  --color-muted-soft: #edf2ef;
+  --color-muted-foreground: #515b56;
+  --color-card: #ffffff;
+  --color-card-foreground: #302b29;
+  --color-border: #d1dbcd;
+  --color-input: #ffffff;
+  --color-ring: #526f63;
+
+  /* Deterministic category accents */
+  --color-category-sage: #b8cec2;
+  --color-category-sage-deep: #6f9382;
+  --color-category-cream: #f8e6ce;
+  --color-category-cream-deep: #c69a68;
+  --color-category-peach: #ebc8b4;
+  --color-category-peach-deep: #b98268;
+  --color-category-coral: #fdb3a4;
+  --color-category-coral-deep: #d96f60;
 
   --font-display: var(--font-fredoka);
   --font-sans: var(--font-nunito);
   --font-serif: var(--font-fraunces);
 
-  --shadow-card: 0 1px 2px rgba(26, 22, 19, 0.06), 0 4px 12px rgba(26, 22, 19, 0.05);
-  --shadow-card-hover: 0 2px 4px rgba(26, 22, 19, 0.08), 0 12px 24px rgba(26, 22, 19, 0.09);
+  --shadow-card: 0 1px 2px rgba(63, 81, 74, 0.05), 0 4px 14px rgba(63, 81, 74, 0.06);
+  --shadow-card-hover: 0 2px 5px rgba(63, 81, 74, 0.08), 0 14px 30px rgba(63, 81, 74, 0.11);
 }
 
 :root {
-  --background: var(--color-cream-50);
-  --foreground: var(--color-ink-900);
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
 }
 
 body {
@@ -104,6 +136,6 @@ html[dir="rtl"] .font-serif {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-terracotta-500);
+  outline: 2px solid var(--color-ring);
   outline-offset: 2px;
 }

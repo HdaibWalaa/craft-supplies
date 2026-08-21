@@ -208,7 +208,7 @@ return new class extends Migration
             $table->decimal('shipping_total', 12, 2)->default(0);
             $table->decimal('tax_total', 12, 2)->default(0);
             $table->decimal('total', 12, 2);
-            $table->string('currency', 3)->default('USD');
+            $table->string('currency', 3)->default('JOD');
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
             $table->index(['user_id', 'created_at']);
@@ -237,7 +237,7 @@ return new class extends Migration
             $table->string('provider_id')->nullable()->unique();
             $table->string('status', 20)->default('pending')->index();
             $table->decimal('amount', 12, 2);
-            $table->string('currency', 3)->default('USD');
+            $table->string('currency', 3)->default('JOD');
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

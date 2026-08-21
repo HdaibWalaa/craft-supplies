@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\StripeWebhookController;
+use App\Http\Controllers\Api\V1\ShippingMethodController;
 use App\Http\Controllers\Api\V1\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,8 @@ Route::prefix('v1')->middleware('api.locale')->group(function (): void {
         Route::get('orders/{orderNumber}', [OrderController::class, 'show']);
     });
     Route::get('products', [ProductController::class, 'index']);
+    Route::get('shipping-methods', [ShippingMethodController::class, 'index']);
+    Route::get('jordan-governorates', [ShippingMethodController::class, 'governorates']);
     Route::get('testimonials', [ProductController::class, 'testimonials']);
     Route::get('cart', [CartController::class, 'show']);
     Route::post('cart/items', [CartController::class, 'store']);

@@ -36,7 +36,7 @@ export function Pagination({
             href={buildHref(p)}
             className={cn(
               "flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium",
-              p === page ? "bg-terracotta-600 text-cream-50" : "text-ink-700 hover:bg-ink-100"
+              p === page ? "bg-primary text-primary-foreground" : "text-ink-700 hover:bg-muted-soft"
             )}
           >
             {p}

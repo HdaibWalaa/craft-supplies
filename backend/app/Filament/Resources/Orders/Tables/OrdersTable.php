@@ -33,7 +33,8 @@ class OrdersTable
                     ->searchable(),
                 TextColumn::make('payment_method')
                     ->searchable(),
-                TextColumn::make('shipping_method')
+                TextColumn::make('shipping_method_name')
+                    ->label('Shipping method')
                     ->searchable(),
                 TextColumn::make('subtotal')
                     ->numeric()

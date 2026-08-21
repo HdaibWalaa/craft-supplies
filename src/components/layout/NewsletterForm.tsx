@@ -27,9 +27,9 @@ export function NewsletterForm() {
         name="email"
         required
         placeholder="you@example.com"
-        className="border-cream-100/20 bg-walnut-800 text-cream-50 placeholder:text-cream-300/60 sm:max-w-64"
+        className="border-white/40 bg-card text-foreground placeholder:text-ink-400 sm:max-w-64"
       />
-      <Button type="submit" variant="primary" disabled={pending}>
+      <Button type="submit" variant="secondary" disabled={pending}>
         {pending ? t("subscribing") : t("subscribeDiscount")}
       </Button>
       {state?.error ? <p className="text-sm text-terracotta-300 sm:hidden">{state.error}</p> : null}

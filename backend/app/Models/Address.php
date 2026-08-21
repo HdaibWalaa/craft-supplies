@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    protected $fillable = ['user_id', 'first_name', 'last_name', 'company', 'phone', 'line_1', 'line_2', 'city', 'region', 'postal_code', 'country_code', 'is_default_shipping', 'is_default_billing'];
+    protected $fillable = ['user_id', 'full_name', 'phone', 'governorate', 'address', 'country_code', 'first_name', 'last_name', 'company', 'line_1', 'line_2', 'city', 'region', 'postal_code', 'is_default_shipping', 'is_default_billing'];
 
     protected function casts(): array
     {

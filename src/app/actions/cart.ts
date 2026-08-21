@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { addCartItem, ApiError, deleteCartItem, updateCartItem } from "@/lib/api/cart";
+import { getTranslations } from "@/lib/i18n/server";
 
 async function persistToken(token: string) {
   (await cookies()).set("cart_token", token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 60 * 60 * 24 * 90, path: "/" });
@@ -15,7 +16,8 @@ export async function addToCart(variantId: string, quantity = 1) {
     revalidatePath("/cart");
     return { success: true };
   } catch (error) {
-    return { error: error instanceof ApiError ? error.message : "This item could not be added." };
+    const { t } = await getTranslations();
+    return { error: error instanceof ApiError && error.errors ? Object.values(error.errors).flat()[0] : t("addToCartFailed") };
   }
 }
 

@@ -1,5 +1,8 @@
+"use client";
+
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function StarRating({
   rating,
@@ -15,6 +18,7 @@ export function StarRating({
   filledClassName?: string;
 }) {
   const starSize = size === "sm" ? "h-3.5 w-3.5" : "h-5 w-5";
+  const { t } = useI18n();
   return (
     <div className={cn("flex items-center gap-1", className)}>
       <div className="flex" aria-hidden="true">
@@ -28,7 +32,7 @@ export function StarRating({
           );
         })}
       </div>
-      <span className="sr-only">{rating.toFixed(1)} out of 5 stars</span>
+      <span className="sr-only">{t("ratingOutOfFive", { rating: rating.toFixed(1) })}</span>
       {count !== undefined ? (
         <span className="text-xs text-ink-500">({count})</span>
       ) : null}

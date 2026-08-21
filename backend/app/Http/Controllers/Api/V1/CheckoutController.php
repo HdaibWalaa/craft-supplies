@@ -29,7 +29,7 @@ class CheckoutController extends Controller
         try {
             $stripe = new StripeClient(config('services.stripe.secret'));
             $session = $stripe->checkout->sessions->create([
-                'mode' => 'payment', 'customer_email' => $order->email,
+                'mode' => 'payment', ...($order->email ? ['customer_email' => $order->email] : []),
                 'line_items' => [[
                     'price_data' => ['currency' => strtolower($order->currency), 'unit_amount' => (int) round((float) $order->total * 100), 'product_data' => ['name' => "Craft Supplies order {$order->order_number}"]],
                     'quantity' => 1,

@@ -4,10 +4,12 @@ import { Package, MapPin, Heart } from "lucide-react";
 import { auth } from "@/auth";
 import { fetchOrders } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/utils";
+import { getLocale } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "My Account" };
 
 export default async function AccountPage() {
+  const locale = await getLocale();
   const session = await auth();
   const recentOrders = session?.user ? (await fetchOrders()).slice(0, 3) : [];
 
@@ -48,7 +50,7 @@ export default async function AccountPage() {
                 <span className="rounded-full bg-cream-200 px-3 py-1 text-xs font-medium text-ink-700">
                   {o.status}
                 </span>
-                <span className="font-medium text-ink-900">{formatPrice(o.total)}</span>
+                <span className="font-medium text-ink-900">{formatPrice(o.total, locale)}</span>
               </div>
             ))}
           </div>

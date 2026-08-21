@@ -11,11 +11,11 @@ export async function Footer() {
   const supportLinks = [{ href: "/faq", label: t("faq") }, { href: "/shipping-returns", label: t("shippingReturns") }, { href: "/terms", label: t("terms") }, { href: "/privacy", label: t("privacy") }];
 
   return (
-    <footer className="mt-24 bg-walnut-900 text-cream-200">
+    <footer className="mt-24 bg-sage-900 text-cream-200">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2">
-            <span className="font-display text-2xl font-semibold text-cream-50">Kiln &amp; Wick</span>
+            <span className="font-display text-2xl font-semibold text-cream-50">Craft Supplies</span>
             <p className="mt-3 max-w-xs text-sm text-cream-300">
               {t("footerDescription")}
             </p>
@@ -79,7 +79,7 @@ export async function Footer() {
 
         <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-cream-400">
-            &copy; {new Date().getFullYear()} Kiln &amp; Wick Craft Supply. {t("rightsReserved")}
+            &copy; {new Date().getFullYear()} Craft Supplies. {t("rightsReserved")}
           </p>
           <div className="flex items-center gap-3">
             <a href="#" aria-label="Instagram" className="text-cream-300 hover:text-terracotta-300">

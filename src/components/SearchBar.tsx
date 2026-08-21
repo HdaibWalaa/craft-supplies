@@ -89,7 +89,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
           onChange={(e) => handleChange(e.target.value)}
           onFocus={() => query.trim().length >= 2 && setOpen(true)}
           onKeyDown={(e) => e.key === "Enter" && goToResults()}
-          className="h-11 w-full rounded-full border border-ink-300 bg-cream-50 ps-10 pe-9 text-sm text-ink-900 placeholder:text-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500"
+          className="h-11 w-full rounded-full border border-border bg-input ps-10 pe-9 text-sm text-foreground placeholder:text-ink-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={t("searchProducts")}
         />
         {query ? (
@@ -125,7 +125,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
                     <p className="truncate text-xs text-ink-500">{r.categoryName}</p>
                   </div>
                   <span className="shrink-0 text-sm font-medium text-terracotta-700">
-                    {formatPrice(r.price)}
+                    {formatPrice(r.price, locale)}
                   </span>
                 </Link>
               </li>

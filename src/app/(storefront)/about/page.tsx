@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
-      <h1 className="font-display text-4xl font-semibold text-ink-900">About Kiln &amp; Wick</h1>
+      <h1 className="font-display text-4xl font-semibold text-ink-900">About Craft Supplies</h1>
       <p className="mt-5 text-lg leading-relaxed text-ink-600">
-        Kiln &amp; Wick started the way most craft supply shelves do — with too much leftover soy
+        Craft Supplies started the way most craft supply shelves do — with too much leftover soy
         wax, a drawer of half-used mica powders, and a hunch that other makers were dealing with
         the exact same clutter. We built the shop we wished existed: one place for candle,
         resin, soap, mold, fragrance, concrete, and wood supplies, without hunting across a dozen

@@ -66,12 +66,12 @@ class RequestedCatalogSeeder extends Seeder
             'name' => ['ar' => $data['ar'], 'en' => $data['en']],
             'description' => ['ar' => $data['description_ar'], 'en' => $data['description_en']],
             'meta_title' => [
-                'ar' => $data['ar'].' | Kiln & Wick',
-                'en' => $data['en'].' | Kiln & Wick',
+                'ar' => $data['ar'].' | Craft Supplies',
+                'en' => $data['en'].' | Craft Supplies',
             ],
             'meta_description' => [
-                'ar' => 'تسوق '.$data['ar'].' لمشاريعك الحرفية واكتشف الخامات والأدوات المناسبة من Kiln & Wick.',
-                'en' => 'Shop '.$data['en'].' for your craft projects and explore suitable materials and tools from Kiln & Wick.',
+                'ar' => 'تسوق '.$data['ar'].' لمشاريعك الحرفية واكتشف الخامات والأدوات المناسبة من Craft Supplies.',
+                'en' => 'Shop '.$data['en'].' for your craft projects and explore suitable materials and tools from Craft Supplies.',
             ],
             'color_theme' => $category->exists ? $category->color_theme : 'terracotta',
             'is_active' => true,
@@ -126,12 +126,12 @@ class RequestedCatalogSeeder extends Seeder
                 'en' => ['Product Type' => $englishName, 'Category' => $categoryData['en'], 'Application' => ucfirst($applicationEn)],
             ],
             'meta_title' => [
-                'ar' => $arabicName.' | Kiln & Wick',
-                'en' => $englishName.' | Kiln & Wick',
+                'ar' => $arabicName.' | Craft Supplies',
+                'en' => $englishName.' | Craft Supplies',
             ],
             'meta_description' => [
-                'ar' => 'تسوق '.$arabicName.' لمشاريع '.$applicationAr.' واكتشف المستلزمات الحرفية المتوافقة من Kiln & Wick.',
-                'en' => 'Shop '.$englishName.' for '.$applicationEn.' and explore compatible craft supplies from Kiln & Wick.',
+                'ar' => 'تسوق '.$arabicName.' لمشاريع '.$applicationAr.' واكتشف المستلزمات الحرفية المتوافقة من Craft Supplies.',
+                'en' => 'Shop '.$englishName.' for '.$applicationEn.' and explore compatible craft supplies from Craft Supplies.',
             ],
         ];
 

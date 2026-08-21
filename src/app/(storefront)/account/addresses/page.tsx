@@ -3,12 +3,14 @@ import { auth } from "@/auth";
 import { fetchAddresses } from "@/lib/api/addresses";
 import { AddressRow } from "@/components/AddressRow";
 import { AddressForm } from "@/components/AddressForm";
+import { fetchJordanGovernorates } from "@/lib/api/shipping";
 
 export const metadata: Metadata = { title: "My Addresses" };
 
 export default async function AddressesPage() {
   const session = await auth();
-  const addresses = session ? await fetchAddresses() : [];
+  const [addresses, governorates] = await Promise.all([session ? fetchAddresses() : [], fetchJordanGovernorates()]);
+  const governorateLabels = Object.fromEntries(governorates.map((item) => [item.code, item.label]));
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
@@ -16,12 +18,12 @@ export default async function AddressesPage() {
 
       <div className="mt-8 flex flex-col gap-4">
         {addresses.map((a) => (
-          <AddressRow key={a.id} address={{ id: String(a.id), fullName: `${a.first_name} ${a.last_name}`, line1: a.line_1, line2: a.line_2, city: a.city, state: a.region ?? "", postalCode: a.postal_code ?? "", country: a.country_code, isDefault: a.is_default_shipping }} />
+          <AddressRow key={a.id} address={{ id: String(a.id), fullName: a.full_name ?? `${a.first_name ?? ""} ${a.last_name ?? ""}`.trim(), phone: a.phone ?? "", governorate: governorateLabels[a.governorate ?? ""] ?? a.governorate ?? "", address: a.address ?? a.line_1 ?? "", isDefault: a.is_default_shipping }} />
         ))}
       </div>
 
       <div className="mt-6">
-        <AddressForm />
+        <AddressForm governorates={governorates} />
       </div>
     </div>
   );

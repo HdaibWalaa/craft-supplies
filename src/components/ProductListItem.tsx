@@ -5,8 +5,10 @@ import { QuickAddButton } from "@/components/QuickAddButton";
 import type { ProductCardData } from "@/components/ProductCard";
 import { parseImages } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
+import { getLocale } from "@/lib/i18n/server";
 
-export function ProductListItem({ product }: { product: ProductCardData }) {
+export async function ProductListItem({ product }: { product: ProductCardData }) {
+  const locale = await getLocale();
   const images = parseImages(product.images);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
@@ -33,10 +35,10 @@ export function ProductListItem({ product }: { product: ProductCardData }) {
         </div>
         <div className="mt-auto flex items-center justify-between gap-2 pt-2">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-semibold text-ink-900">{formatPrice(product.basePrice)}</span>
+            <span className="font-semibold text-ink-900">{formatPrice(product.basePrice, locale)}</span>
             {product.compareAtPrice ? (
               <span className="text-sm text-ink-400 line-through">
-                {formatPrice(product.compareAtPrice)}
+                {formatPrice(product.compareAtPrice, locale)}
               </span>
             ) : null}
           </div>

@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -32,6 +34,77 @@ class CatalogApiTest extends TestCase
     {
         Category::query()->create(['name' => ['en' => 'Candles', 'ar' => 'الشموع'], 'slug' => 'candles', 'is_active' => true]);
         $this->withHeader('Accept-Language', 'ar')->getJson('/api/v1/categories')->assertOk()->assertJsonPath('data.0.name', 'الشموع');
+    }
+
+    public function test_product_details_localize_all_customer_facing_catalog_fields(): void
+    {
+        $category = Category::query()->create([
+            'name' => ['en' => 'Candles', 'ar' => 'الشموع'],
+            'slug' => 'candles-localized',
+            'is_active' => true,
+        ]);
+        $product = Product::query()->create([
+            'category_id' => $category->id,
+            'name' => ['en' => 'Soy Wax', 'ar' => 'شمع الصويا'],
+            'slug' => 'localized-soy-wax',
+            'short_description' => ['en' => 'Clean wax', 'ar' => 'شمع نظيف'],
+            'description' => ['en' => 'English description', 'ar' => 'وصف عربي'],
+            'specifications' => [
+                'en' => ['Material' => 'Soy wax'],
+                'ar' => ['الخامة' => 'شمع الصويا'],
+            ],
+            'usage_notes' => ['en' => 'Use carefully', 'ar' => 'يستخدم بعناية'],
+            'safety_warnings' => ['en' => 'Keep away from heat', 'ar' => 'يحفظ بعيداً عن الحرارة'],
+            'meta_title' => ['en' => 'Soy Wax SEO', 'ar' => 'شمع الصويا للشموع'],
+            'meta_description' => ['en' => 'English SEO description', 'ar' => 'وصف عربي لمحركات البحث'],
+            'base_price' => 12.50,
+            'status' => 'active',
+            'is_visible' => true,
+        ]);
+        $product->variants()->create([
+            'name' => ['en' => 'Large', 'ar' => 'كبير'],
+            'sku' => 'LOCALIZED-LARGE',
+            'price' => 12.50,
+            'stock' => 4,
+        ]);
+        $attribute = Attribute::query()->create([
+            'name' => ['en' => 'Material', 'ar' => 'الخامة'],
+            'slug' => 'material',
+            'type' => 'select',
+        ]);
+        $option = AttributeValue::query()->create([
+            'attribute_id' => $attribute->id,
+            'value' => ['en' => 'Soy wax', 'ar' => 'شمع الصويا'],
+            'slug' => 'soy-wax',
+        ]);
+        $product->attributeValues()->create([
+            'attribute_id' => $attribute->id,
+            'attribute_value_id' => $option->id,
+        ]);
+
+        $this->withHeader('Accept-Language', 'ar')->getJson('/api/v1/products/localized-soy-wax')
+            ->assertOk()
+            ->assertJsonPath('data.name', 'شمع الصويا')
+            ->assertJsonPath('data.shortDescription', 'شمع نظيف')
+            ->assertJsonPath('data.description', 'وصف عربي')
+            ->assertJsonPath('data.category.name', 'الشموع')
+            ->assertJsonPath('data.variants.0.name', 'كبير')
+            ->assertJsonPath('data.attributes.0.name', 'الخامة')
+            ->assertJsonPath('data.attributes.0.value', 'شمع الصويا')
+            ->assertJsonPath('data.specifications.الخامة', 'شمع الصويا')
+            ->assertJsonPath('data.usageNotes', 'يستخدم بعناية')
+            ->assertJsonPath('data.safetyWarnings', 'يحفظ بعيداً عن الحرارة')
+            ->assertJsonPath('data.metaTitle', 'شمع الصويا للشموع')
+            ->assertJsonPath('data.metaDescription', 'وصف عربي لمحركات البحث');
+
+        $this->withHeader('Accept-Language', 'en')->getJson('/api/v1/products/localized-soy-wax')
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Soy Wax')
+            ->assertJsonPath('data.category.name', 'Candles')
+            ->assertJsonPath('data.variants.0.name', 'Large')
+            ->assertJsonPath('data.attributes.0.name', 'Material')
+            ->assertJsonPath('data.attributes.0.value', 'Soy wax')
+            ->assertJsonPath('data.specifications.Material', 'Soy wax');
     }
 
     public function test_missing_or_invalid_language_defaults_to_arabic(): void

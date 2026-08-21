@@ -3,6 +3,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import { parseImages } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
+import { getLocale } from "@/lib/i18n/server";
 
 export type GiftKitProduct = {
   id: string;
@@ -15,7 +16,8 @@ export type GiftKitProduct = {
   variants: { id: string; price: number; stock: number }[];
 };
 
-export function GiftKitCard({ product, includes }: { product: GiftKitProduct; includes: string[] }) {
+export async function GiftKitCard({ product, includes }: { product: GiftKitProduct; includes: string[] }) {
+  const locale = await getLocale();
   const image = parseImages(product.images)[0];
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
@@ -56,10 +58,10 @@ export function GiftKitCard({ product, includes }: { product: GiftKitProduct; in
         <div className="mt-auto flex items-center justify-between pt-5">
           <div className="flex items-baseline gap-2">
             <span className="font-serif text-xl font-semibold text-walnut-950">
-              {formatPrice(product.basePrice)}
+              {formatPrice(product.basePrice, locale)}
             </span>
             {product.compareAtPrice ? (
-              <span className="text-sm text-ink-400 line-through">{formatPrice(product.compareAtPrice)}</span>
+              <span className="text-sm text-ink-400 line-through">{formatPrice(product.compareAtPrice, locale)}</span>
             ) : null}
           </div>
           {defaultVariant ? (

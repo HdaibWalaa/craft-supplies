@@ -22,7 +22,7 @@ export type BestSellerProduct = {
 };
 
 export function BestSellersSection({ products }: { products: BestSellerProduct[] }) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const categories = useMemo(() => {
     const seen = new Map<string, string>();
     for (const p of products) {
@@ -114,7 +114,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
                   filledClassName="fill-amber-600 text-amber-600"
                 />
                 <p className="mt-2 font-serif text-lg font-semibold text-walnut-950">
-                  {formatPrice(p.basePrice)}
+                  {formatPrice(p.basePrice, locale)}
                 </p>
               </div>
             </Link>

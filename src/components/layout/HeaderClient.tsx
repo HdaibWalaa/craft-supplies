@@ -45,7 +45,7 @@ export function HeaderClient({
 
         <Link href="/" className="flex shrink-0 flex-col items-start">
           <span className="font-serif text-2xl font-semibold tracking-tight text-walnut-950 sm:text-[1.75rem]">
-            Kiln &amp; Wick
+            Craft Supplies
           </span>
           <span className="mt-0.5 hidden text-[10px] font-medium uppercase tracking-[0.18em] text-ink-400 sm:block">
             {t("brandSubtitle")}

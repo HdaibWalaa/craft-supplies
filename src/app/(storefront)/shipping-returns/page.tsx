@@ -13,7 +13,7 @@ export default function ShippingReturnsPage() {
       <section className="mt-10">
         <h2 className="font-display text-2xl font-semibold text-ink-900">Shipping</h2>
         <ul className="mt-4 flex flex-col gap-2 text-ink-600">
-          <li>&bull; Standard shipping: $6.99, free on orders over $75</li>
+          <li>&bull; Available delivery methods and current prices are shown during checkout.</li>
           <li>&bull; Orders ship within 1-2 business days from our workshop</li>
           <li>&bull; Estimated delivery: 3-7 business days within the continental US</li>
           <li>&bull; Fragile items (glass, resin) are packed with extra protective materials</li>

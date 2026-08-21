@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ProductImage } from "@/components/ProductImage";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function ProductGallery({
   images,
@@ -10,6 +11,7 @@ export function ProductGallery({
   images: { url: string; alt: string }[];
 }) {
   const [active, setActive] = useState(0);
+  const { t } = useI18n();
   const current = images[active] ?? images[0];
 
   return (
@@ -30,11 +32,11 @@ export function ProductGallery({
             <button
               key={i}
               onClick={() => setActive(i)}
-              aria-label={`View image ${i + 1}`}
+              aria-label={t("viewImage", { count: i + 1 })}
               aria-current={i === active}
               className={cn(
                 "h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-2 ring-transparent",
-                i === active && "ring-terracotta-500"
+                i === active && "ring-primary"
               )}
             >
               <ProductImage src={img.url} alt={img.alt} className="h-full w-full" iconClassName="h-1/2 w-1/2" />

@@ -85,7 +85,7 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/shop"
-                className="inline-flex items-center gap-2 bg-sage-900 px-6 py-3.5 text-sm font-semibold text-cream-50 transition-colors hover:bg-sage-800"
+                className="inline-flex items-center gap-2 bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
               >
                 {t("shopAllSupplies")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Link>
@@ -263,11 +263,11 @@ export default async function HomePage() {
 
       {/* Newsletter */}
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-terracotta-600 px-6 py-10 text-center sm:px-12">
+        <div className="rounded-3xl bg-sage-700 px-6 py-10 text-center sm:px-12">
           <h2 className="font-display text-2xl font-semibold text-cream-50 sm:text-3xl">
             {t("newsletterOffer")}
           </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-terracotta-100">
+          <p className="mx-auto mt-2 max-w-md text-sm text-sage-100">
             {t("newsletterDescription")}
           </p>
           <div className="mt-5 flex justify-center">

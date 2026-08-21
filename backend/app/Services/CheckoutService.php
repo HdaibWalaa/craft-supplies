@@ -13,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 class CheckoutService
 {
-    public function __construct(private readonly CartService $carts, private readonly DiscountService $discounts) {}
+    public function __construct(private readonly CartService $carts, private readonly DiscountService $discounts, private readonly ShippingRateResolver $shippingRates) {}
 
     public function create(?User $user, array $data): Order
     {
@@ -32,19 +32,32 @@ class CheckoutService
                 $subtotal += $this->cents($variant->sale_price ?? $variant->price) * $item->quantity;
             }
             [$discount, $discountAmount] = $this->discounts->validate($data['discount_code'] ?? null, $subtotal, true);
-            $shipping = $data['shipping_method'] === 'express' ? 1899 : ($subtotal >= 7500 ? 0 : 699);
+            $shippingRate = $this->shippingRates->rateFor($data['governorate'], $data['shipping_method_id'], true);
+            if (! $shippingRate) {
+                throw ValidationException::withMessages(['shipping_method_id' => ['No active delivery rate is available for the selected governorate and method.']]);
+            }
+            $shippingMethod = $shippingRate->method;
+            $shippingZone = $shippingRate->zone;
+            $shipping = $this->cents($shippingRate->price);
             $tax = (int) round(max(0, $subtotal - $discountAmount) * 0.0725);
             $total = $subtotal - $discountAmount + $shipping + $tax;
             $simulated = config('services.stripe.secret') === null || config('checkout.simulated');
             $order = Order::query()->create([
                 'order_number' => 'KW-'.Str::upper(Str::random(10)), 'access_token' => (string) Str::uuid(), 'user_id' => $user?->id, 'discount_code_id' => $discount?->id,
-                'email' => $data['email'], 'status' => $simulated ? OrderStatus::Paid : OrderStatus::Pending,
-                'payment_status' => $simulated ? PaymentStatus::Paid : PaymentStatus::Pending, 'payment_method' => $simulated ? 'simulated' : 'stripe',
-                'shipping_method' => $data['shipping_method'], 'shipping_address' => $data['shipping_address'],
-                'billing_address' => $data['billing_address'] ?? $data['shipping_address'], 'subtotal' => $subtotal / 100,
+                'email' => $user?->email, 'status' => OrderStatus::Pending,
+                'payment_status' => PaymentStatus::Pending, 'payment_method' => $simulated ? 'simulated' : 'stripe',
+                'shipping_method' => (string) $shippingMethod->id, 'shipping_method_id' => $shippingMethod->id,
+                'shipping_zone_id' => $shippingZone->id, 'shipping_zone_name' => $shippingZone->getTranslation('name', app()->getLocale()),
+                'shipping_method_name' => $shippingMethod->getTranslation('name', app()->getLocale()),
+                'shipping_estimated_days_min' => $shippingRate->estimated_days_min, 'shipping_estimated_days_max' => $shippingRate->estimated_days_max,
+                'shipping_address' => $this->addressSnapshot($data), 'billing_address' => $this->addressSnapshot($data), 'subtotal' => $subtotal / 100,
                 'discount_total' => $discountAmount / 100, 'shipping_total' => $shipping / 100, 'tax_total' => $tax / 100,
-                'total' => $total / 100, 'currency' => 'USD', 'paid_at' => $simulated ? now() : null,
+                'total' => $total / 100, 'currency' => 'JOD', 'paid_at' => null,
             ]);
+            if ($user && ($data['save_address'] ?? false)) {
+                $hasAddresses = $user->addresses()->exists();
+                $user->addresses()->create([...$this->addressSnapshot($data), 'is_default_shipping' => ! $hasAddresses]);
+            }
             foreach ($cart->items as $item) {
                 $variant = ProductVariant::query()->whereKey($item->product_variant_id)->lockForUpdate()->firstOrFail();
                 $unit = $this->cents($variant->sale_price ?? $variant->price);
@@ -53,7 +66,7 @@ class CheckoutService
                     'subtotal' => ($unit * $item->quantity) / 100, 'snapshot' => ['product_slug' => $variant->product->slug]]);
                 $variant->decrement('stock', $item->quantity);
             }
-            $order->payments()->create(['provider' => $simulated ? 'simulated' : 'stripe', 'status' => $simulated ? PaymentStatus::Paid : PaymentStatus::Pending, 'amount' => $total / 100, 'currency' => 'USD']);
+            $order->payments()->create(['provider' => $simulated ? 'simulated' : 'stripe', 'status' => PaymentStatus::Pending, 'amount' => $total / 100, 'currency' => 'JOD']);
             if ($discount) {
                 $discount->increment('usage_count');
                 DB::table('discount_usages')->insert(['discount_code_id' => $discount->id, 'order_id' => $order->id, 'user_id' => $user?->id, 'amount' => $discountAmount / 100, 'created_at' => now(), 'updated_at' => now()]);
@@ -67,6 +80,12 @@ class CheckoutService
     private function cents(string|float|int $amount): int
     {
         return (int) round((float) $amount * 100);
+    }
+
+    private function addressSnapshot(array $data): array
+    {
+        return ['full_name' => $data['full_name'], 'phone' => $data['phone'], 'governorate' => $data['governorate'],
+            'address' => $data['address'], 'country_code' => 'JO'];
     }
 
     public function cancelReservation(Order $order): void

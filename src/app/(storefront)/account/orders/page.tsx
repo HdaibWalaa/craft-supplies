@@ -6,6 +6,7 @@ import { fetchOrders } from "@/lib/api/orders";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/utils";
+import { getLocale } from "@/lib/i18n/server";
 
 export const metadata: Metadata = { title: "My Orders" };
 
@@ -14,6 +15,7 @@ const STATUS_VARIANT = {
 } as const;
 
 export default async function OrdersPage() {
+  const locale = await getLocale();
   const session = await auth();
   const orders = session ? await fetchOrders() : [];
 
@@ -43,7 +45,7 @@ export default async function OrdersPage() {
                 <p className="text-xs text-ink-400">{new Date(order.createdAt).toLocaleDateString()}</p>
               </div>
               <Badge variant={STATUS_VARIANT[order.status]}>{order.status}</Badge>
-              <span className="font-semibold text-ink-900">{formatPrice(order.total)}</span>
+              <span className="font-semibold text-ink-900">{formatPrice(order.total, locale)}</span>
             </summary>
             <ul className="mt-4 flex flex-col gap-2 border-t border-ink-200 pt-4">
               {order.items.map((item) => (
@@ -52,7 +54,7 @@ export default async function OrdersPage() {
                     {item.productName} <span className="text-ink-400">&times; {item.quantity}</span>
                     <span className="block text-xs text-ink-400">{item.variantName}</span>
                   </span>
-                  <span className="text-ink-800">{formatPrice(item.unitPrice * item.quantity)}</span>
+                  <span className="text-ink-800">{formatPrice(item.unitPrice * item.quantity, locale)}</span>
                 </li>
               ))}
             </ul>

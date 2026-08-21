@@ -3,7 +3,8 @@ import type { ApiCollection } from "@/types/api";
 
 export type ApiOrderStatus = "pending" | "processing" | "paid" | "shipped" | "delivered" | "cancelled" | "refunded";
 export type ApiOrder = {
-  id: string; orderNumber: string; accessToken: string; email: string; status: ApiOrderStatus; paymentStatus: string; paymentMethod: string; shippingMethod: string;
+  id: string; orderNumber: string; accessToken: string; email: string | null; status: ApiOrderStatus; paymentStatus: string; paymentMethod: string; shippingMethod: { id: number | null; name: string; estimatedDaysMin: number | null; estimatedDaysMax: number | null };
+  shippingZone: { id: number | null; name: string | null };
   shippingAddress: Record<string, string>; subtotal: number; discountTotal: number; shippingTotal: number; taxTotal: number; total: number; currency: string;
   items: { id: string; productName: string; variantName: string; sku: string; unitPrice: number; quantity: number; subtotal: number }[]; createdAt: string;
 };

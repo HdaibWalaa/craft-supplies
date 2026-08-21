@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { ApiError, apiRequest } from "@/lib/api/client";
+import { getTranslations } from "@/lib/i18n/server";
 
 export type ReviewFormState = { error?: string; success?: boolean };
 
@@ -18,6 +19,7 @@ export async function submitReview(_previous: ReviewFormState, formData: FormDat
     revalidatePath(`/product/${productSlug}`);
     return { success: true };
   } catch (error) {
-    return { error: error instanceof ApiError ? error.message : "Your review could not be submitted." };
+    const { t } = await getTranslations();
+    return { error: error instanceof ApiError && error.errors ? Object.values(error.errors).flat()[0] : t("reviewSubmitFailed") };
   }
 }

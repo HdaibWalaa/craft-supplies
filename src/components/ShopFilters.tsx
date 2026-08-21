@@ -23,7 +23,7 @@ export function ShopFilters({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const sortOptions = [
     { value: "newest", label: t("newest") },
     { value: "price-asc", label: t("priceLowHigh") },
@@ -52,7 +52,7 @@ export function ShopFilters({
         e.preventDefault();
         submitForm();
       }}
-      className="mb-6 flex flex-wrap items-end gap-3 rounded-3xl border border-ink-200/70 bg-cream-50 p-4"
+      className="mb-6 flex flex-wrap items-end gap-3 rounded-3xl border border-border/80 bg-muted-soft/60 p-4"
     >
       <SlidersHorizontal className="mb-2.5 hidden h-4 w-4 text-ink-400 sm:block" />
 
@@ -88,7 +88,7 @@ export function ShopFilters({
           min={0}
           step="1"
           defaultValue={searchParams.get("min") ?? ""}
-          placeholder="$0"
+          placeholder={locale === "ar" ? "0 دينار" : "JOD 0"}
           className="w-24"
         />
       </div>
@@ -102,7 +102,7 @@ export function ShopFilters({
           min={0}
           step="1"
           defaultValue={searchParams.get("max") ?? ""}
-          placeholder="$200"
+          placeholder={locale === "ar" ? "200 دينار" : "JOD 200"}
           className="w-24"
         />
       </div>
@@ -114,7 +114,7 @@ export function ShopFilters({
           value="true"
           defaultChecked={searchParams.get("stock") === "true"}
           onChange={submitForm}
-          className="h-4 w-4 rounded border-ink-300 text-terracotta-600 focus-visible:ring-terracotta-500"
+          className="h-4 w-4 rounded border-border text-primary focus-visible:ring-ring"
         />
         {t("inStockOnly")}
       </label>
@@ -148,7 +148,7 @@ export function ShopFilters({
               params.set("view", "grid");
               router.push(`${pathname}?${params.toString()}`, { scroll: false });
             }}
-            className={cn("rounded-md p-1.5 cursor-pointer", view === "grid" ? "bg-terracotta-100 text-terracotta-700" : "text-ink-500")}
+            className={cn("rounded-md p-1.5 cursor-pointer", view === "grid" ? "bg-muted text-primary" : "text-ink-500")}
           >
             <LayoutGrid className="h-4 w-4" />
           </button>
@@ -161,7 +161,7 @@ export function ShopFilters({
               params.set("view", "list");
               router.push(`${pathname}?${params.toString()}`, { scroll: false });
             }}
-            className={cn("rounded-md p-1.5 cursor-pointer", view === "list" ? "bg-terracotta-100 text-terracotta-700" : "text-ink-500")}
+            className={cn("rounded-md p-1.5 cursor-pointer", view === "list" ? "bg-muted text-primary" : "text-ink-500")}
           >
             <List className="h-4 w-4" />
           </button>

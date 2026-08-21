@@ -16,16 +16,14 @@ export type VariantOption = {
   attributes: Record<string, string>;
 };
 
-function labelize(key: string) {
-  return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1");
-}
-
 export function VariantPurchasePanel({
   productName,
   variants,
+  attributeLabels = {},
 }: {
   productName: string;
   variants: VariantOption[];
+  attributeLabels?: Record<string, string>;
 }) {
   const attributeKeys = useMemo(() => {
     const keys: string[] = [];
@@ -45,13 +43,15 @@ export function VariantPurchasePanel({
     return initial;
   });
   const [qty, setQty] = useState(1);
+  const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? "");
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
 
-  const matchedVariant =
-    variants.find((v) => attributeKeys.every((k) => v.attributes[k] === selected[k])) ?? variants[0];
+  const matchedVariant = attributeKeys.length > 0
+    ? variants.find((v) => attributeKeys.every((k) => v.attributes[k] === selected[k])) ?? variants[0]
+    : variants.find((v) => v.id === selectedVariantId) ?? variants[0];
 
   const valuesForKey = (key: string) => {
     const seen: string[] = [];
@@ -97,13 +97,13 @@ export function VariantPurchasePanel({
     <div className="flex flex-col gap-5">
       <div className="flex items-baseline gap-2">
         <span className="font-display text-3xl font-semibold text-ink-900">
-          {formatPrice(matchedVariant?.price ?? variants[0]?.price ?? 0)}
+          {formatPrice(matchedVariant?.price ?? variants[0]?.price ?? 0, locale)}
         </span>
       </div>
 
       {attributeKeys.map((key) => (
         <div key={key}>
-          <p className="mb-2 text-sm font-medium text-ink-800">{labelize(key)}</p>
+          <p className="mb-2 text-sm font-medium text-ink-800">{attributeLabels[key] ?? key}</p>
           <div className="flex flex-wrap gap-2">
             {valuesForKey(key).map((value) => {
               const isSelected = selected[key] === value;
@@ -117,8 +117,8 @@ export function VariantPurchasePanel({
                   className={cn(
                     "cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                     isSelected
-                      ? "border-terracotta-600 bg-terracotta-600 text-cream-50"
-                      : "border-ink-300 text-ink-700 hover:border-terracotta-400",
+                      ? "border-primary bg-muted-soft text-primary"
+                      : "border-border text-ink-700 hover:border-sage-500 hover:bg-sage-50",
                     !available && "cursor-not-allowed opacity-40 line-through"
                   )}
                 >
@@ -129,6 +129,31 @@ export function VariantPurchasePanel({
           </div>
         </div>
       ))}
+
+      {attributeKeys.length === 0 && variants.length > 1 ? (
+        <div>
+          <p className="mb-2 text-sm font-medium text-ink-800">{t("option")}</p>
+          <div className="flex flex-wrap gap-2">
+            {variants.map((variant) => (
+              <button
+                key={variant.id}
+                type="button"
+                disabled={variant.stock <= 0}
+                onClick={() => setSelectedVariantId(variant.id)}
+                className={cn(
+                  "cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  selectedVariantId === variant.id
+                    ? "border-primary bg-muted-soft text-primary"
+                    : "border-border text-ink-700 hover:border-sage-500 hover:bg-sage-50",
+                  variant.stock <= 0 && "cursor-not-allowed opacity-40 line-through",
+                )}
+              >
+                {variant.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div>
         <p className="mb-1 text-sm font-medium text-ink-800">
@@ -191,7 +216,7 @@ export function VariantPurchasePanel({
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-[0_-4px_12px_rgba(26,22,19,0.08)] md:hidden">
         <div className="flex-1">
           <p className="truncate text-xs text-ink-500">{productName}</p>
-          <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0)}</p>
+          <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0, locale)}</p>
         </div>
         <Button size="md" disabled={outOfStock || pending} onClick={() => handlePurchase(false)}>
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : t("addToCart")}

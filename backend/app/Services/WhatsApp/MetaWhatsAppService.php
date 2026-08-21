@@ -2,6 +2,7 @@
 
 namespace App\Services\WhatsApp;
 
+use App\Enums\JordanGovernorate;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Client\PendingRequest;
@@ -94,6 +95,7 @@ class MetaWhatsAppService
             'رقم الطلب: #'.$number,
             'العميل: '.$customer,
             'الهاتف: '.$phone,
+            'المحافظة: '.(isset($order->shipping_address['governorate']) ? (JordanGovernorate::tryFrom($order->shipping_address['governorate'])?->label('ar') ?? $order->shipping_address['governorate']) : '—'),
             'البريد: '.$order->email,
             '',
             'المنتجات:',
@@ -101,11 +103,13 @@ class MetaWhatsAppService
             '',
             'المجموع الفرعي: '.$this->money($order->subtotal, $order->currency),
             'الخصم: '.$this->money($order->discount_total, $order->currency),
-            'التوصيل: '.$this->money($order->shipping_total, $order->currency),
+            'تكلفة التوصيل: '.$this->money($order->shipping_total, $order->currency),
+            'طريقة التوصيل: '.($order->shipping_method_name ?? $order->shipping_method),
             'الضريبة: '.$this->money($order->tax_total, $order->currency),
             'الإجمالي: '.$total,
             '',
             'طريقة الدفع: '.$order->payment_method,
+            'حالة الطلب: '.$this->orderStatus($order),
             'حالة الدفع: '.$paymentStatus,
             '',
             'العنوان: '.$address,
@@ -156,7 +160,7 @@ class MetaWhatsAppService
     private function customerName(Order $order): string
     {
         $address = $order->shipping_address ?? [];
-        $name = trim(implode(' ', array_filter([$address['first_name'] ?? null, $address['last_name'] ?? null])));
+        $name = trim((string) ($address['full_name'] ?? implode(' ', array_filter([$address['first_name'] ?? null, $address['last_name'] ?? null]))));
 
         return $name !== '' ? $name : ($order->user?->name ?? $order->email);
     }
@@ -182,6 +186,8 @@ class MetaWhatsAppService
     private function addressSummary(array $address): string
     {
         $parts = array_filter([
+            isset($address['governorate']) ? (JordanGovernorate::tryFrom($address['governorate'])?->label('ar') ?? $address['governorate']) : null,
+            $address['address'] ?? null,
             $address['line_1'] ?? null,
             $address['line_2'] ?? null,
             $address['city'] ?? null,
@@ -203,8 +209,16 @@ class MetaWhatsAppService
         };
     }
 
+    private function orderStatus(Order $order): string
+    {
+        return match ($order->status->value) {
+            'processing' => 'قيد التجهيز', 'paid' => 'مدفوع', 'shipped' => 'تم الشحن', 'delivered' => 'تم التوصيل',
+            'cancelled' => 'ملغي', 'refunded' => 'مسترد', default => 'قيد الانتظار',
+        };
+    }
+
     private function money(string|float|int $amount, string $currency): string
     {
-        return number_format((float) $amount, 2).' '.strtoupper($currency);
+        return number_format((float) $amount, 2).' '.(strtoupper($currency) === 'JOD' ? 'د.أ' : strtoupper($currency));
     }
 }

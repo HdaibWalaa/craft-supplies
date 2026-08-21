@@ -10,13 +10,13 @@ export default function TermsPage() {
 
       <div className="mt-8 flex flex-col gap-6 text-ink-600">
         <p>
-          These Terms of Service govern your use of the Kiln &amp; Wick Craft Supply website and
+          These Terms of Service govern your use of the Craft Supplies website and
           your purchase of products from us. By placing an order, you agree to these terms.
         </p>
         <section>
           <h2 className="font-display text-xl font-semibold text-ink-900">Orders &amp; Payment</h2>
           <p className="mt-2">
-            All prices are listed in USD and are subject to change without notice. We reserve the
+            All prices are listed in JOD and are subject to change without notice. We reserve the
             right to refuse or cancel any order, including for pricing errors or suspected fraud.
           </p>
         </section>
@@ -33,7 +33,7 @@ export default function TermsPage() {
           <h2 className="font-display text-xl font-semibold text-ink-900">Intellectual Property</h2>
           <p className="mt-2">
             All content on this site, including text, images, and branding, is the property of
-            Kiln &amp; Wick Craft Supply and may not be reproduced without permission.
+            Craft Supplies and may not be reproduced without permission.
           </p>
         </section>
         <section>

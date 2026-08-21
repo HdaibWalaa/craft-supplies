@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\JordanGovernorate;
+use App\Models\ShippingMethod;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,17 +16,20 @@ class CheckoutRequest extends FormRequest
 
     public function rules(): array
     {
-        $address = ['first_name' => ['required', 'string', 'max:100'], 'last_name' => ['required', 'string', 'max:100'], 'company' => ['nullable', 'string', 'max:150'],
-            'phone' => ['nullable', 'string', 'max:40'], 'line_1' => ['required', 'string', 'max:255'], 'line_2' => ['nullable', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:100'], 'region' => ['nullable', 'string', 'max:100'], 'postal_code' => ['nullable', 'string', 'max:30'],
-            'country_code' => ['required', 'string', 'size:2']];
-        $rules = ['cart_token' => ['nullable', 'uuid'], 'email' => ['required', 'email'], 'shipping_method' => ['required', Rule::in(['standard', 'express'])],
-            'discount_code' => ['nullable', 'string', 'max:50'], 'billing_same_as_shipping' => ['nullable', 'boolean']];
-        foreach ($address as $field => $fieldRules) {
-            $rules["shipping_address.{$field}"] = $fieldRules;
-            $rules["billing_address.{$field}"] = ['nullable', ...array_slice($fieldRules, 1)];
-        }
+        return [
+            'cart_token' => ['nullable', 'uuid'], 'full_name' => ['required', 'string', 'max:200'],
+            'phone' => ['required', 'string', 'max:40', 'regex:/^(?:\+?962|00962|0)?7\d{8}$/'],
+            'governorate' => ['required', Rule::enum(JordanGovernorate::class)], 'address' => ['required', 'string', 'max:1000'],
+            'save_address' => ['nullable', 'boolean'], 'shipping_method_id' => ['required', 'integer', Rule::exists(ShippingMethod::class, 'id')->where('is_active', true)],
+            'discount_code' => ['nullable', 'string', 'max:50'],
+        ];
+    }
 
-        return $rules;
+    protected function prepareForValidation(): void
+    {
+        $phone = preg_replace('/[\s()-]/', '', (string) $this->input('phone'));
+        if (is_string($phone) && str_starts_with($phone, '00962')) $phone = '+962'.substr($phone, 5);
+        if (is_string($phone) && preg_match('/^7\d{8}$/', $phone)) $phone = '0'.$phone;
+        $this->merge(['phone' => $phone, 'save_address' => $this->boolean('save_address')]);
     }
 }

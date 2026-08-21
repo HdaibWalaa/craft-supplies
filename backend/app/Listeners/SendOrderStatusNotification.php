@@ -11,6 +11,9 @@ class SendOrderStatusNotification implements ShouldQueue
     public function handle(OrderStatusChanged $event): void
     {
         $order = $event->order;
+        if (! $order->email) {
+            return;
+        }
         Mail::raw("Order {$order->order_number} is now {$order->status->value}.", fn ($mail) => $mail->to($order->email)->subject("Order {$order->order_number} update"));
     }
 }

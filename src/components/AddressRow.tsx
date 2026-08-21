@@ -10,12 +10,9 @@ import { cn } from "@/lib/utils";
 export type AddressData = {
   id: string;
   fullName: string;
-  line1: string;
-  line2: string | null;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  phone: string;
+  governorate: string;
+  address: string;
   isDefault: boolean;
 };
 
@@ -29,11 +26,10 @@ export function AddressRow({ address }: { address: AddressData }) {
         {address.isDefault ? <Badge variant="sage" className="mb-2">Default</Badge> : null}
         <p className="font-medium text-ink-900">{address.fullName}</p>
         <p className="text-sm text-ink-500">
-          {address.line1}
-          {address.line2 ? `, ${address.line2}` : ""}
+          {address.phone}
         </p>
         <p className="text-sm text-ink-500">
-          {address.city}, {address.state} {address.postalCode}, {address.country}
+          {address.governorate} — {address.address}
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-2">

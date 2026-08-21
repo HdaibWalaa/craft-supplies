@@ -31,7 +31,7 @@ export function ProductCard({
   product: ProductCardData;
   className?: string;
 }) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const images = parseImages(product.images);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
@@ -45,10 +45,10 @@ export function ProductCard({
           className="aspect-square w-full transition-transform duration-300 group-hover:scale-[1.03]"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
-        <div className="absolute left-2 top-2 flex flex-col gap-1.5">
+        <div className="absolute start-2 top-2 flex flex-col gap-1.5">
           {product.isNewArrival ? <Badge variant="sage">{t("new")}</Badge> : null}
-          {product.isBundle ? <Badge variant="terracotta">Kit</Badge> : null}
-          {product.compareAtPrice ? <Badge variant="red">{t("sale")}</Badge> : null}
+          {product.isBundle ? <Badge variant="terracotta">{t("kit")}</Badge> : null}
+          {product.compareAtPrice ? <Badge variant="terracotta">{t("sale")}</Badge> : null}
           {!inStock ? <Badge variant="ink">{t("outOfStock")}</Badge> : null}
         </div>
       </Link>
@@ -66,10 +66,10 @@ export function ProductCard({
 
       <div className="mt-2 flex items-center justify-between gap-2">
         <div className="flex items-baseline gap-1.5">
-          <span className="font-semibold text-ink-900">{formatPrice(product.basePrice)}</span>
+          <span className="font-semibold text-ink-900">{formatPrice(product.basePrice, locale)}</span>
           {product.compareAtPrice ? (
             <span className="text-sm text-ink-400 line-through">
-              {formatPrice(product.compareAtPrice)}
+              {formatPrice(product.compareAtPrice, locale)}
             </span>
           ) : null}
         </div>

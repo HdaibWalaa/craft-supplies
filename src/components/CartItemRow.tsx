@@ -19,7 +19,7 @@ export type CartItemData = {
 export function CartItemRow({ item }: { item: CartItemData }) {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
 
   let image = "";
   try {
@@ -53,7 +53,7 @@ export function CartItemRow({ item }: { item: CartItemData }) {
             </Link>
             <p className="text-sm text-ink-500">{item.variant.name}</p>
           </div>
-          <span className="font-semibold text-ink-900">{formatPrice(item.variant.price * item.quantity)}</span>
+          <span className="font-semibold text-ink-900">{formatPrice(item.variant.price * item.quantity, locale)}</span>
         </div>
 
         <div className="mt-auto flex items-center justify-between pt-3">

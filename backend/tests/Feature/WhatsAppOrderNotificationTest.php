@@ -9,6 +9,8 @@ use App\Listeners\SendAdminWhatsAppOrderNotification;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ShippingMethod;
+use App\Models\ShippingZone;
 use App\Models\User;
 use App\Services\WhatsApp\MetaWhatsAppService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -135,7 +137,7 @@ class WhatsAppOrderNotificationTest extends TestCase
 
         $this->postJson('/api/v1/checkout', $this->checkoutPayload($token))->assertCreated();
 
-        Event::assertDispatched(OrderPlaced::class, fn (OrderPlaced $event) => $event->order->payment_status === PaymentStatus::Paid);
+        Event::assertDispatched(OrderPlaced::class, fn (OrderPlaced $event) => $event->order->status === OrderStatus::Pending && $event->order->payment_status === PaymentStatus::Pending);
         $this->assertDatabaseHas('product_variants', ['id' => $variant->id, 'stock' => 4]);
     }
 
@@ -156,7 +158,7 @@ class WhatsAppOrderNotificationTest extends TestCase
         }
 
         $this->assertDatabaseCount('orders', 1);
-        $this->assertDatabaseHas('orders', ['payment_status' => 'paid', 'admin_whatsapp_notified_at' => null]);
+        $this->assertDatabaseHas('orders', ['status' => 'pending', 'payment_status' => 'pending', 'admin_whatsapp_notified_at' => null]);
         Http::assertSentCount(1);
     }
 
@@ -211,8 +213,9 @@ class WhatsAppOrderNotificationTest extends TestCase
 
     private function checkoutPayload(string $token): array
     {
-        return ['cart_token' => $token, 'email' => 'buyer@example.test', 'shipping_method' => 'standard', 'shipping_address' => [
-            'first_name' => 'Test', 'last_name' => 'Buyer', 'phone' => '0790000000', 'line_1' => '1 Maker Street', 'city' => 'Amman', 'region' => 'Amman', 'postal_code' => '11118', 'country_code' => 'JO',
-        ]];
+        $method = ShippingMethod::query()->create(['name' => ['ar' => 'توصيل', 'en' => 'Delivery'], 'price' => 5, 'estimated_days_min' => 1, 'estimated_days_max' => 2, 'is_active' => true]);
+        foreach (ShippingZone::query()->get() as $zone) $method->zoneRates()->create(['shipping_zone_id' => $zone->id, 'price' => 5, 'estimated_days_min' => 1, 'estimated_days_max' => 2, 'is_active' => true, 'is_default' => true]);
+        return ['cart_token' => $token, 'full_name' => 'Test Buyer', 'phone' => '0790000000', 'governorate' => 'amman',
+            'address' => '1 Maker Street', 'shipping_method_id' => $method->id];
     }
 }

@@ -59,4 +59,24 @@ class RequestedCatalogSeederTest extends TestCase
             ->assertJsonPath('data.name', 'Soy Wax')
             ->assertJsonPath('data.category.name', 'Candles & Fragrances Supplies');
     }
+
+    public function test_representative_product_from_every_catalog_type_is_bilingual(): void
+    {
+        $this->seed(RequestedCatalogSeeder::class);
+
+        $catalog = require database_path('data/requested-catalog.php');
+        foreach ($catalog as $category) {
+            [$slug, $arabicName, $englishName] = $category['products'][0];
+
+            $this->withHeader('Accept-Language', 'ar')->getJson('/api/v1/products/'.$slug)
+                ->assertOk()
+                ->assertJsonPath('data.name', $arabicName)
+                ->assertJsonPath('data.category.name', $category['ar']);
+
+            $this->withHeader('Accept-Language', 'en')->getJson('/api/v1/products/'.$slug)
+                ->assertOk()
+                ->assertJsonPath('data.name', $englishName)
+                ->assertJsonPath('data.category.name', $category['en']);
+        }
+    }
 }

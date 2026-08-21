@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 
 const VARIANTS = {
   primary:
-    "bg-terracotta-600 text-cream-50 hover:bg-terracotta-700 active:bg-terracotta-800 shadow-sm",
+    "bg-primary text-primary-foreground hover:bg-primary-hover active:bg-sage-900 shadow-sm",
   secondary:
-    "bg-sage-600 text-cream-50 hover:bg-sage-700 active:bg-sage-800 shadow-sm",
+    "border border-border bg-secondary text-secondary-foreground hover:bg-secondary-hover active:bg-cream-400 shadow-sm",
   outline:
-    "border border-ink-300 text-ink-800 bg-transparent hover:bg-ink-100 active:bg-ink-200",
-  ghost: "text-ink-800 bg-transparent hover:bg-ink-100 active:bg-ink-200",
+    "border border-primary text-primary bg-transparent hover:bg-muted-soft active:bg-muted",
+  ghost: "text-foreground bg-transparent hover:bg-muted-soft active:bg-muted",
   danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
 } as const;
 
@@ -36,7 +36,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-full font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none cursor-pointer",
+          "inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-ink-200 disabled:text-ink-500 disabled:shadow-none cursor-pointer",
           VARIANTS[variant],
           SIZES[size],
           className

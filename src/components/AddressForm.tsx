@@ -6,12 +6,16 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import { Plus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+import type { ApiGovernorate } from "@/lib/api/shipping";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 const initialState: AddressFormState = {};
 
-export function AddressForm() {
+export function AddressForm({ governorates }: { governorates: ApiGovernorate[] }) {
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(addAddress, initialState);
+  const { t } = useI18n();
 
   if (!open) {
     return (
@@ -26,35 +30,19 @@ export function AddressForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" name="fullName" required />
+          <Input id="fullName" name="full_name" required />
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <Label htmlFor="line1">Address Line 1</Label>
-          <Input id="line1" name="line1" required />
+          <Label htmlFor="phone">{t("phoneNumber")}</Label>
+          <Input id="phone" name="phone" type="tel" required dir="ltr" />
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <Label htmlFor="line2">Address Line 2 (optional)</Label>
-          <Input id="line2" name="line2" />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="city">City</Label>
-          <Input id="city" name="city" required />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="state">State</Label>
-          <Input id="state" name="state" required />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="postalCode">Postal Code</Label>
-          <Input id="postalCode" name="postalCode" required />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="country">Country</Label>
-          <Input id="country" name="country" defaultValue="US" required />
+          <Label htmlFor="governorate">{t("governorate")}</Label>
+          <Select name="governorate" required><SelectTrigger id="governorate"><SelectValue placeholder={t("selectGovernorate")} /></SelectTrigger><SelectContent>{governorates.map((item) => <SelectItem key={item.code} value={item.code}>{item.label}</SelectItem>)}</SelectContent></Select>
         </div>
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <Label htmlFor="phone">Phone (optional)</Label>
-          <Input id="phone" name="phone" type="tel" />
+          <Label htmlFor="address">{t("address")}</Label>
+          <textarea id="address" name="address" required rows={3} className="w-full rounded-lg border border-ink-300 bg-cream-50 px-3.5 py-3 text-sm text-ink-900" />
         </div>
       </div>
       {state?.error ? <p className="text-sm text-red-600">{state.error}</p> : null}

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -31,7 +30,7 @@ class StripeWebhookController extends Controller
                 if ($orderId) {
                     $order = Order::query()->lockForUpdate()->find($orderId);
                     if ($order && $order->payment_status !== PaymentStatus::Paid) {
-                        $order->update(['status' => OrderStatus::Paid, 'payment_status' => PaymentStatus::Paid, 'paid_at' => now()]);
+                        $order->update(['payment_status' => PaymentStatus::Paid, 'paid_at' => now()]);
                         $order->payments()->where('provider', 'stripe')->update(['status' => PaymentStatus::Paid]);
                     }
                 }
@@ -49,7 +48,7 @@ class StripeWebhookController extends Controller
                         DB::table('discount_codes')->where('id', $order->discount_code_id)->where('usage_count', '>', 0)->decrement('usage_count');
                         DB::table('discount_usages')->where('order_id', $order->id)->delete();
                     }
-                    $order->update(['status' => OrderStatus::Cancelled, 'payment_status' => PaymentStatus::Failed]);
+                    $order->update(['status' => \App\Enums\OrderStatus::Cancelled, 'payment_status' => PaymentStatus::Failed]);
                     $order->payments()->where('provider', 'stripe')->update(['status' => PaymentStatus::Failed]);
                 }
             }
