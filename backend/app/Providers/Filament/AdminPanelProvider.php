@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName('Craft Supplies')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

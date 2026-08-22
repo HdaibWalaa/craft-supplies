@@ -6,7 +6,7 @@ const en = {
   switchLanguage: "Language",
   freeShippingBanner: "Delivery available across Jordan",
   shopNewArrivals: "Shop new arrivals",
-  brandSubtitle: "Handmade Craft Supply",
+  brandSubtitle: "Handmade Craft Supplies",
   openMenu: "Open menu",
   closeMenu: "Close menu",
   menu: "Menu",
@@ -409,7 +409,7 @@ const ar: Dictionary = {
   checkout: "إتمام الطلب",
   orderReceived: "تم استلام طلبك بنجاح",
   orderPendingReview: "طلبك قيد المراجعة",
-  siteTitle: "مستلزمات الحرف اليدوية",
+  siteTitle: "Craft Supplies",
   siteDescription: "مواد وأدوات لصناعة الشموع والراتنج والصابون والقوالب والعطور والحرف الخرسانية والقطع الخشبية.",
 };
 

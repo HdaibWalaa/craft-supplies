@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "craft-supplies/backend",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "The Laravel API and Filament admin application for Craft Supplies.",
+    "keywords": ["craft-supplies", "laravel", "ecommerce"],
     "license": "MIT",
     "require": {
         "php": "^8.3",
