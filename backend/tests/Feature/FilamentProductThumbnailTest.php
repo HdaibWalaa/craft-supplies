@@ -91,6 +91,43 @@ class FilamentProductThumbnailTest extends TestCase
             ->assertSchemaStateSet(['thumbnail' => $mediaUuid]);
     }
 
+    public function test_multiple_product_images_are_persisted_and_rehydrated(): void
+    {
+        $category = $this->createCategory('product-images-category');
+        $product = Product::query()->create([
+            'category_id' => $category->id,
+            'name' => ['en' => 'Gallery product', 'ar' => 'Gallery product'],
+            'slug' => 'gallery-product',
+            'short_description' => ['en' => 'Short', 'ar' => 'Short'],
+            'description' => ['en' => 'Description', 'ar' => 'Description'],
+            'base_price' => 10,
+            'status' => 'active',
+            'is_visible' => true,
+        ]);
+
+        Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+            ->fillForm([
+                'product_images' => [
+                    UploadedFile::fake()->image('image-1.jpg'),
+                    UploadedFile::fake()->image('image-2.jpg'),
+                    UploadedFile::fake()->image('image-3.jpg'),
+                    UploadedFile::fake()->image('image-4.jpg'),
+                ],
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $media = $product->refresh()->getMedia('product_images');
+        $this->assertCount(4, $media);
+        $this->assertSame(4, $product->media()->where('collection_name', 'product_images')->count());
+        $this->assertNull($product->getFirstMedia('thumbnail'));
+
+        $state = $media->pluck('uuid')->all();
+
+        Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+            ->assertSchemaStateSet(['product_images' => $state]);
+    }
+
     private function createCategory(string $slug): Category
     {
         return Category::query()->create([

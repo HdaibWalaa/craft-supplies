@@ -32,7 +32,17 @@ class ProductForm
             Select::make('status')->options(ProductStatus::class)->default(ProductStatus::Active)->required(),
             Toggle::make('is_visible')->default(true),
             Toggle::make('is_featured'), Toggle::make('is_new_arrival'), Toggle::make('is_bundle'),
-            SpatieMediaLibraryFileUpload::make('product_images')->collection('product_images')->image()->multiple()->reorderable()->responsiveImages()->maxSize(5120)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])->columnSpanFull(),
+            SpatieMediaLibraryFileUpload::make('product_images')
+                ->label('Product images')
+                ->collection('product_images')
+                ->image()
+                ->multiple()
+                ->reorderable()
+                ->panelLayout('grid')
+                ->responsiveImages()
+                ->maxSize(5120)
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->columnSpanFull(),
             SpatieMediaLibraryFileUpload::make('thumbnail')->collection('thumbnail')->image()->maxSize(5120),
             Repeater::make('variants')->relationship()->schema([
                 TextInput::make('name.en')->label('Name (English)')->required(),
