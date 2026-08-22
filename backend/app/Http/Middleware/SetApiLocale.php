@@ -19,6 +19,9 @@ class SetApiLocale
 
         app()->setLocale($locale);
 
-        return $next($request);
+        $response = $next($request);
+        $response->headers->set('Vary', 'Accept-Language', false);
+
+        return $response;
     }
 }

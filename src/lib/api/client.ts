@@ -1,4 +1,4 @@
-import { normalizeLocale, type Locale } from "@/lib/i18n/config";
+import { LOCALE_COOKIE, normalizeLocale, type Locale } from "@/lib/i18n/config";
 import { clientStorage } from "@/lib/storage";
 
 export class ApiError extends Error {
@@ -51,7 +51,7 @@ export function serializeApiQuery(query: ApiQuery = {}): string {
 export async function apiRequest<T>(path: string, options: ApiOptions = {}): Promise<T> {
   const baseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8000/api/v1";
   const { locale, query, revalidate, ...requestOptions } = options;
-  const activeLocale = normalizeLocale(locale ?? localStorage.getItem("kw_locale") ?? undefined);
+  const activeLocale = normalizeLocale(locale ?? localStorage.getItem(LOCALE_COOKIE) ?? undefined);
   const requestHeaders = new Headers(options.headers);
   requestHeaders.set("Accept", "application/json");
   requestHeaders.set("Accept-Language", activeLocale);

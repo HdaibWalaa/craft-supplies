@@ -136,7 +136,27 @@ class CatalogApiTest extends TestCase
         $this->withHeader('Accept-Language', 'en-US,en;q=0.9')
             ->getJson('/api/v1/categories')
             ->assertOk()
+            ->assertHeader('Vary', 'Accept-Language')
             ->assertJsonPath('data.0.name', 'Candles');
+    }
+
+    public function test_missing_english_translation_is_not_replaced_with_arabic(): void
+    {
+        Category::query()->create([
+            'name' => ['ar' => 'العربية فقط'],
+            'slug' => 'arabic-only',
+            'is_active' => true,
+        ]);
+
+        $this->withHeader('Accept-Language', 'en')
+            ->getJson('/api/v1/categories')
+            ->assertOk()
+            ->assertJsonPath('data.0.name', '');
+
+        $this->withHeader('Accept-Language', 'ar')
+            ->getJson('/api/v1/categories')
+            ->assertOk()
+            ->assertJsonPath('data.0.name', 'العربية فقط');
     }
 
     public function test_category_endpoints_expose_spatie_media_image(): void
