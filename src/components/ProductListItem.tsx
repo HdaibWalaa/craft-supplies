@@ -3,13 +3,13 @@ import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import type { ProductCardData } from "@/components/ProductCard";
-import { parseImages } from "@/lib/parse";
+import { getProductPreviewImage } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function ProductListItem({ product }: { product: ProductCardData }) {
   const { locale } = useI18n();
-  const images = parseImages(product.images);
+  const image = getProductPreviewImage(product);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
 
@@ -17,8 +17,8 @@ export function ProductListItem({ product }: { product: ProductCardData }) {
     <div className="flex gap-4 rounded-3xl border border-ink-200/70 bg-cream-50 p-3 shadow-[var(--shadow-card)] sm:gap-5 sm:p-4">
       <Link href={`/product/${product.slug}`} className="shrink-0">
         <ProductImage
-          src={images[0]?.url ?? ""}
-          alt={images[0]?.alt ?? product.name}
+          src={image?.url ?? ""}
+          alt={image?.alt || product.name}
           className="h-28 w-28 rounded-xl sm:h-36 sm:w-36"
           sizes="150px"
         />

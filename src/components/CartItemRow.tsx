@@ -9,7 +9,7 @@ import { useI18n } from "@/components/i18n/LocaleProvider";
 export type CartItemData = {
   id: string;
   quantity: number;
-  product: { name: string; slug: string; images: string };
+  product: { name: string; slug: string; images: string; thumbnail?: string };
   variant: { id: string; name: string; price: number; stock: number };
 };
 
@@ -17,10 +17,12 @@ export function CartItemRow({ item }: { item: CartItemData }) {
   const [pending, startTransition] = useTransition();
   const { locale, t } = useI18n();
 
-  let image = "";
-  try {
-    image = JSON.parse(item.product.images)[0]?.url ?? "";
-  } catch {}
+  let image = item.product.thumbnail ?? "";
+  if (!image) {
+    try {
+      image = JSON.parse(item.product.images)[0]?.url ?? "";
+    } catch {}
+  }
 
   function updateQty(qty: number) {
     startTransition(async () => {

@@ -3,7 +3,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
 import { QuickAddButton } from "@/components/QuickAddButton";
 import { Badge } from "@/components/ui/Badge";
-import { parseImages } from "@/lib/parse";
+import { getProductPreviewImage } from "@/lib/parse";
 import { formatPrice, cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
@@ -15,6 +15,7 @@ export type ProductCardData = {
   basePrice: number;
   compareAtPrice: number | null;
   images: string | { url: string; alt?: string }[];
+  thumbnail?: { url: string; alt?: string } | null;
   rating: number;
   reviewCount: number;
   isNewArrival: boolean;
@@ -30,7 +31,7 @@ export function ProductCard({
   className?: string;
 }) {
   const { locale, t } = useI18n();
-  const images = parseImages(product.images);
+  const image = getProductPreviewImage(product);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
 
@@ -38,8 +39,8 @@ export function ProductCard({
     <div className={cn("group flex flex-col", className)}>
       <Link href={`/product/${product.slug}`} className="relative block overflow-hidden rounded-3xl">
         <ProductImage
-          src={images[0]?.url ?? ""}
-          alt={images[0]?.alt ?? product.name}
+          src={image?.url ?? ""}
+          alt={image?.alt || product.name}
           className="aspect-square w-full transition-transform duration-300 group-hover:scale-[1.03]"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />

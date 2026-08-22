@@ -10,6 +10,7 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         $media = $this->whenLoaded('media', fn () => MediaResource::collection($this->getMedia('product_images')));
+        $thumbnail = $this->whenLoaded('media', fn () => MediaResource::make($this->getFirstMedia('thumbnail')));
         $attributes = $this->whenLoaded('attributeValues', fn () => $this->attributeValues->map(fn ($value) => [
             'id' => $value->id,
             'name' => $value->attribute->name,
@@ -38,6 +39,7 @@ class ProductResource extends JsonResource
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
             'images' => $media,
+            'thumbnail' => $thumbnail,
             'attributes' => $attributes,
             'specifications' => $this->specifications ?? [],
             'safetyWarnings' => $this->safety_warnings,

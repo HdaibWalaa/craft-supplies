@@ -7,6 +7,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { formatPrice, cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 import { fetchProducts } from "@/lib/api/products";
+import { getProductPreviewImage } from "@/lib/parse";
 
 type IndexEntry = {
   id: string;
@@ -35,7 +36,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
     async function loadIndex() {
       if (!cachedIndex || cachedIndexLocale !== locale) {
         const products = (await fetchProducts({ per_page: 48 })).data;
-        cachedIndex = products.map((product) => ({ id: product.id, name: product.name, slug: product.slug, shortDescription: product.shortDescription, price: product.basePrice, image: product.images[0]?.url ?? "", categoryName: product.category.name, categorySlug: product.category.slug }));
+        cachedIndex = products.map((product) => ({ id: product.id, name: product.name, slug: product.slug, shortDescription: product.shortDescription, price: product.basePrice, image: getProductPreviewImage(product)?.url ?? "", categoryName: product.category.name, categorySlug: product.category.slug }));
         cachedIndexLocale = locale;
       }
       fuseRef.current = new Fuse(cachedIndex ?? [], {

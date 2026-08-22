@@ -7,6 +7,17 @@ export function parseImages(images: string | { url: string; alt?: string }[]): {
   }
 }
 
+export function getProductPreviewImage(product: {
+  thumbnail?: { url: string; alt?: string } | null;
+  images: string | { url: string; alt?: string }[];
+}): { url: string; alt: string } | undefined {
+  if (product.thumbnail?.url) {
+    return { url: product.thumbnail.url, alt: product.thumbnail.alt ?? "" };
+  }
+
+  return parseImages(product.images)[0];
+}
+
 export function parseJsonObject(json: string | Record<string, string> | { slug: string; value: string }[] | null | undefined): Record<string, string> {
   if (!json) return {};
   if (Array.isArray(json)) return Object.fromEntries(json.map((item) => [item.slug, item.value]));

@@ -1,7 +1,7 @@
 import Link from "@/routing/Link";
 import { ProductImage } from "@/components/ProductImage";
 import { QuickAddButton } from "@/components/QuickAddButton";
-import { parseImages } from "@/lib/parse";
+import { getProductPreviewImage } from "@/lib/parse";
 import { formatPrice } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
@@ -11,6 +11,7 @@ export type GiftKitProduct = {
   name: string;
   shortDescription: string;
   images: string | { url: string; alt?: string }[];
+  thumbnail?: { url: string; alt?: string } | null;
   basePrice: number;
   compareAtPrice: number | null;
   variants: { id: string; price: number; stock: number }[];
@@ -18,7 +19,7 @@ export type GiftKitProduct = {
 
 export function GiftKitCard({ product, includes }: { product: GiftKitProduct; includes: string[] }) {
   const { locale } = useI18n();
-  const image = parseImages(product.images)[0];
+  const image = getProductPreviewImage(product);
   const defaultVariant = product.variants[0];
   const inStock = product.variants.some((v) => v.stock > 0);
 

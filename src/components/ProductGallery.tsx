@@ -5,12 +5,14 @@ import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function ProductGallery({
   images,
+  initialImage,
 }: {
   images: { url: string; alt: string }[];
+  initialImage?: { url: string; alt: string };
 }) {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number | null>(null);
   const { t } = useI18n();
-  const current = images[active] ?? images[0];
+  const current = active === null ? (initialImage ?? images[0]) : (images[active] ?? initialImage ?? images[0]);
 
   return (
     <div>

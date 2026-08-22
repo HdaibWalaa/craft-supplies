@@ -3,7 +3,7 @@ import Link from "@/routing/Link";
 import { ArrowRight } from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
 import { StarRating } from "@/components/StarRating";
-import { parseImages } from "@/lib/parse";
+import { getProductPreviewImage } from "@/lib/parse";
 import { formatPrice, cn } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 
@@ -12,6 +12,7 @@ export type BestSellerProduct = {
   slug: string;
   name: string;
   images: string | { url: string; alt?: string }[];
+  thumbnail?: { url: string; alt?: string } | null;
   basePrice: number;
   rating: number;
   reviewCount: number;
@@ -76,7 +77,7 @@ export function BestSellersSection({ products }: { products: BestSellerProduct[]
 
       <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-6">
         {visible.map((p) => {
-          const image = parseImages(p.images)[0];
+          const image = getProductPreviewImage(p);
           const badge = p.isNewArrival ? t("new") : t("bestSeller");
           return (
             <Link key={p.id} href={`/product/${p.slug}`} className="group flex flex-col">

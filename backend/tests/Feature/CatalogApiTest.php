@@ -179,6 +179,43 @@ class CatalogApiTest extends TestCase
             ->assertJsonPath('data.image.url', fn (string $url): bool => str_contains($url, '/storage/'));
     }
 
+    public function test_product_api_exposes_thumbnail_separately_from_gallery_images(): void
+    {
+        Storage::fake('public');
+        $category = Category::query()->create([
+            'name' => ['en' => 'Candles'],
+            'slug' => 'thumbnail-category',
+            'is_active' => true,
+        ]);
+        $product = Product::query()->create([
+            'category_id' => $category->id,
+            'name' => ['en' => 'Thumbnail Product'],
+            'slug' => 'thumbnail-product',
+            'short_description' => ['en' => 'Short description'],
+            'description' => ['en' => 'Description'],
+            'base_price' => 10,
+            'status' => 'active',
+            'is_visible' => true,
+        ]);
+        $product->variants()->create([
+            'name' => ['en' => 'Default'],
+            'sku' => 'THUMBNAIL-PRODUCT',
+            'price' => 10,
+            'stock' => 1,
+        ]);
+        $product->addMedia(UploadedFile::fake()->image('gallery.jpg'))
+            ->toMediaCollection('product_images');
+        $product->addMedia(UploadedFile::fake()->image('thumbnail.jpg'))
+            ->toMediaCollection('thumbnail');
+
+        $this->withHeader('Accept-Language', 'en')
+            ->getJson('/api/v1/products/thumbnail-product')
+            ->assertOk()
+            ->assertJsonPath('data.thumbnail.url', fn (string $url): bool => str_contains($url, '/storage/'))
+            ->assertJsonCount(1, 'data.images')
+            ->assertJsonPath('data.images.0.url', fn (string $url): bool => str_contains($url, '/storage/'));
+    }
+
     public function test_boolean_product_filters_accept_query_string_ones_and_zeroes(): void
     {
         $category = Category::query()->create([

@@ -3,6 +3,7 @@ import Fuse from "fuse.js";
 import { ProductGrid } from "@/components/ProductRail";
 import type { ProductCardData } from "@/components/ProductCard";
 import { fetchProducts } from "@/lib/api/products";
+import { getProductPreviewImage } from "@/lib/parse";
 
 type IndexEntry = {
   id: string;
@@ -21,7 +22,7 @@ export function FuzzySearchFallback({ query }: { query: string }) {
     let cancelled = false;
     async function run() {
       const products = (await fetchProducts({ per_page: 48 })).data;
-      const index: IndexEntry[] = products.map((product) => ({ id: product.id, name: product.name, slug: product.slug, shortDescription: product.shortDescription, price: product.basePrice, image: product.images[0]?.url ?? "", categoryName: product.category.name }));
+      const index: IndexEntry[] = products.map((product) => ({ id: product.id, name: product.name, slug: product.slug, shortDescription: product.shortDescription, price: product.basePrice, image: getProductPreviewImage(product)?.url ?? "", categoryName: product.category.name }));
       const fuse = new Fuse(index, {
         keys: ["name", "shortDescription", "categoryName"],
         threshold: 0.4,

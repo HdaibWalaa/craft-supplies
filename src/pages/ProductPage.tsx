@@ -47,6 +47,9 @@ export default async function ProductPage({
   }
 
   const images = parseImages(product.images);
+  const thumbnail = product.thumbnail?.url
+    ? { url: product.thumbnail.url, alt: product.thumbnail.alt || product.name }
+    : undefined;
   const specifications = parseJsonObject(product.specifications);
   const details = [
     ...Object.entries(specifications),
@@ -99,7 +102,7 @@ export default async function ProductPage({
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <ProductGallery images={images} />
+        <ProductGallery images={images} initialImage={thumbnail} />
 
         <div className="text-start">
           {product.isBundle ? <Badge variant="terracotta" className="mb-2">{t("kitBundle")}</Badge> : null}

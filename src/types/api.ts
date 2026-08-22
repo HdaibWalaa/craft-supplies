@@ -58,6 +58,7 @@ export type ApiProduct = {
   category: ApiCategory;
   variants: ApiProductVariant[];
   images: ApiMedia[];
+  thumbnail: ApiMedia | null;
   attributes: ApiProductAttribute[];
   specifications: Record<string, string>;
   safetyWarnings: string | null;
