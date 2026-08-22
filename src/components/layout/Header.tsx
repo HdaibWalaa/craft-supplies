@@ -12,7 +12,7 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-card/95 backdrop-blur supports-backdrop-blur:bg-card/85">
       <div className="bg-sage-300 text-sage-950">
-        <p className="mx-auto max-w-7xl px-4 py-2 text-center text-xs tracking-wide sm:px-6 lg:px-8">
+        <p className="mx-auto max-w-7xl break-words px-4 py-2 text-center text-xs tracking-wide sm:px-6 lg:px-8">
           {t("freeShippingBanner")} &middot;{" "}
           <Link href="/shop" className="font-medium underline underline-offset-2 hover:text-sage-800">
             {t("shopNewArrivals")}

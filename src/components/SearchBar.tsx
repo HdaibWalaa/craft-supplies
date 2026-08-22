@@ -78,7 +78,7 @@ export function SearchBar({ className, autoFocus }: { className?: string; autoFo
   }
 
   return (
-    <div ref={containerRef} className={cn("relative w-full", className)}>
+    <div ref={containerRef} className={cn("relative w-full min-w-0 max-w-full", className)}>
       <div className="relative">
         <Search className="pointer-events-none absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
         <input

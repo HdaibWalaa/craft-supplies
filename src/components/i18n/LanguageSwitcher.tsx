@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center rounded-full border border-ink-200 p-0.5" aria-label={t("switchLanguage")}>
+    <div className="flex shrink-0 items-center rounded-full border border-ink-200 p-0.5" aria-label={t("switchLanguage")}>
       {(["ar", "en"] as const).map((value) => (
         <button
           key={value}
@@ -24,11 +24,14 @@ export function LanguageSwitcher() {
           disabled={pending}
           onClick={() => changeLocale(value)}
           aria-pressed={locale === value}
-          className={`cursor-pointer rounded-full px-2 py-1 text-xs font-medium transition-colors ${
+          className={`cursor-pointer rounded-full px-1.5 py-1 text-xs font-medium transition-colors sm:px-2 ${
             locale === value ? "bg-sage-900 text-cream-50" : "text-ink-600 hover:text-sage-800"
           }`}
         >
-          {value === "ar" ? t("languageArabic") : t("languageEnglish")}
+          <span className="sm:hidden">{value.toUpperCase()}</span>
+          <span className="hidden sm:inline">
+            {value === "ar" ? t("languageArabic") : t("languageEnglish")}
+          </span>
         </button>
       ))}
     </div>

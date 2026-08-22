@@ -33,18 +33,18 @@ export function HeaderClient({
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div className="flex h-20 items-center gap-4 py-3 md:h-24">
+    <div className="mx-auto w-full max-w-7xl min-w-0 px-3 sm:px-6 lg:px-8">
+      <div className="flex h-20 min-w-0 items-center gap-1 py-3 sm:gap-4 md:h-24">
         <button
-          className="cursor-pointer rounded-md p-2 text-ink-700 hover:bg-ink-100 md:hidden"
+          className="shrink-0 cursor-pointer rounded-md p-2 text-ink-700 hover:bg-ink-100 md:hidden"
           onClick={() => setMobileOpen(true)}
           aria-label={t("openMenu")}
         >
           <Menu className="h-6 w-6" />
         </button>
 
-        <Link href="/" className="flex shrink-0 flex-col items-start">
-          <span className="font-serif text-2xl font-semibold tracking-tight text-walnut-950 sm:text-[1.75rem]">
+        <Link href="/" className="flex min-w-0 flex-1 flex-col items-start md:flex-none md:shrink-0">
+          <span className="max-w-full truncate font-serif text-lg font-semibold tracking-tight text-walnut-950 sm:text-[1.75rem]">
             Craft Supplies
           </span>
           <span className="mt-0.5 hidden text-[10px] font-medium uppercase tracking-[0.18em] text-ink-400 sm:block">
@@ -107,7 +107,7 @@ export function HeaderClient({
           <SearchBar className="max-w-md" />
         </div>
 
-        <div className="ms-auto flex items-center gap-1 sm:gap-2">
+        <div className="ms-auto flex shrink-0 items-center gap-0 sm:gap-2">
           <LanguageSwitcher />
           <a
             href={whatsappUrl}
@@ -194,7 +194,7 @@ export function HeaderClient({
         </div>
       </div>
 
-      <div className="pb-3 lg:hidden">
+      <div className="min-w-0 max-w-full pb-3 lg:hidden">
         <SearchBar />
       </div>
 
