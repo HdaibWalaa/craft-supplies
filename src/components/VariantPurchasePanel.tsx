@@ -165,8 +165,8 @@ export function VariantPurchasePanel({
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center rounded-full border border-ink-300">
+      <div className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex shrink-0 items-center rounded-full border border-ink-300">
           <button
             type="button"
             aria-label={t("decreaseQuantity")}
@@ -190,7 +190,7 @@ export function VariantPurchasePanel({
           type="button"
           variant="outline"
           size="lg"
-          className="flex-1"
+          className="w-full min-w-0 whitespace-nowrap sm:w-auto sm:flex-1"
           disabled={outOfStock || pending}
           onClick={() => handlePurchase(false)}
         >
@@ -200,7 +200,7 @@ export function VariantPurchasePanel({
         <Button
           type="button"
           size="lg"
-          className="flex-1"
+          className="w-full min-w-0 whitespace-nowrap sm:w-auto sm:flex-1"
           disabled={outOfStock || pending}
           onClick={() => handlePurchase(true)}
         >
@@ -211,12 +211,12 @@ export function VariantPurchasePanel({
       {message ? <p className="text-sm text-ink-600">{message}</p> : null}
 
       {/* Sticky mobile bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-sticky md:hidden">
-        <div className="flex-1">
+      <div className="fixed inset-x-0 bottom-0 z-30 flex min-w-0 items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-sticky md:hidden">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-xs text-ink-500">{productName}</p>
           <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0, locale)}</p>
         </div>
-        <Button size="md" disabled={outOfStock || pending} onClick={() => handlePurchase(false)}>
+        <Button className="shrink-0 whitespace-nowrap" size="md" disabled={outOfStock || pending} onClick={() => handlePurchase(false)}>
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : t("addToCart")}
         </Button>
       </div>

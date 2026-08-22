@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "@/routing/Link";
 import { Menu, X, ShoppingBag, Heart, User, ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
@@ -31,6 +32,17 @@ export function HeaderClient({
     { href: "/about", label: t("about") },
     { href: "/contact", label: t("contact") },
   ];
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
 
   return (
     <div className="mx-auto w-full max-w-7xl min-w-0 px-3 sm:px-6 lg:px-8">
@@ -198,9 +210,9 @@ export function HeaderClient({
         <SearchBar />
       </div>
 
-      {mobileOpen ? (
+      {mobileOpen && typeof document !== "undefined" ? createPortal(
         <div
-          className="fixed inset-0 z-50 md:hidden"
+          className="fixed inset-0 z-50 h-dvh w-full md:hidden"
           onKeyDown={(e) => e.key === "Escape" && setMobileOpen(false)}
         >
           <div className="absolute inset-0 bg-ink-950/40" onClick={() => setMobileOpen(false)} />
@@ -208,9 +220,9 @@ export function HeaderClient({
             role="dialog"
             aria-modal="true"
             aria-label={t("menu")}
-            className="absolute start-0 top-0 h-full w-80 max-w-[85vw] overflow-y-auto bg-cream-50 p-5 shadow-xl"
+            className="fixed inset-y-0 start-0 flex h-dvh w-80 max-w-[85vw] flex-col bg-cream-50 shadow-xl"
           >
-            <div className="mb-4 flex items-center justify-between">
+            <div className="flex shrink-0 items-center justify-between p-5 pb-4">
               <span className="font-serif text-xl font-semibold text-walnut-950">{t("menu")}</span>
               <button
                 autoFocus
@@ -221,39 +233,42 @@ export function HeaderClient({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-ink-400">
-              {t("categories")}
-            </p>
-            <div className="mb-4 flex flex-col">
-              {categories.map((c) => {
-                const Icon = getCategoryIcon(c.colorTheme);
-                return (
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5">
+              <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-ink-400">
+                {t("categories")}
+              </p>
+              <div className="mb-4 flex flex-col">
+                {categories.map((c) => {
+                  const Icon = getCategoryIcon(c.colorTheme);
+                  return (
+                    <Link
+                      key={c.slug}
+                      href={`/category/${c.slug}`}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn("flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm font-medium text-ink-800 hover:bg-terracotta-50")}
+                    >
+                      <Icon className="h-4 w-4 text-terracotta-600" />
+                      {c.name}
+                    </Link>
+                  );
+                })}
+              </div>
+              <div className="border-t border-ink-200 pt-3">
+                {staticLinks.map((l) => (
                   <Link
-                    key={c.slug}
-                    href={`/category/${c.slug}`}
+                    key={l.href}
+                    href={l.href}
                     onClick={() => setMobileOpen(false)}
-                    className={cn("flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm font-medium text-ink-800 hover:bg-terracotta-50")}
+                    className="block rounded-lg px-2 py-2.5 text-sm font-medium text-ink-800 hover:bg-terracotta-50"
                   >
-                    <Icon className="h-4 w-4 text-terracotta-600" />
-                    {c.name}
+                    {l.label}
                   </Link>
-                );
-              })}
-            </div>
-            <div className="border-t border-ink-200 pt-3">
-              {staticLinks.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block rounded-lg px-2 py-2.5 text-sm font-medium text-ink-800 hover:bg-terracotta-50"
-                >
-                  {l.label}
-                </Link>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </div>
   );
