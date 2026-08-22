@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 
 type SearchParams = {
   category?: string;
+  bundle?: string;
+  new?: string;
   min?: string;
   max?: string;
   stock?: string;
@@ -35,6 +37,8 @@ export default async function ShopPage({
 
   const { products, total, pageCount } = await getShopProducts({
     categorySlug: sp.category && sp.category !== "all" ? sp.category : undefined,
+    bundle: sp.bundle === "true",
+    newArrival: sp.new === "true",
     minPrice: sp.min ? Number(sp.min) : undefined,
     maxPrice: sp.max ? Number(sp.max) : undefined,
     inStockOnly: sp.stock === "true",
@@ -51,7 +55,13 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="font-display text-3xl font-semibold text-ink-900 sm:text-4xl">{t("shopAllSupplies")}</h1>
+        <h1 className="font-display text-3xl font-semibold text-ink-900 sm:text-4xl">
+          {sp.new === "true"
+            ? t("newArrivals")
+            : sp.bundle === "true"
+              ? t("kitsBundles")
+              : t("shopAllSupplies")}
+        </h1>
         <p className="mt-1 text-sm text-ink-500">{t("productsCount", { count: total })}</p>
       </div>
 

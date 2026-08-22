@@ -1,11 +1,13 @@
 import type { Metadata } from "@/types/metadata";
+import { getHomepageSettings } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Shipping & Returns",
   description: "Shipping rates, delivery times, and our return policy.",
 };
 
-export default function ShippingReturnsPage() {
+export default async function ShippingReturnsPage() {
+  const { contact } = await getHomepageSettings();
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
       <h1 className="font-display text-4xl font-semibold text-ink-900">Shipping &amp; Returns</h1>
@@ -30,13 +32,12 @@ export default function ShippingReturnsPage() {
           We want you to love your supplies. If something isn&apos;t right, here&apos;s how returns work:
         </p>
         <ul className="mt-4 flex flex-col gap-2 text-ink-600">
-          <li>&bull; Unopened, unused items can be returned within 30 days of delivery</li>
           <li>&bull; Opened consumables (fragrance oils, lye, wax, resin, mica) can&apos;t be returned once opened, for safety reasons</li>
           <li>&bull; Molds, tools, and wooden blanks can be returned if unused and in original condition</li>
           <li>&bull; Damaged or incorrect items are replaced free of charge — just contact us with a photo within 7 days</li>
         </ul>
         <p className="mt-4 text-sm text-ink-500">
-          To start a return, email support@craftsupply.test with your order number.
+          To start a return, email {contact.email} with your order number.
         </p>
       </section>
     </div>

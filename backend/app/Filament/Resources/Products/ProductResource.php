@@ -22,6 +22,21 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.products');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.product');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.products');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);

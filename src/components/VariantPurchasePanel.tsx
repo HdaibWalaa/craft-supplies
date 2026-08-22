@@ -211,7 +211,7 @@ export function VariantPurchasePanel({
       {message ? <p className="text-sm text-ink-600">{message}</p> : null}
 
       {/* Sticky mobile bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-[0_-4px_12px_rgba(26,22,19,0.08)] md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-ink-200 bg-cream-50 p-3 shadow-sticky md:hidden">
         <div className="flex-1">
           <p className="truncate text-xs text-ink-500">{productName}</p>
           <p className="font-semibold text-ink-900">{formatPrice(matchedVariant?.price ?? 0, locale)}</p>

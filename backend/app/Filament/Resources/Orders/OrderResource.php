@@ -20,6 +20,21 @@ class OrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.orders');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.order');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.orders');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return OrderForm::configure($schema);

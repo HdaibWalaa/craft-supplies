@@ -4,6 +4,7 @@ import { getBlogPostBySlug } from "@/lib/data";
 import { ProductImage } from "@/components/ProductImage";
 import { ProductGrid } from "@/components/ProductRail";
 import { PageMetadata } from "@/components/PageMetadata";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export default async function BlogPostPage({
   params,
@@ -19,9 +20,7 @@ export default async function BlogPostPage({
   return (
     <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
       <PageMetadata title={post.metaTitle || post.title} description={post.metaDescription || post.excerpt} />
-      <Link href="/blog" className="text-sm text-terracotta-700 hover:underline">
-        &larr; Tutorials &amp; Inspiration
-      </Link>
+      <TutorialsBackLink />
       <h1 className="mt-3 font-display text-3xl font-semibold text-ink-900 sm:text-4xl">{post.title}</h1>
       <p className="mt-2 text-sm text-ink-400">
         {new Date(post.publishedAt).toLocaleDateString(undefined, {
@@ -49,5 +48,15 @@ export default async function BlogPostPage({
         </div>
       ) : null}
     </article>
+  );
+}
+
+function TutorialsBackLink() {
+  const { locale, t } = useI18n();
+
+  return (
+    <Link href="/blog" className="text-sm text-terracotta-700 hover:underline">
+      {locale === "ar" ? "→" : "←"} {t("tutorialsInspiration")}
+    </Link>
   );
 }

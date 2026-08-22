@@ -17,10 +17,36 @@ use Filament\Tables\Table;
 class ShippingMethodResource extends Resource
 {
     protected static ?string $model = ShippingMethod::class;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
-    protected static ?string $navigationLabel = 'Shipping Methods';
 
-    public static function form(Schema $schema): Schema { return ShippingMethodForm::configure($schema); }
-    public static function table(Table $table): Table { return ShippingMethodsTable::configure($table); }
-    public static function getPages(): array { return ['index' => ListShippingMethods::route('/'), 'create' => CreateShippingMethod::route('/create'), 'edit' => EditShippingMethod::route('/{record}/edit')]; }
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.shipping_methods');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.shipping_method');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.shipping_methods');
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return ShippingMethodForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ShippingMethodsTable::configure($table);
+    }
+
+    public static function getPages(): array
+    {
+        return ['index' => ListShippingMethods::route('/'), 'create' => CreateShippingMethod::route('/create'), 'edit' => EditShippingMethod::route('/{record}/edit')];
+    }
 }

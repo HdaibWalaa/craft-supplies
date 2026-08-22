@@ -7,6 +7,7 @@ import { cn, formatPrice } from "@/lib/utils";
 import { useI18n } from "@/components/i18n/LocaleProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 import { fetchShippingMethods, type ApiGovernorate, type ApiShippingMethod } from "@/lib/api/shipping";
+import Link from "@/routing/Link";
 
 const initialState: CheckoutState = {};
 
@@ -38,6 +39,7 @@ export function CheckoutForm({
   const [shippingMethodId, setShippingMethodId] = useState("");
   const [shippingLoading, setShippingLoading] = useState(Boolean(defaultAddress?.governorate));
   const { locale, t } = useI18n();
+  const direction = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     if (!governorate) return;
@@ -68,6 +70,14 @@ export function CheckoutForm({
   return (
     <div className="grid gap-10 lg:grid-cols-3">
     <form action={formAction} className="flex flex-col gap-8 lg:col-span-2">
+      {!isLoggedIn ? (
+        <p className="rounded-xl border border-border bg-muted-soft px-4 py-3 text-sm text-ink-600">
+          <Link href="/account/login?callbackUrl=%2Fcheckout" className="font-medium text-terracotta-700 hover:underline">
+            {t("loginToTrackOrder")}
+          </Link>
+        </p>
+      ) : null}
+
       <section>
         <h2 className="font-display text-lg font-semibold text-ink-900">{t("deliveryInformation")}</h2>
         <div className="mt-3 grid gap-4">
@@ -81,14 +91,14 @@ export function CheckoutForm({
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="governorate">{t("governorate")}</Label>
-            <Select name="governorate" value={governorate || undefined} onValueChange={changeGovernorate} required>
-              <SelectTrigger id="governorate"><SelectValue placeholder={t("selectGovernorate")} /></SelectTrigger>
-              <SelectContent>{governorates.map((item) => <SelectItem key={item.code} value={item.code}>{item.label}</SelectItem>)}</SelectContent>
+            <Select dir={direction} name="governorate" value={governorate || undefined} onValueChange={changeGovernorate} required>
+              <SelectTrigger id="governorate" dir={direction}><SelectValue placeholder={t("selectGovernorate")} /></SelectTrigger>
+              <SelectContent dir={direction}>{governorates.map((item) => <SelectItem key={item.code} value={item.code}>{item.label}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="address">{t("address")}</Label>
-            <textarea id="address" name="address" required rows={3} defaultValue={defaultAddress?.address} className="w-full rounded-lg border border-border bg-input px-3.5 py-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+            <Input id="address" name="address" type="text" required defaultValue={defaultAddress?.address} />
           </div>
         </div>
         {isLoggedIn ? (

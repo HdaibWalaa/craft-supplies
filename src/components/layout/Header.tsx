@@ -1,12 +1,12 @@
 import Link from "@/routing/Link";
 import { auth } from "@/auth";
-import { getCategories } from "@/lib/data";
+import { getCategories, getHomepageSettings } from "@/lib/data";
 import { getCart, getCartTotals } from "@/lib/cart";
 import { HeaderClient } from "./HeaderClient";
 import { getTranslations } from "@/lib/i18n/server";
 
 export async function Header() {
-  const [session, categories, cart, { t }] = await Promise.all([auth(), getCategories(), getCart(), getTranslations()]);
+  const [session, categories, cart, { t }, { contact }] = await Promise.all([auth(), getCategories(), getCart(), getTranslations(), getHomepageSettings()]);
   const { itemCount } = getCartTotals(cart);
 
   return (
@@ -22,7 +22,8 @@ export async function Header() {
       <HeaderClient
         categories={categories.map((c) => ({ slug: c.slug, name: c.name, colorTheme: c.colorTheme }))}
         cartCount={itemCount}
-        user={session?.user ? { name: session.user.name ?? "", role: session.user.role } : null}
+      user={session?.user ? { name: session.user.name ?? "", role: session.user.role } : null}
+      whatsappUrl={contact.whatsapp_url}
       />
     </header>
   );

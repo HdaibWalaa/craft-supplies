@@ -40,7 +40,7 @@ export function CategoryTile({
         style={{
           backgroundImage: "radial-gradient(currentColor 1.5px, transparent 1.5px)",
           backgroundSize: "16px 16px",
-          color: "#fff",
+          color: "var(--color-card)",
         }}
       />
       {!imageUrl ? (

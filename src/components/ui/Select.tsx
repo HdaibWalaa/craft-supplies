@@ -13,7 +13,7 @@ export function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-input px-3.5 text-sm text-foreground",
+        "flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-input px-3.5 text-start text-sm text-foreground",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary",
         "data-[placeholder]:text-ink-400",
         className
@@ -37,7 +37,7 @@ export function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          "z-50 overflow-hidden rounded-lg border border-border bg-card shadow-[var(--shadow-card-hover)]",
+          "z-50 overflow-hidden rounded-lg border border-border bg-card text-start shadow-[var(--shadow-card-hover)]",
           className
         )}
         position="popper"
@@ -60,13 +60,13 @@ export function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-md py-2 pl-8 pr-3 text-sm text-ink-800 outline-none",
+        "relative flex cursor-pointer select-none items-center rounded-md py-2 ps-8 pe-3 text-start text-sm text-ink-800 outline-none",
         "data-[highlighted]:bg-muted-soft data-[highlighted]:text-primary",
         className
       )}
       {...props}
     >
-      <span className="absolute left-2.5 inline-flex h-4 w-4 items-center justify-center">
+      <span className="absolute start-2.5 inline-flex h-4 w-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
           <Check className="h-4 w-4" />
         </SelectPrimitive.ItemIndicator>

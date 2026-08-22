@@ -2,6 +2,8 @@ import { ApiError } from "@/lib/api/client";
 import { fetchCategories, fetchCategory } from "@/lib/api/categories";
 import { fetchProduct, fetchProducts } from "@/lib/api/products";
 import { fetchBlogPost, fetchBlogPosts } from "@/lib/api/blog";
+import { fetchHomepageSettings } from "@/lib/api/homepage";
+import { fetchAboutPage } from "@/lib/api/about";
 import type { ApiProduct } from "@/types/api";
 
 export { parseImages, parseJsonObject } from "@/lib/parse";
@@ -49,12 +51,22 @@ export async function getHeroProduct() {
   return (await getBestSellers(1))[0] ?? null;
 }
 
+export async function getHomepageSettings() {
+  return (await fetchHomepageSettings()).data;
+}
+
+export async function getAboutPage() {
+  return (await fetchAboutPage()).data;
+}
+
 export function getBundles(limit = 4) {
   return getProductCollection({ bundle: true, per_page: limit });
 }
 
 export async function getShopProducts(opts: {
   categorySlug?: string;
+  bundle?: boolean;
+  newArrival?: boolean;
   minPrice?: number;
   maxPrice?: number;
   inStockOnly?: boolean;
@@ -65,6 +77,8 @@ export async function getShopProducts(opts: {
 }) {
   const result = await fetchProducts({
     category: opts.categorySlug,
+    bundle: opts.bundle || undefined,
+    new_arrival: opts.newArrival || undefined,
     min_price: opts.minPrice,
     max_price: opts.maxPrice,
     in_stock: opts.inStockOnly || undefined,

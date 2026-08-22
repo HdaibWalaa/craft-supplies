@@ -14,10 +14,12 @@ export function HeaderClient({
   categories,
   cartCount,
   user,
+  whatsappUrl,
 }: {
   categories: CategoryLite[];
   cartCount: number;
   user: { name: string; role: "CUSTOMER" | "ADMIN" } | null;
+  whatsappUrl: string;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
@@ -108,7 +110,7 @@ export function HeaderClient({
         <div className="ms-auto flex items-center gap-1 sm:gap-2">
           <LanguageSwitcher />
           <a
-            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER ?? ""}`}
+            href={whatsappUrl}
             target="_blank"
             rel="noreferrer"
             className="hidden rounded-full p-2 text-ink-700 hover:text-sage-700 sm:inline-flex"

@@ -12,7 +12,8 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
   const [state, formAction, pending] = useActionState<State, FormData>(applyDiscountCode, initialState);
   const [removing, startRemove] = useTransition();
   const refreshedFor = useRef<string | undefined>(undefined);
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
+  const direction = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     if (state?.success && refreshedFor.current !== state.code) {
@@ -49,7 +50,7 @@ export function DiscountCodeForm({ appliedCode }: { appliedCode: string | null }
 
   return (
     <form action={formAction} className="flex gap-2">
-      <Input name="code" placeholder={t("promoCode")} className="flex-1" dir="ltr" />
+      <Input name="code" placeholder={t("promoCode")} className="flex-1 text-start" dir={direction} />
       <Button type="submit" variant="outline" size="md" disabled={pending}>
         {pending ? t("applying") : t("apply")}
       </Button>

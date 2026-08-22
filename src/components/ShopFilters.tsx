@@ -22,6 +22,7 @@ export function ShopFilters({
   const [searchParams] = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
   const { locale, t } = useI18n();
+  const direction = locale === "ar" ? "rtl" : "ltr";
   const sortOptions = [
     { value: "newest", label: t("newest") },
     { value: "price-asc", label: t("priceLowHigh") },
@@ -119,11 +120,11 @@ export function ShopFilters({
 
       <div className="flex flex-col gap-1">
         <Label htmlFor="sort">{t("sortBy")}</Label>
-        <Select name="sort" defaultValue={searchParams.get("sort") ?? "newest"} onValueChange={submitForm}>
-          <SelectTrigger id="sort" className="w-48">
+        <Select dir={direction} name="sort" defaultValue={searchParams.get("sort") ?? "newest"} onValueChange={submitForm}>
+          <SelectTrigger id="sort" dir={direction} className="w-48">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent dir={direction}>
             {sortOptions.map((o) => (
               <SelectItem key={o.value} value={o.value}>
                 {o.label}

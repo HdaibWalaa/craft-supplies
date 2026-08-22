@@ -22,6 +22,21 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.categories');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.category');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.categories');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CategoryForm::configure($schema);

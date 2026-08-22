@@ -61,7 +61,7 @@ export function ProductImage({
             backgroundImage:
               "radial-gradient(currentColor 1.5px, transparent 1.5px)",
             backgroundSize: "18px 18px",
-            color: "#fff",
+            color: "var(--color-card)",
           }}
         />
         <Icon

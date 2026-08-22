@@ -1,24 +1,27 @@
-import type { Metadata } from "@/types/metadata";
 import Link from "@/routing/Link";
 import { getBlogPosts } from "@/lib/data";
 import { ProductImage } from "@/components/ProductImage";
+import { PageMetadata } from "@/components/PageMetadata";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
-export const metadata: Metadata = {
-  title: "Tutorials & Inspiration",
-  description: "Project ideas and how-tos for candle-making, resin, soap, and more.",
-};
+type BlogPosts = Awaited<ReturnType<typeof getBlogPosts>>;
 
 export default async function BlogIndexPage() {
   const posts = await getBlogPosts();
 
+  return <BlogIndexContent posts={posts} />;
+}
+
+function BlogIndexContent({ posts }: { posts: BlogPosts }) {
+  const { t } = useI18n();
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <PageMetadata title={t("tutorialsInspiration")} description={t("tutorialsDescription")} />
       <h1 className="font-display text-3xl font-semibold text-ink-900 sm:text-4xl">
-        Tutorials &amp; Inspiration
+        {t("tutorialsInspiration")}
       </h1>
-      <p className="mt-2 max-w-xl text-ink-500">
-        Project ideas, techniques, and tips from our workshop to yours.
-      </p>
+      <p className="mt-2 max-w-xl text-ink-500">{t("tutorialsDescription")}</p>
 
       <div className="mt-10 grid gap-8 sm:grid-cols-2">
         {posts.map((post) => (

@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\SetFilamentLocale;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,6 +12,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -29,6 +32,16 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('Craft Supplies')
             ->login()
+            ->userMenuItems([
+                Action::make('locale_en')
+                    ->label(fn (): string => __('filament.locale.english'))
+                    ->icon(Heroicon::OutlinedLanguage)
+                    ->url(fn (): string => request()->fullUrlWithQuery(['locale' => 'en'])),
+                Action::make('locale_ar')
+                    ->label(fn (): string => __('filament.locale.arabic'))
+                    ->icon(Heroicon::OutlinedLanguage)
+                    ->url(fn (): string => request()->fullUrlWithQuery(['locale' => 'ar'])),
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -46,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                SetFilamentLocale::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,

@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: "Can I return opened supplies?",
-    a: "Unopened supplies can be returned within 30 days. Because of the nature of craft materials (fragrance oils, lye, resin, etc.), opened consumable items generally can't be returned — see our Shipping & Returns page for full details.",
+    a: "Because of the nature of craft materials (fragrance oils, lye, resin, etc.), opened consumable items generally can't be returned — see our Shipping & Returns page for full details.",
   },
   {
     q: "Do you offer bulk pricing for small businesses?",

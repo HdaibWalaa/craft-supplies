@@ -1,6 +1,7 @@
 import { Component, Suspense, use, useEffect, useState, type ReactNode } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { PageError, PageLoading } from "@/components/PageState";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 type PageProps = {
   params: Promise<Record<string, string>>;
@@ -31,8 +32,9 @@ class Boundary extends Component<{ children: ReactNode }, { error?: Error }> {
 export function AsyncRoute({ page }: { page: unknown }) {
   const location = useLocation();
   const params = useParams();
+  const { locale } = useI18n();
   const [version, setVersion] = useState(0);
-  const baseKey = `${location.pathname}${location.search}`;
+  const baseKey = `${locale}:${location.pathname}${location.search}`;
   const key = `${baseKey}:${version}`;
   const search = Object.fromEntries(new URLSearchParams(location.search));
   const props = {

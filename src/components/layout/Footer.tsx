@@ -1,17 +1,17 @@
 import Link from "@/routing/Link";
-import { ShieldCheck, Truck, RotateCcw } from "lucide-react";
-import { getCategories } from "@/lib/data";
+import { ShieldCheck, Truck } from "lucide-react";
+import { getCategories, getHomepageSettings } from "@/lib/data";
 import { NewsletterForm } from "./NewsletterForm";
 import { SocialIcon } from "@/components/SocialIcon";
 import { getTranslations } from "@/lib/i18n/server";
 
 export async function Footer() {
-  const [categories, { t }] = await Promise.all([getCategories(), getTranslations()]);
+  const [categories, { t }, { contact }] = await Promise.all([getCategories(), getTranslations(), getHomepageSettings()]);
   const companyLinks = [{ href: "/about", label: t("aboutUs") }, { href: "/blog", label: t("tutorialsInspiration") }, { href: "/contact", label: t("contact") }];
   const supportLinks = [{ href: "/faq", label: t("faq") }, { href: "/shipping-returns", label: t("shippingReturns") }, { href: "/terms", label: t("terms") }, { href: "/privacy", label: t("privacy") }];
 
   return (
-    <footer className="mt-24 bg-sage-900 text-cream-200">
+    <footer className="mt-24 bg-footer text-footer-foreground">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2">
@@ -72,9 +72,6 @@ export async function Footer() {
           <span className="flex items-center gap-2">
             <Truck className="h-4 w-4 text-sage-400" /> {t("carefulShipping")}
           </span>
-          <span className="flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-sage-400" /> {t("easyReturns")}
-          </span>
         </div>
 
         <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
@@ -82,14 +79,14 @@ export async function Footer() {
             &copy; {new Date().getFullYear()} Craft Supplies. {t("rightsReserved")}
           </p>
           <div className="flex items-center gap-3">
-            <a href="#" aria-label="Instagram" className="text-cream-300 hover:text-terracotta-300">
+            <a href={contact.whatsapp_url} target="_blank" rel="noreferrer" aria-label={t("whatsapp")} className="text-cream-300 hover:text-terracotta-300">
+              <SocialIcon name="whatsapp" className="h-5 w-5" />
+            </a>
+            <a href={contact.instagram_url} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-cream-300 hover:text-terracotta-300">
               <SocialIcon name="instagram" className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Facebook" className="text-cream-300 hover:text-terracotta-300">
+            <a href={contact.facebook_url} target="_blank" rel="noreferrer" aria-label="Facebook" className="text-cream-300 hover:text-terracotta-300">
               <SocialIcon name="facebook" className="h-5 w-5" />
-            </a>
-            <a href="#" aria-label="YouTube" className="text-cream-300 hover:text-terracotta-300">
-              <SocialIcon name="youtube" className="h-5 w-5" />
             </a>
           </div>
         </div>

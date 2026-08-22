@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'support_address' => env('MAIL_SUPPORT_ADDRESS', 'support@craftsupply.test'),
+    'support_address' => env('MAIL_SUPPORT_ADDRESS', 'info@craftsuppliesjo.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -112,7 +112,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'info@craftsuppliesjo.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 

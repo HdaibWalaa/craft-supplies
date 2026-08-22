@@ -20,6 +20,21 @@ class DiscountCodeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.discount_codes');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.discount_code');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.discount_codes');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DiscountCodeForm::configure($schema);

@@ -43,7 +43,10 @@ class CheckoutApiTest extends TestCase
         [, $token] = $this->cartWithItem();
         $response = $this->postJson('/api/v1/checkout', $this->payload($token, $this->shippingMethod()->id));
         $response->assertCreated();
-        $this->assertDatabaseHas('orders', ['id' => $response->json('data.order.id'), 'email' => null, 'user_id' => null]);
+        $orderId = $response->json('data.order.id');
+        $this->assertDatabaseHas('orders', ['id' => $orderId, 'email' => null, 'user_id' => null]);
+        $this->assertDatabaseHas('order_items', ['order_id' => $orderId, 'quantity' => 1]);
+        $this->getJson('/api/v1/orders')->assertUnauthorized();
     }
 
     public function test_authenticated_checkout_can_save_first_address_as_default(): void
@@ -51,7 +54,8 @@ class CheckoutApiTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
         [, $token] = $this->cartWithItem();
-        $this->postJson('/api/v1/checkout', [...$this->payload($token, $this->shippingMethod()->id), 'save_address' => true])->assertCreated();
+        $response = $this->postJson('/api/v1/checkout', [...$this->payload($token, $this->shippingMethod()->id), 'save_address' => true])->assertCreated();
+        $this->assertDatabaseHas('orders', ['id' => $response->json('data.order.id'), 'user_id' => $user->id]);
         $this->assertDatabaseHas('addresses', ['user_id' => $user->id, 'full_name' => 'Test Buyer', 'governorate' => 'amman', 'country_code' => 'JO', 'is_default_shipping' => true]);
     }
 

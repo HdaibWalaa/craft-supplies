@@ -1,17 +1,20 @@
 import Link from "@/routing/Link";
 import { ArrowRight } from "lucide-react";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export function SectionHeading({
   title,
   subtitle,
   href,
-  hrefLabel = "View all",
+  hrefLabel,
 }: {
   title: string;
   subtitle?: string;
   href?: string;
   hrefLabel?: string;
 }) {
+  const { t } = useI18n();
+
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <div>
@@ -23,7 +26,7 @@ export function SectionHeading({
           href={href}
           className="flex shrink-0 items-center gap-1 text-sm font-medium text-terracotta-700 hover:text-terracotta-800"
         >
-          {hrefLabel} <ArrowRight className="h-4 w-4" />
+          {hrefLabel ?? t("viewAll")} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
         </Link>
       ) : null}
     </div>

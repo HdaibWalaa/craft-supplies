@@ -1,8 +1,10 @@
 import type { Metadata } from "@/types/metadata";
+import { getHomepageSettings } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Privacy Policy" };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const { contact } = await getHomepageSettings();
   return (
     <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8">
       <h1 className="font-display text-4xl font-semibold text-ink-900">Privacy Policy</h1>
@@ -40,7 +42,7 @@ export default function PrivacyPage() {
           <h2 className="font-display text-xl font-semibold text-ink-900">Your Rights</h2>
           <p className="mt-2">
             You can request a copy of the data we hold about you, or request deletion of your
-            account and data, by contacting support@craftsupply.test.
+            account and data, by contacting {contact.email}.
           </p>
         </section>
         <p className="text-sm text-ink-400">

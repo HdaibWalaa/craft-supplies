@@ -1,141 +1,152 @@
 @import "tailwindcss";
 
-@theme {
-  /* Reference palette: sage #b8cec2, cream #f8e6ce, peach #ebc8b4, coral #fdb3a4, light sage #d1dbcd. */
-  /* Terracotta — primary / CTAs */
-  --color-terracotta-50: #fff7f4;
-  --color-terracotta-100: #fde9e3;
-  --color-terracotta-200: #ebc8b4;
-  --color-terracotta-300: #fdb3a4;
-  --color-terracotta-400: #f38f7e;
-  --color-terracotta-500: #d96f60;
-  --color-terracotta-600: #b94f43;
-  --color-terracotta-700: #913d35;
-  --color-terracotta-800: #74332d;
-  --color-terracotta-900: #5f2c28;
-  --color-terracotta-950: #341512;
+/* Components consume semantic roles (and legacy aliases); themes supply values. */
+@theme inline {
+  --color-background: var(--theme-background);
+  --color-foreground: var(--theme-text);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-primary-foreground: var(--theme-on-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-secondary-hover: var(--theme-secondary-hover);
+  --color-secondary-foreground: var(--theme-on-secondary);
+  --color-accent: var(--theme-accent);
+  --color-accent-soft: var(--theme-accent-soft);
+  --color-accent-foreground: var(--theme-on-accent);
+  --color-muted: var(--theme-muted);
+  --color-muted-soft: var(--theme-muted-soft);
+  --color-muted-foreground: var(--theme-text-muted);
+  --color-card: var(--theme-surface);
+  --color-card-foreground: var(--theme-text);
+  --color-border: var(--theme-border);
+  --color-input: var(--theme-input-background);
+  --color-ring: var(--theme-focus);
+  --color-header: var(--theme-header-background);
+  --color-footer: var(--theme-footer-background);
+  --color-footer-foreground: var(--theme-footer-text);
 
-  /* Sage — dominant environmental green (section panels, not just accents) */
-  --color-sage-50: #f6f8f6;
-  --color-sage-100: #edf2ef;
-  --color-sage-200: #d1dbcd;
-  --color-sage-300: #b8cec2;
-  --color-sage-400: #94b3a4;
-  --color-sage-500: #6f9382;
-  --color-sage-600: #526f63;
-  --color-sage-700: #3f514a;
-  --color-sage-800: #34443d;
-  --color-sage-900: #2a3832;
-  --color-sage-950: #17201c;
+  /* Compatibility aliases keep every existing screen theme-aware. */
+  --color-terracotta-50: var(--theme-accent-softest);
+  --color-terracotta-100: var(--theme-accent-soft);
+  --color-terracotta-200: var(--theme-muted);
+  --color-terracotta-300: var(--theme-accent-light);
+  --color-terracotta-400: var(--theme-accent-mid);
+  --color-terracotta-500: var(--theme-secondary-light);
+  --color-terracotta-600: var(--theme-teal);
+  --color-terracotta-700: var(--theme-secondary-deep);
+  --color-terracotta-800: var(--theme-primary-soft);
+  --color-terracotta-900: var(--theme-primary);
+  --color-terracotta-950: var(--theme-primary);
+  --color-sage-50: var(--theme-surface);
+  --color-sage-100: var(--theme-muted-soft);
+  --color-sage-200: var(--theme-accent-soft);
+  --color-sage-300: var(--theme-muted);
+  --color-sage-400: var(--theme-accent-light);
+  --color-sage-500: var(--theme-secondary-light);
+  --color-sage-600: var(--theme-teal);
+  --color-sage-700: var(--theme-secondary-deep);
+  --color-sage-800: var(--theme-primary-soft);
+  --color-sage-900: var(--theme-primary);
+  --color-sage-950: var(--theme-primary);
+  --color-walnut-50: var(--theme-surface);
+  --color-walnut-100: var(--theme-background);
+  --color-walnut-200: var(--theme-muted);
+  --color-walnut-300: var(--theme-accent-light);
+  --color-walnut-400: var(--theme-text-subtle);
+  --color-walnut-500: var(--theme-text-muted);
+  --color-walnut-600: var(--theme-text-soft);
+  --color-walnut-700: var(--theme-primary-soft);
+  --color-walnut-800: var(--theme-primary);
+  --color-walnut-900: var(--theme-primary);
+  --color-walnut-950: var(--theme-primary);
+  --color-cream-50: var(--theme-surface);
+  --color-cream-100: var(--theme-background);
+  --color-cream-200: var(--theme-background);
+  --color-cream-300: var(--theme-muted-soft);
+  --color-cream-400: var(--theme-muted);
+  --color-cream-500: var(--theme-accent-light);
+  --color-cream-600: var(--theme-teal);
+  --color-cream-700: var(--theme-secondary-deep);
+  --color-cream-800: var(--theme-primary-soft);
+  --color-cream-900: var(--theme-primary);
+  --color-cream-950: var(--theme-primary);
+  --color-ink-50: var(--theme-surface);
+  --color-ink-100: var(--theme-muted-soft);
+  --color-ink-200: var(--theme-muted);
+  --color-ink-300: var(--theme-accent-light);
+  --color-ink-400: var(--theme-text-subtle);
+  --color-ink-500: var(--theme-text-muted);
+  --color-ink-600: var(--theme-text-soft);
+  --color-ink-700: var(--theme-primary-soft);
+  --color-ink-800: var(--theme-primary);
+  --color-ink-900: var(--theme-primary);
+  --color-ink-950: var(--theme-primary);
 
-  /* Walnut — dark warm neutral, headers/footer */
-  --color-walnut-50: #fbf7f4;
-  --color-walnut-100: #f5e8df;
-  --color-walnut-200: #ebc8b4;
-  --color-walnut-300: #d6a891;
-  --color-walnut-400: #b98268;
-  --color-walnut-500: #94634f;
-  --color-walnut-600: #735044;
-  --color-walnut-700: #5c453e;
-  --color-walnut-800: #493f3b;
-  --color-walnut-900: #38302d;
-  --color-walnut-950: #251f1d;
-
-  /* Cream — warm, visible beige background (not near-white) */
-  --color-cream-50: #fffdf9;
-  --color-cream-100: #fdf5e9;
-  --color-cream-200: #f8e6ce;
-  --color-cream-300: #efd5b5;
-  --color-cream-400: #dfba8d;
-  --color-cream-500: #c69a68;
-  --color-cream-600: #a77950;
-  --color-cream-700: #835d41;
-  --color-cream-800: #684a37;
-  --color-cream-900: #513b2f;
-  --color-cream-950: #2d1f18;
-
-  /* Ink — warm neutral text */
-  --color-ink-50: #f8f9f7;
-  --color-ink-100: #eef1ed;
-  --color-ink-200: #d1dbcd;
-  --color-ink-300: #aebbb3;
-  --color-ink-400: #7f8d85;
-  --color-ink-500: #65716b;
-  --color-ink-600: #515b56;
-  --color-ink-700: #493f3b;
-  --color-ink-800: #3d3633;
-  --color-ink-900: #302b29;
-  --color-ink-950: #1c1918;
-
-  /* Semantic storefront roles */
-  --color-background: #fffdf9;
-  --color-foreground: #302b29;
-  --color-primary: #3f514a;
-  --color-primary-hover: #34443d;
-  --color-primary-foreground: #fffdf9;
-  --color-secondary: #f8e6ce;
-  --color-secondary-hover: #efd5b5;
-  --color-secondary-foreground: #493f3b;
-  --color-accent: #fdb3a4;
-  --color-accent-soft: #fde9e3;
-  --color-accent-foreground: #5f2c28;
-  --color-muted: #d1dbcd;
-  --color-muted-soft: #edf2ef;
-  --color-muted-foreground: #515b56;
-  --color-card: #ffffff;
-  --color-card-foreground: #302b29;
-  --color-border: #d1dbcd;
-  --color-input: #ffffff;
-  --color-ring: #526f63;
-
-  /* Deterministic category accents */
-  --color-category-sage: #b8cec2;
-  --color-category-sage-deep: #6f9382;
-  --color-category-cream: #f8e6ce;
-  --color-category-cream-deep: #c69a68;
-  --color-category-peach: #ebc8b4;
-  --color-category-peach-deep: #b98268;
-  --color-category-coral: #fdb3a4;
-  --color-category-coral-deep: #d96f60;
-
+  --color-category-sage: var(--theme-muted);
+  --color-category-sage-deep: var(--theme-teal);
+  --color-category-cream: var(--theme-background);
+  --color-category-cream-deep: var(--theme-accent-light);
+  --color-category-peach: var(--theme-muted-soft);
+  --color-category-peach-deep: var(--theme-secondary-light);
+  --color-category-coral: var(--theme-accent-soft);
+  --color-category-coral-deep: var(--theme-secondary-deep);
   --font-display: var(--font-fredoka);
   --font-sans: var(--font-nunito);
   --font-serif: var(--font-fraunces);
-
-  --shadow-card: 0 1px 2px rgba(63, 81, 74, 0.05), 0 4px 14px rgba(63, 81, 74, 0.06);
-  --shadow-card-hover: 0 2px 5px rgba(63, 81, 74, 0.08), 0 14px 30px rgba(63, 81, 74, 0.11);
+  --shadow-card: var(--theme-shadow-card);
+  --shadow-card-hover: var(--theme-shadow-card-hover);
+  --shadow-sticky: var(--theme-shadow-sticky);
 }
 
-:root {
-  --background: var(--color-background);
-  --foreground: var(--color-foreground);
+[data-theme="theme_1"] {
+  /* Theme 1 exact base palette. */
+  --theme-navy: #2f4156;
+  --theme-teal: #567c8d;
+  --theme-sky: #c8d9e6;
+  --theme-beige: #f5efeb;
+  --theme-white: #ffffff;
+
+  /* Derived roles only mix colors from the base palette. */
+  --theme-primary: var(--theme-navy);
+  --theme-primary-hover: color-mix(in srgb, var(--theme-navy) 82%, var(--theme-teal));
+  --theme-primary-soft: color-mix(in srgb, var(--theme-navy) 86%, var(--theme-white));
+  --theme-on-primary: var(--theme-white);
+  --theme-secondary: var(--theme-sky);
+  --theme-secondary-hover: color-mix(in srgb, var(--theme-sky) 78%, var(--theme-teal));
+  --theme-secondary-light: color-mix(in srgb, var(--theme-teal) 76%, var(--theme-white));
+  --theme-secondary-deep: color-mix(in srgb, var(--theme-teal) 72%, var(--theme-navy));
+  --theme-on-secondary: var(--theme-navy);
+  --theme-accent: var(--theme-teal);
+  --theme-accent-light: color-mix(in srgb, var(--theme-sky) 70%, var(--theme-teal));
+  --theme-accent-mid: color-mix(in srgb, var(--theme-sky) 45%, var(--theme-teal));
+  --theme-accent-soft: var(--theme-sky);
+  --theme-accent-softest: color-mix(in srgb, var(--theme-sky) 38%, var(--theme-white));
+  --theme-on-accent: var(--theme-navy);
+  --theme-background: var(--theme-beige);
+  --theme-surface: var(--theme-white);
+  --theme-muted: var(--theme-sky);
+  --theme-muted-soft: color-mix(in srgb, var(--theme-sky) 45%, var(--theme-white));
+  --theme-border: var(--theme-sky);
+  --theme-text: var(--theme-navy);
+  --theme-text-soft: color-mix(in srgb, var(--theme-navy) 84%, var(--theme-white));
+  --theme-text-muted: color-mix(in srgb, var(--theme-navy) 72%, var(--theme-white));
+  --theme-text-subtle: color-mix(in srgb, var(--theme-navy) 56%, var(--theme-white));
+  --theme-input-background: var(--theme-white);
+  --theme-focus: var(--theme-teal);
+  --theme-header-background: var(--theme-white);
+  --theme-footer-background: var(--theme-navy);
+  --theme-footer-text: var(--theme-white);
+  --theme-shadow-card: 0 1px 2px rgba(47, 65, 86, 0.05), 0 4px 14px rgba(47, 65, 86, 0.07);
+  --theme-shadow-card-hover: 0 2px 5px rgba(47, 65, 86, 0.09), 0 14px 30px rgba(47, 65, 86, 0.13);
+  --theme-shadow-sticky: 0 -4px 12px rgba(47, 65, 86, 0.1);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-}
-
-.font-display {
-  font-family: var(--font-display), ui-rounded, ui-sans-serif, system-ui, sans-serif;
-}
-
-.font-serif {
-  font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
-}
-
+:root { --background: var(--theme-background); --foreground: var(--theme-text); }
+body { background: var(--background); color: var(--foreground); font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif; }
+.font-display { font-family: var(--font-display), ui-rounded, ui-sans-serif, system-ui, sans-serif; }
+.font-serif { font-family: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif; }
 html[dir="rtl"] body,
 html[dir="rtl"] .font-display,
-html[dir="rtl"] .font-serif {
-  font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
-}
-
-* {
-  scrollbar-color: var(--color-ink-300) transparent;
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-}
+html[dir="rtl"] .font-serif { font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif; }
+* { scrollbar-color: var(--color-ink-300) transparent; }
+:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }

@@ -10,6 +10,11 @@ class ListBlogPosts extends ListRecords
 {
     protected static string $resource = BlogPostResource::class;
 
+    public function getSubheading(): ?string
+    {
+        return __('filament.tutorials.description');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

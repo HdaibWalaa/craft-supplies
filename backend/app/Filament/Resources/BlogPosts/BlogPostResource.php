@@ -22,6 +22,21 @@ class BlogPostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.navigation.blog_posts');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.models.blog_post');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.models.blog_posts');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return BlogPostForm::configure($schema);
