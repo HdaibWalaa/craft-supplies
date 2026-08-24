@@ -2,6 +2,16 @@
 <html lang="en" dir="ltr" data-theme="theme_1">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Establish the writing direction before the browser performs its first
+      // layout. A deferred module is too late for RTL viewport initialization.
+      (() => {
+        const storedLocale = localStorage.getItem("locale");
+        const locale = storedLocale === "en" ? "en" : "ar";
+        document.documentElement.lang = locale;
+        document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="application-name" content="Craft Supplies" />
