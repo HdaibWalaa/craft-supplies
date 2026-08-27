@@ -6,7 +6,13 @@
       // Establish the writing direction before the browser performs its first
       // layout. A deferred module is too late for RTL viewport initialization.
       (() => {
-        const storedLocale = localStorage.getItem("locale");
+        let storedLocale = null;
+        try {
+          storedLocale = localStorage.getItem("locale");
+        } catch {
+          // Storage may be unavailable in privacy-restricted browser contexts.
+          // Arabic is the storefront default, so direction must still be set.
+        }
         const locale = storedLocale === "en" ? "en" : "ar";
         document.documentElement.lang = locale;
         document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
