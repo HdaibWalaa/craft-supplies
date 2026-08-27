@@ -41,22 +41,77 @@ jobs:
         run: |
           test -d dist
           test -f dist/index.html
+          npm run verify:build
           ls -la dist
 
-      - name: Deploy to Bluehost public_html
+      - name: Publish assets and HTML to Bluehost
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
         run: |
+          set -euo pipefail
           sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
           mkdir -p ~/.ssh
           ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
-          # .htaccess, .well-known, and cgi-bin are cPanel/SSL-managed and are never
-          # touched by this deploy. Only dist/ output replaces frontend-owned files.
-          sshpass -e rsync -avz --delete \
+          # Upload every content-addressed asset before publishing the HTML that
+          # references it. Old hashed assets remain briefly for already-open tabs.
+          sshpass -e rsync -avz \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            --exclude="index.html" \
             --exclude=".htaccess" \
             --exclude=".well-known/" \
             --exclude="cgi-bin/" \
             --exclude="error_log" \
             dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.FRONTEND_PATH }}/"
+
+          sshpass -e rsync -avz \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            deploy/frontend-cache-rules.conf \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.FRONTEND_PATH }}/.frontend-cache-rules"
+
+          sshpass -e rsync -avz \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            dist/index.html \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.FRONTEND_PATH }}/.index.html-${GITHUB_SHA}"
+
+          # Preserve cPanel/SSL-managed .htaccess content, replace only this
+          # application's marked cache block, then atomically publish index.html.
+          sshpass -e ssh -p "${{ secrets.SSH_PORT }}" -o StrictHostKeyChecking=no \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" bash -s <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          cd "${{ secrets.FRONTEND_PATH }}"
+
+          htaccess_tmp=".htaccess.tmp-${{ github.sha }}"
+          if [ -f .htaccess ]; then
+            awk '
+              /^# BEGIN CRAFT SUPPLIES FRONTEND CACHE$/ { skip = 1; next }
+              /^# END CRAFT SUPPLIES FRONTEND CACHE$/ { skip = 0; next }
+              !skip { print }
+            ' .htaccess > "$htaccess_tmp"
+          else
+            : > "$htaccess_tmp"
+          fi
+          printf '\n' >> "$htaccess_tmp"
+          cat .frontend-cache-rules >> "$htaccess_tmp"
+          mv -f "$htaccess_tmp" .htaccess
+          rm -f .frontend-cache-rules
+
+          test -f ".index.html-${{ github.sha }}"
+          mv -f ".index.html-${{ github.sha }}" index.html
+
+          # Retain old hashes for open tabs, but prevent unbounded accumulation.
+          find assets -type f -mtime +30 -delete 2>/dev/null || true
+          REMOTE_SCRIPT
+
+      - name: Verify production cache policy
+        env:
+          SITE_URL: ${{ secrets.VITE_SITE_URL }}
+        run: |
+          set -euo pipefail
+          site_url="${SITE_URL%/}"
+          curl -fsSL -H 'Cache-Control: no-cache' "$site_url/" -o deployed-index.html
+          cmp dist/index.html deployed-index.html
+
+          curl -fsSI "$site_url/" | tr -d '\r' | grep -Eiq '^cache-control:.*no-cache'
+          asset_path="$(grep -Eo '/assets/[^" ]+\.(js|css)' dist/index.html | head -n 1)"
+          curl -fsSI "$site_url$asset_path" | tr -d '\r' | grep -Eiq '^cache-control:.*max-age=31536000.*immutable'

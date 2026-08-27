@@ -1,2 +1,9 @@
-import { isLocale, LOCALE_COOKIE, type Locale } from "@/lib/i18n/config";
-export async function setLocale(locale: Locale) { if (!isLocale(locale)) return; localStorage.setItem(LOCALE_COOKIE, locale); document.documentElement.lang = locale; document.documentElement.dir = locale === "ar" ? "rtl" : "ltr"; window.dispatchEvent(new Event("storefront:locale")); }
+import { applyDocumentLocale, persistClientLocale } from "@/lib/i18n/client";
+import { isLocale, type Locale } from "@/lib/i18n/config";
+
+export async function setLocale(locale: Locale) {
+  if (!isLocale(locale)) return;
+  persistClientLocale(locale);
+  applyDocumentLocale(locale);
+  window.dispatchEvent(new Event("storefront:locale"));
+}

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
-import { DEFAULT_LOCALE, isLocale, localeDirection, LOCALE_COOKIE } from "@/lib/i18n/config";
+import { applyDocumentLocale, readClientLocale } from "@/lib/i18n/client";
 import { ProtectedRoute } from "@/auth/ProtectedRoute";
 import { AsyncContent, AsyncRoute } from "@/routes/AsyncRoute";
 import HomePage from "@/pages/HomePage";
@@ -42,8 +42,16 @@ const routes: Array<{ path: string; page: unknown; protected?: boolean; title?: 
 ];
 function NotFound() { useEffect(() => { document.title = "Page Not Found | Craft Supplies"; }, []); return <div className="mx-auto max-w-3xl px-4 py-24 text-center"><h1 className="font-display text-4xl font-semibold text-ink-900">Page not found</h1><p className="mt-3 text-ink-500">The page you requested does not exist.</p></div>; }
 export default function App() {
-  const [locale, setLocale] = useState(() => { const value = localStorage.getItem(LOCALE_COOKIE); return isLocale(value) ? value : DEFAULT_LOCALE; });
-  useEffect(() => { const update = () => { const value = localStorage.getItem(LOCALE_COOKIE); setLocale(isLocale(value) ? value : DEFAULT_LOCALE); }; window.addEventListener("storefront:locale", update); return () => window.removeEventListener("storefront:locale", update); }, []);
-  useEffect(() => { document.documentElement.lang = locale; document.documentElement.dir = localeDirection(locale); }, [locale]);
+  const [locale, setLocale] = useState(readClientLocale);
+  useEffect(() => {
+    const update = () => setLocale(readClientLocale());
+    window.addEventListener("storefront:locale", update);
+    window.addEventListener("storage", update);
+    return () => {
+      window.removeEventListener("storefront:locale", update);
+      window.removeEventListener("storage", update);
+    };
+  }, []);
+  useEffect(() => { applyDocumentLocale(locale); }, [locale]);
   return <LocaleProvider locale={locale}><div className="flex min-h-screen w-full min-w-0 max-w-full flex-col"><AsyncContent render={Header} cacheKey={`header:${locale}`} /><main className="min-w-0 max-w-full flex-1"><Routes>{routes.map((route) => { const content = <><AsyncRoute page={route.page} />{route.title ? <PageMetadata title={route.title} description={route.description} /> : null}</>; return <Route key={route.path} path={route.path} element={route.protected ? <ProtectedRoute>{content}</ProtectedRoute> : content} />; })}<Route path="/admin/*" element={<Navigate to={`${import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8000"}/admin`} replace />} /><Route path="*" element={<NotFound />} /></Routes></main><AsyncContent render={Footer} cacheKey={`footer:${locale}`} /></div></LocaleProvider>;
 }
